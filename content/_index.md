@@ -1,0 +1,127 @@
+---
+geekdocNav: false
+geekdocAlign: center
+geekdocAnchor: false
+geekdocBreadcrumb: false
+---
+# Find bugs before you code
+FizzBee is a formal specification language and model checker to specify distributed systems.
+
+
+
+{{< columns >}}
+
+### Exhaustive model checking
+
+Explore all possible behaviors and exhaustive set of complex
+interactions and verify the system does what you think it does.
+
+<--->
+
+### Easiest specification language
+
+FizzBee uses Python-like language, using imperative style. You can be
+productive in minutes.
+
+<--->
+
+### Performance modeling
+
+FizzBee comes with probabilistic model checker for modeling performance characteristics like 
+expected of latency, throughput, availability SLAs.
+
+{{< /columns >}}
+
+## Try Fizz
+
+<!-- markdownlint-capture -->
+<!-- markdownlint-disable MD033 -->
+<div style="text-align: left">
+<!-- markdownlint-restore -->
+
+```python
+# Fizzbee model checker
+
+invariants:
+  always value <= 3  # This statement is always true
+  always eventually value == 0  # The value can be anything, but always come back to 0
+  eventually always value >= 0  # The value will reach 0 eventually, and stay >= 0
+
+
+action Init:
+  value = -2
+
+
+atomic fair action Add:
+  if value < 3:
+      value += 1
+  else:
+      value = 0
+
+
+```
+with fizzbee shortcode
+{{% fizzbee %}}
+# Fizzbee model checker
+
+invariants:
+  always value <= 3  # This statement is always true
+  always eventually value == 0  # The value can be anything, but always come back to 0
+  eventually always value >= 0  # The value will reach 0 eventually, and stay >= 0
+
+
+action Init:
+  value = -2
+
+
+atomic fair action Add:
+  if value < 3:
+      value += 1
+  else:
+      value = 0
+
+{{% /fizzbee %}}
+
+second time with fizzbee shortcode
+{{% fizzbee %}}
+# Fizzbee model checker
+
+invariants:
+always eventually value == 0  # The value can be anything, but always come back to 0
+
+
+action Init:
+value = -2
+
+
+atomic fair action Add:
+if value < 3:
+value += 1
+else:
+value = 0
+
+{{% /fizzbee %}}
+
+{{% fizzbee %}}
+# Fizzbee model checker
+
+invariants:
+always value <= 3  # This statement is always true
+
+
+action Init:
+value = -2
+
+
+atomic fair action Add:
+if value < 3:
+value += 1
+else:
+value = 0
+
+{{% /fizzbee %}}
+<!-- markdownlint-capture -->
+<!-- markdownlint-disable MD033 -->
+</div>
+<!-- markdownlint-restore -->
+

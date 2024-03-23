@@ -1,0 +1,18 @@
+<!-- layouts/shortcodes/fizzbee.html -->
+{{ if not (.Page.Scratch.Get "jhandler_defined") }}
+  {{ .Page.Scratch.Set "jhandler_defined" true }}
+<script>
+    function jhandler(id, content) {
+        // Your JavaScript code here
+        console.log("Button clicked!", id, content);
+        sessionStorage.setItem('fizzbee-embed-'+id, content);
+
+        window.open('http://localhost:3000/play#' + 'embed-' + id , '_blank');
+    }
+</script>
+{{ end }}
+
+<button onclick="jhandler(crypto.randomUUID(), {{ trim .Inner "\r\n"}})">Click me!</button>
+{{ printf "%s%s%s" "```python" .Inner  "```" | markdownify }}
+
+{{ with .Site.BaseURL }}<script>window.baseURL = '{{ . }}';</script>{{ end }}
