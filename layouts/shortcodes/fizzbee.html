@@ -4,15 +4,16 @@
 <script>
     function jhandler(id, content) {
         // Your JavaScript code here
-        console.log("Button clicked!", id, content);
+        event.preventDefault();
         sessionStorage.setItem('fizzbee-embed-'+id, content);
 
-        window.open('http://localhost:3000/play#' + 'embed-' + id , '_blank');
+        window.open('/play#' + 'embed-' + id , '_blank');
+        return false;
     }
 </script>
 {{ end }}
-
-<button onclick="jhandler(crypto.randomUUID(), {{ trim .Inner "\r\n"}})">Click me!</button>
+<div style="text-align: left">
+<a href="/play" onclick="jhandler(crypto.randomUUID(), {{ trim .Inner "\r\n"}})">Run in playground</a>
 {{ printf "%s%s%s" "```python" .Inner  "```" | markdownify }}
-
+</div>
 {{ with .Site.BaseURL }}<script>window.baseURL = '{{ . }}';</script>{{ end }}
