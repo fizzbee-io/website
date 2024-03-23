@@ -34,33 +34,7 @@ expected of latency, throughput, availability SLAs.
 
 ## Try Fizz
 
-<!-- markdownlint-capture -->
-<!-- markdownlint-disable MD033 -->
-<div style="text-align: left">
-<!-- markdownlint-restore -->
 
-```python
-# Fizzbee model checker
-
-invariants:
-  always value <= 3  # This statement is always true
-  always eventually value == 0  # The value can be anything, but always come back to 0
-  eventually always value >= 0  # The value will reach 0 eventually, and stay >= 0
-
-
-action Init:
-  value = -2
-
-
-atomic fair action Add:
-  if value < 3:
-      value += 1
-  else:
-      value = 0
-
-
-```
-with fizzbee shortcode
 {{% fizzbee %}}
 # Fizzbee model checker
 
@@ -82,46 +56,5 @@ atomic fair action Add:
 
 {{% /fizzbee %}}
 
-second time with fizzbee shortcode
-{{% fizzbee %}}
-# Fizzbee model checker
 
-invariants:
-always eventually value == 0  # The value can be anything, but always come back to 0
-
-
-action Init:
-value = -2
-
-
-atomic fair action Add:
-if value < 3:
-value += 1
-else:
-value = 0
-
-{{% /fizzbee %}}
-
-{{% fizzbee %}}
-# Fizzbee model checker
-
-invariants:
-always value <= 3  # This statement is always true
-
-
-action Init:
-value = -2
-
-
-atomic fair action Add:
-if value < 3:
-value += 1
-else:
-value = 0
-
-{{% /fizzbee %}}
-<!-- markdownlint-capture -->
-<!-- markdownlint-disable MD033 -->
-</div>
-<!-- markdownlint-restore -->
 
