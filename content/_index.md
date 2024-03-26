@@ -7,7 +7,7 @@ geekdocBreadcrumb: false
 # Find bugs before you code
 FizzBee is a formal specification language and model checker to specify distributed systems.
 
-
+{{< button size="large" relref="tutorials/getting-started/" >}}Getting Started{{< /button >}}
 
 {{< columns >}}
 
