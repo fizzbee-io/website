@@ -14,6 +14,6 @@
 {{ end }}
 <div style="text-align: left">
 <a href="/play" onclick="jhandler(crypto.randomUUID(), {{ trim .Inner "\r\n"}})">Run in playground</a>
-{{ printf "%s%s%s" "```python" .Inner  "```" | markdownify }}
+{{ printf "%s%s%s" "{{< highlight Shell \"linenos=python\" >}}" .Inner  "{{< /highlight >}}" | markdownify }}
 </div>
 {{ with .Site.BaseURL }}<script>window.baseURL = '{{ . }}';</script>{{ end }}
