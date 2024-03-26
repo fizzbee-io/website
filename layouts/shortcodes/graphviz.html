@@ -1,0 +1,19 @@
+<!-- layouts/shortcodes/fizzbee.html -->
+{{ if not (.Page.Scratch.Get "import_viz_js") }}
+  {{ .Page.Scratch.Set "import_viz_js" true }}
+<script src="https://unpkg.com/@viz-js/viz@3.4.0/lib/viz-standalone.js"></script>
+<script>
+  function RenderGraphviz(id, content) {
+    Viz.instance().then(function(viz) {
+      document.getElementById(id).appendChild(viz.renderSVGElement(content));
+    });
+  }
+</script>
+{{ end }}
+
+{{ $id := substr (md5 .Inner) 0 16 }}
+<div id="{{ $id }}" style="text-align: center"></div>
+
+<script>
+    RenderGraphviz("{{ $id }}", `{{ .Inner | safeJS }}`);
+</script>

@@ -44,6 +44,72 @@ Click on the link above this code block, and click Run.
 On the right side, you will see the output of the model checker.
 And a link with 'States Graph' will show you all the state graph of the model.
 
+{{% graphviz %}}
+digraph G {
+"0x1400012f500" [label="yield
+Actions: 0, Forks: 0
+State: {\"hour\":\"1\"}
+", color="black" penwidth="2" ];
+"0x1400012f500" -> "0x1400012f6e0" [label="Tick", color="black" penwidth="1" ];
+"0x1400012f6e0" [label="yield
+Actions: 1, Forks: 1
+State: {\"hour\":\"2\"}
+", color="black" penwidth="2" ];
+"0x1400012f6e0" -> "0x1400012fa40" [label="Tick", color="black" penwidth="1" ];
+"0x1400012fa40" [label="yield
+Actions: 2, Forks: 2
+State: {\"hour\":\"3\"}
+", color="black" penwidth="2" ];
+"0x1400012fa40" -> "0x1400012fc80" [label="Tick", color="black" penwidth="1" ];
+"0x1400012fc80" [label="yield
+Actions: 3, Forks: 3
+State: {\"hour\":\"4\"}
+", color="black" penwidth="2" ];
+"0x1400012fc80" -> "0x1400012fec0" [label="Tick", color="black" penwidth="1" ];
+"0x1400012fec0" [label="yield
+Actions: 4, Forks: 4
+State: {\"hour\":\"5\"}
+", color="black" penwidth="2" ];
+"0x1400012fec0" -> "0x1400020a180" [label="Tick", color="black" penwidth="1" ];
+"0x1400020a180" [label="yield
+Actions: 5, Forks: 5
+State: {\"hour\":\"6\"}
+", color="black" penwidth="2" ];
+"0x1400020a180" -> "0x1400020a3c0" [label="Tick", color="black" penwidth="1" ];
+"0x1400020a3c0" [label="yield
+Actions: 6, Forks: 6
+State: {\"hour\":\"7\"}
+", color="black" penwidth="2" ];
+"0x1400020a3c0" -> "0x1400020a600" [label="Tick", color="black" penwidth="1" ];
+"0x1400020a600" [label="yield
+Actions: 7, Forks: 7
+State: {\"hour\":\"8\"}
+", color="black" penwidth="2" ];
+"0x1400020a600" -> "0x1400020a840" [label="Tick", color="black" penwidth="1" ];
+"0x1400020a840" [label="yield
+Actions: 8, Forks: 8
+State: {\"hour\":\"9\"}
+", color="black" penwidth="2" ];
+"0x1400020a840" -> "0x1400020aa80" [label="Tick", color="black" penwidth="1" ];
+"0x1400020aa80" [label="yield
+Actions: 9, Forks: 9
+State: {\"hour\":\"10\"}
+", color="black" penwidth="2" ];
+"0x1400020aa80" -> "0x1400020acc0" [label="Tick", color="black" penwidth="1" ];
+"0x1400020acc0" [label="yield
+Actions: 10, Forks: 10
+State: {\"hour\":\"11\"}
+", color="black" penwidth="2" ];
+"0x1400020acc0" -> "0x1400020af00" [label="Tick", color="black" penwidth="1" ];
+"0x1400020af00" [label="yield
+Actions: 11, Forks: 11
+State: {\"hour\":\"12\"}
+", color="black" penwidth="2" ];
+"0x1400020af00" -> "0x1400012f500" [label="Tick", color="black" penwidth="1" ];
+}
+{{% /graphviz %}}
+
+
 # Actions
 Actions represent the 'actions' that can be taken in the system. These could be
 something a user does, or a system event like a timer tick and so on.
@@ -95,6 +161,15 @@ action Init:
 
 When you run this code, you will see the value is 6 at the end of the Init action.
 
+{{% graphviz %}}
+digraph G {
+  "0x14000121500" [label="yield
+Actions: 0, Forks: 0
+State: {\"value\":\"6\"}
+", color="black" penwidth="2" ];
+}
+{{% /graphviz %}}
+
 ## Any 
 The `any` keyword is similar in structure to the `for` loop. The only difference is that,
 any indicates any one of the values in the list can be chosen. 
@@ -111,6 +186,32 @@ action Init:
 
 Run this code in the play ground, and compare the state graph with
 using the for loop.
+
+{{% graphviz %}}
+digraph G {
+  "0x1400002b560" [label="Init
+Actions: 0, Forks: 0
+
+Threads: 0/1
+", color="black" penwidth="1" ];
+  "0x1400002b560" -> "0x1400002bb00" [label="", color="forestgreen" penwidth="3" ];
+  "0x1400002bb00" [label="yield
+Actions: 0, Forks: 1
+State: {\"value\":\"1\"}
+", color="black" penwidth="2" ];
+  "0x1400002b560" -> "0x1400002bc20" [label="", color="forestgreen" penwidth="3" ];
+  "0x1400002bc20" [label="yield
+Actions: 0, Forks: 1
+State: {\"value\":\"2\"}
+", color="black" penwidth="2" ];
+  "0x1400002b560" -> "0x1400002bd40" [label="", color="forestgreen" penwidth="3" ];
+  "0x1400002bd40" [label="yield
+Actions: 0, Forks: 1
+State: {\"value\":\"3\"}
+", color="black" penwidth="2" ];
+}
+{{% /graphviz %}}
+
 
 With a for loop, the value will be 6, but with any, the value can be any of 1, 2 or 3 at the end of the Init.
 
@@ -236,6 +337,51 @@ atomic action Add:
     
 {{% /fizzbee %}}
 
+{{% expand "Expand/collapse Graph View" %}}
+{{<graphviz>}}
+digraph G {
+"0x14000121680" [label="Init
+Actions: 0, Forks: 0
+
+Threads: 0/1
+", color="black" penwidth="1" ];
+"0x14000121680" -> "0x14000121ce0" [label="", color="forestgreen" penwidth="3" ];
+"0x14000121ce0" [label="yield
+Actions: 0, Forks: 1
+State: {\"value\":\"-2\"}
+", color="black" penwidth="2" ];
+"0x14000121ce0" -> "0x14000121e00" [label="Add", color="black" penwidth="1" ];
+"0x14000121e00" [label="yield
+Actions: 0, Forks: 1
+State: {\"value\":\"-1\"}
+", color="black" penwidth="2" ];
+"0x14000121e00" -> "0x14000121f20" [label="Add", color="black" penwidth="1" ];
+"0x14000121f20" [label="yield
+Actions: 0, Forks: 1
+State: {\"value\":\"0\"}
+", color="black" penwidth="2" ];
+"0x14000121f20" -> "0x140002000c0" [label="Add", color="black" penwidth="1" ];
+"0x140002000c0" [label="yield
+Actions: 0, Forks: 1
+State: {\"value\":\"1\"}
+", color="black" penwidth="2" ];
+"0x140002000c0" -> "0x14000200ae0" [label="Add", color="black" penwidth="1" ];
+"0x14000200ae0" [label="yield
+Actions: 1, Forks: 2
+State: {\"value\":\"2\"}
+", color="black" penwidth="2" ];
+"0x14000200ae0" -> "0x14000201260" [label="Add", color="black" penwidth="1" ];
+"0x14000201260" [label="yield
+Actions: 2, Forks: 3
+State: {\"value\":\"3\"}
+", color="black" penwidth="2" ];
+"0x14000201260" -> "0x14000121f20" [label="Add", color="black" penwidth="1" ];
+"0x14000121680" -> "0x14000121e00" [label="", color="forestgreen" penwidth="3" ];
+"0x14000121680" -> "0x14000121f20" [label="", color="forestgreen" penwidth="3" ];
+"0x14000121680" -> "0x140002000c0" [label="", color="forestgreen" penwidth="3" ];
+}
+{{< /graphviz >}}
+{{% /expand %}}
 ## Safety
 Safety is specified using the `always` keyword. In this, the safety property is, the value should never be greater than 3.
 
@@ -467,9 +613,33 @@ atomic action Fail:
 
 Open the state graph. There is a cycle between idle <--> working. But from either of these
 cases, the system can reach `failed` state. So, from within the cycle, the action `Fail` is enabled
-continuously without interruption. That means, weak fairness is satisfied.
+continuously without interruption. That means, weak fairness will be satisfied.
 
 Add a liveness property and fairness that the system will reach failed stated as an excercise
+
+{{% expand "Show code" %}}
+
+1. Add this Assertion
+{{< highlight python >}}
+eventually always assertion Fail:
+  return status == "failed"
+{{< /highlight >}}
+
+2. Change the Fail action to be fair
+{{< highlight python >}}
+
+atomic fair action Fail:
+  status = "failed"
+{{< /highlight >}}
+
+{{% hint type=warning %}}
+This example is just to demonstrate the concept of fairness. In a real system, the failed state
+is the not desired state. So, the fairness requirement on the Fail action should be removed.
+
+{{% /hint %}}
+
+{{% /expand %}}
+
 
 #### Strong fairness
 As defined earlier, strong fairness is defined as
@@ -500,7 +670,29 @@ Open the state graph. Notice that, in the cycle "idle" <--> "working", Shutdown 
 can only happen from "idle" state. So here weak fairness will not be sufficient to ensure
 the system will eventually be shutdown.
 
+Add a liveness property and fairness that the system will reach failed stated as an excercise
+
+{{% expand "Show code" %}}
+
+1. Add this Assertion
+{{< highlight python >}}
+eventually always assertion SafelyShutdown:
+  return status == "shutdown"
+{{< /highlight >}}
+
+2. Change the Shutdown action to be fair\<strong\>
+{{< highlight python >}}
+
+atomic action Shutdown:
+  if status == "idle":
+    status = "shutdown"
+
+{{< /highlight >}}
+
+{{% /expand %}}
+
 # Exercise 1: Liveness
+
 (Extending the previous example) Model a request processing system.
 1. The system starts in an _idle_ state, and when there is work, it gets to work.
 2. The system can be _shutdown_ when it is _idle_.
@@ -509,8 +701,7 @@ the system will eventually be shutdown.
 5. A shutdown system will be restarted eventually
 6. Check for liveness condition that the system will be in 'working' eventually.
 
-{{% expand %}}
-This is a test wit hsome **bold** and _itallic_ .
+{{% expand "Show code" %}}
 {{< fizzbee >}}
 always eventually assertion SafelyShutdown:
   return status == "shutdown"
