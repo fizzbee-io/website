@@ -1,4 +1,4 @@
-baseURL = 'http://localhost'
+baseURL = 'https://fizzbee.io'
 languageCode = 'en-us'
 title = 'FizzBee'
 
@@ -13,6 +13,10 @@ disablePathToLower = true
 
 # Required if you want to render robots.txt template
 enableRobotsTXT = true
+
+[params]
+  geekdocLogo = "bee-left-to-right-512x512.png"
+  geekdocPrivacyPolicy = "/privacy.html"
 
 # Needed for mermaid shortcodes
 [markup]

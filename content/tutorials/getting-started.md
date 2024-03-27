@@ -11,11 +11,13 @@ some coding algorithms or scripts, you should be good to go.
 {{< toc >}}
 
 # Installation
-You can install FizzBee compiler locally.
-TODO: Add instructions to install FizzBee compiler.
+[FizzBee](https://github.com/fizzbee-io/fizzbee) is an open-source project and is available on GitHub.
+At present, there are no prebuilt binaries. You need to build the binary using Bazel.
+The instructions are posted on the README.md file.
 
 # Online Playground
 A good way to get started is to use the [Online Playground](/play).
+This tutorial will have links to the playground with prepopulated code.
 
 # Writing your first FizzBee program
 
