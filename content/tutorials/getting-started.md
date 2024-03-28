@@ -277,7 +277,7 @@ action Init:
   b = 0
 
 action Add:
-  oneof:
+  serial:
     a = (a + 1) % 3
     b = (b + 1) % 3
 
@@ -301,7 +301,7 @@ action Init:
   b = 0
 
 action Add:
-  oneof:
+  parallel:
     a = (a + 1) % 3
     b = (b + 1) % 3
 

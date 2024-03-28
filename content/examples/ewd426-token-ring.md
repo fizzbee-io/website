@@ -275,6 +275,16 @@ Add fairness to the actions. We just need weak fairness.
 
 Run the code again. This time, the liveness check will pass.
 
+### Exercise 3: Change the values of M and N
+Change the values of M and N, and notice how the state spaces grow, and
+when the system never stabilizes.
+
+{{% expand "Show solution" %}}
+For this algorithm to stabilize N >= M - 1
+Check with N = 4, and M = 2 and see why it never stabilizes.
+{{% /expand %}}
+
+## Complete Code
 {{% expand "Show full code" %}}
 {{< fizzbee >}}
 eventually always assertion UniqueToken:
@@ -308,18 +318,15 @@ atomic fair action PassToken:
 {{< /fizzbee >}}
 {{% /expand %}}
 
-### Exercise 3: Change the values of M and N
-Change the values of M and N, and notice how the state spaces grow, and
-when the system never stabilizes.
-
-{{% expand "Show solution" %}}
-For this algorithm to stabilize N >= M - 1
-Check with N = 4, and M = 2 and see why it never stabilizes.
-{{% /expand %}}
 
 ## Comparsion with other formal languages
 
+### PlusCal
+https://muratbuffalo.blogspot.com/2015/01/dijkstras-stabilizing-token-ring.html
+
 ### TLA+
+https://muratbuffalo.blogspot.com/2022/10/checking-statistical-properties-of.html
+
 Full code here: https://github.com/tlaplus/Examples/blob/master/specifications/ewd426/TokenRing.tla
 
 Note: In the TLA+ code, the UniqueToken assertion is expressed in functional style the way
