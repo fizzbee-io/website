@@ -34,6 +34,10 @@ expected of latency, throughput, availability SLAs.
 
 ## Try Fizz
 
+Read the [quick start guide](/tutorials/getting-started/) to learn how to write your first FizzBee model
+or comb through the [examples](/examples/)
+or tinker with the [FizzBee online playground](/play)
+
 
 {{% fizzbee %}}
 # Fizzbee model checker
