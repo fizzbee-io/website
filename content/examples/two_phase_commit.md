@@ -293,3 +293,8 @@ Feel free to notice the readability of the FizzBee spec vs the TLA+ spec, making
 alternative to TLA+ and the easiest formal methods language so far.
 
 If you are a TLA+ user, this style will be the quickest to get used to.
+
+Remember, FizzBee is a multi-paradigm language, so you can use the style that suits you best.
+
+- [Two phase commit - procedural style](/examples/two_phase_commit_procedural/)
+- [Two phase commit - with Actors syle](/examples/two_phase_commit_actors/)

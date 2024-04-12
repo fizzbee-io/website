@@ -3,6 +3,8 @@ title: Two Phase Commit (Procedural)
 weight: 10
 ---
 
+{{< toc >}}
+
 # Two Phase Commit (Procedural style implementation)
 
 This is another implementation style in FizzBee to model the Two Phase Commit protocol.
@@ -325,7 +327,7 @@ The reasons for the deadlock in this implementation are,
 1. We model a single transaction. If it crashes, we don't cleanup anything.
    - In real implementation, the client will error out or timeout and do something.
 2. Even after successful commit/abort, we do not have a future transactions, 
-   as we have only a sinlge transaction.
+   as we have only a single transaction.
 
 Although we could model that, but for now, we will just skip that.
 Just add this, do nothing action to avoid the deadlock.
@@ -415,12 +417,15 @@ atomic action NoOp:
 
 {{% /fizzbee %}}
 
-## Compare with TLA+
+## Compare with other formal methods
 
-In this spec, I tried to match the TLA+ style of modeling, where every action is atomic
-following this example written by Leslie Lamport:
-https://github.com/tlaplus/Examples/blob/master/specifications/transaction_commit/TwoPhase.tla
+I couldn't find a pure PlusCal implementation, but a slightly modified version
+https://github.com/muratdem/PlusCal-examples/blob/master/2PCTM/2PCwithBTM.tla
 
-Feel free to notice the readability of the FizzBee spec vs the TLA+ spec.
 
-If you are a TLA+ user, this style will be the quickest to get used to.
+Note: This article shows the Procedural style of implementation.
+
+FizzBee is a multi-paradigm language, so you can use the style that suits you best.
+
+- [Two phase commit - functional style](/examples/two_phase_commit/)
+- [Two phase commit - actors style](/examples/two_phase_commit_actors/)

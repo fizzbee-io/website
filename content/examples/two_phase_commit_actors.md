@@ -3,6 +3,8 @@ title: Two Phase Commit (Actor model/Object oriented)
 weight: 11
 ---
 
+{{< toc >}}
+
 # Two Phase Commit (Object oriented/Actor style implementation)
 
 This is another implementation style in FizzBee to model the Two Phase Commit protocol.
@@ -263,12 +265,19 @@ action NoOp:
 
 ```
 
-## Compare with TLA+
+## Compare with P
 
-In this spec, I tried to match the TLA+ style of modeling, where every action is atomic
-following this example written by Leslie Lamport:
-https://github.com/tlaplus/Examples/blob/master/specifications/transaction_commit/TwoPhase.tla
+Compare this with the P model checker code.
 
-Feel free to notice the readability of the FizzBee spec vs the TLA+ spec.
+https://github.com/p-org/P/tree/master/Tutorial/2_TwoPhaseCommit/PSrc
 
-If you are a TLA+ user, this style will be the quickest to get used to.
+If you notice, the FizzBee code is more concise and closer to pseudocode.
+In addition to being concise, FizzBee does exhaustive model checking. Where as, P does not.
+It explores various paths heuristically. That means, P cannot verify the correctness of the system, but FizzBee can.
+
+Note: This post shows the Actor/Object oriented style of implementation.
+
+FizzBee is a multi-paradigm language, so you can use the style that suits you best.
+
+- [Two phase commit - functional style](/examples/two_phase_commit/)
+- [Two phase commit - procedural style](/examples/two_phase_commit_procedural/)
