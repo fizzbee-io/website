@@ -1,0 +1,8 @@
+---
+more:
+  - name: Blog
+    ref: "/posts"
+  - name: "View Source"
+    ref: "https://github.com/fizzbee-io/fizzbee"
+    external: true
+    icon: "gdoc_github"
