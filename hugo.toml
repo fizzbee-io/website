@@ -17,6 +17,7 @@ enableRobotsTXT = true
 [params]
   geekdocLogo = "bee-left-to-right-512x512.png"
   geekdocPrivacyPolicy = "/privacy.html"
+  geekdocTagsToMenu = false
 
 # Needed for mermaid shortcodes
 [markup]
