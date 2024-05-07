@@ -91,65 +91,78 @@ At this point, the syntax should be familiar.
 
 ```python
 role Participant:
+  action Init:
+    self.state = "working"
 
-  action Init(id):
-    ID = id
-    state = 'init'
+  atomic fair action Timeout:
+    if self.state == "working":
+      self.state = "aborted"
 
-  func Prepare():
+  atomic func Prepare():
+    if self.state != 'working':
+      return self.state
     oneof:
-      state = 'prepared'
-      state = 'abort'
-    return state
+      self.state = 'prepared'
+      self.state = 'aborted'
+    return self.state
 
-  func Abort():
-      state = 'aborted'
-  
-  func Commit():
-      state = 'committed'
+  atomic func Commit():
+    self.state = 'committed'
 
+  atomic func Abort():
+    self.state = 'aborted'
+
+  atomic action Terminated:
+    if self.state == 'committed':
+      pass
 ```
 
 ### Role - Coordinator
-`state` is the only state variable for the coordinator.
-and needs references to all participants.
+Coordinator has `state` and list of prepared participants.
+
 
 ```python
 role Coordinator:
 
-  action Init(rms):
-    state = 'init'
-    participants = rms
+  action Init:
+    self.prepared = set()
+    self.state = "init"
 
   action Write:
-    if state != 'init':
+    if self.state != "init":
       return
-    else:
-      state = 'working'
-  
-    parallel for rm in participants:
-      serial:
-        prepared = set()
+    self.state = "working"
+    for rm in self.PARTICIPANTS:
+      vote = ""
+      atomic:
         vote = rm.Prepare()
-  
-        if vote == 'prepared':
-          prepared.add(rm)
-        elif vote == 'aborted':
-          Abort()
-          return
-  
-    if len(prepared) == len(participants):
-      Commit()
+
+      if vote == 'aborted':
+        atomic:
+          self.Abort()
+
+        return
+
+      self.prepared.add(rm.ID)
+    atomic:
+      self.Commit()
+
+
+  atomic fair action Timeout:
+    if self.state != "committed":
+      self.Abort()
 
   func Abort():
-    state = 'aborted'
-    parallel for rm in participants:
-      rm.Abort()
+      self.state = "aborted"
+      for rm in self.PARTICIPANTS:
+        atomic:
+          rm.Abort()
 
-  func Commit():
-    state = 'committed'
-    parallel for rm in participants:
-      rm.Commit()
+  atomic func Commit():
+    if self.state == 'working' and len(self.prepared) == len(self.PARTICIPANTS):
+      self.state = 'committed'
+      for rm in self.PARTICIPANTS:
+        rm.Commit()
 
 ```
 
@@ -159,12 +172,12 @@ Now, we just need a way to instantiate the roles and connect them.
 ```python
 
 action Init:
-  participants = [Participant(1), Participant(2), Participant(3)]
-  coordinator = Coordinator(participants)
+  participants = []
+  for i in range(NUM_PARTICIPANTS):
+    p = Participant(ID=i)
+    participants.append(p)
 
-action NoOp:
-  # To prevent deadlock errors as explained in the previous post
-  pass
+  coordinator = Coordinator(PARTICIPANTS=participants)
 
 ```
 
@@ -185,68 +198,85 @@ always assertion ResMgrsConsistent:
   return True
 ```
 
+### Liveness invariant
+```python
+eventually always assertion Terminated:
+  return coordinator.state in ('committed', 'aborted')
+```
+
 ## Complete code
 
-{{% hint type = "caution" %}}
-Roles are not supported in the playground yet. This will be added soon.
-{{% /hint %}}
+{{% fizzbee %}}
 
-```python
-
-role Participant:
-
-  action Init(id):
-    ID = id
-    state = 'init'
-
-  func Prepare():
-    oneof:
-      state = 'prepared'
-      state = 'abort'
-    return state
-
-  func Abort():
-      state = 'aborted'
-  
-  func Commit():
-      state = 'committed'
-
+NUM_PARTICIPANTS = 3
 
 role Coordinator:
 
-  action Init(rms):
-    state = 'init'
-    participants = rms
+  action Init:
+    self.prepared = set()
+    self.state = "init"
 
   action Write:
-    if state != 'init':
+    if self.state != "init":
       return
-    else:
-      state = 'working'
-  
-    parallel for rm in participants:
-      serial:
-        prepared = set()
+    self.state = "working"
+    for rm in self.PARTICIPANTS:
+      vote = ""
+      atomic:
         vote = rm.Prepare()
-  
-        if vote == 'prepared':
-          prepared.add(rm)
-        elif vote == 'aborted':
-          Abort()
-          return
-  
-    if len(prepared) == len(participants):
-      Commit()
+
+      if vote == 'aborted':
+        atomic:
+          self.Abort()
+
+        return
+
+      self.prepared.add(rm.ID)
+    atomic:
+      self.Commit()
+
+
+  atomic fair action Timeout:
+    if self.state != "committed":
+      self.Abort()
 
   func Abort():
-    state = 'aborted'
-    parallel for rm in participants:
-      rm.Abort()
+      self.state = "aborted"
+      for rm in self.PARTICIPANTS:
+        atomic:
+          rm.Abort()
 
-  func Commit():
-    state = 'committed'
-    parallel for rm in participants:
-      rm.Commit()
+  atomic func Commit():
+    if self.state == 'working' and len(self.prepared) == len(self.PARTICIPANTS):
+      self.state = 'committed'
+      for rm in self.PARTICIPANTS:
+        rm.Commit()
+
+role Participant:
+  action Init:
+    self.state = "working"
+
+  atomic fair action Timeout:
+    if self.state == "working":
+      self.state = "aborted"
+
+  atomic func Prepare():
+    if self.state != 'working':
+      return self.state
+    oneof:
+      self.state = 'prepared'
+      self.state = 'aborted'
+    return self.state
+
+  atomic func Commit():
+    self.state = 'committed'
+
+  atomic func Abort():
+    self.state = 'aborted'
+
+  atomic action Terminated:
+    if self.state == 'committed':
+      pass
 
 always assertion ResMgrsConsistent:
   for rm1 in participants:
@@ -255,15 +285,19 @@ always assertion ResMgrsConsistent:
         return False
   return True
 
+eventually always assertion Terminated:
+  return coordinator.state in ('committed', 'aborted')
+
+
 action Init:
-  participants = [Participant(1), Participant(2), Participant(3)]
-  coordinator = Coordinator(participants)
+  participants = []
+  for i in range(NUM_PARTICIPANTS):
+    p = Participant(ID=i)
+    participants.append(p)
 
-action NoOp:
-  # To prevent deadlock errors as explained in the previous post
-  pass
+  coordinator = Coordinator(PARTICIPANTS=participants)
 
-```
+{{% /fizzbee %}}
 
 ## Compare with P
 
@@ -272,7 +306,7 @@ Compare this with the P model checker code.
 https://github.com/p-org/P/tree/master/Tutorial/2_TwoPhaseCommit/PSrc
 
 If you notice, the FizzBee code is more concise and closer to pseudocode.
-In addition to being concise, FizzBee does exhaustive model checking. Where as, P does not.
+In addition to being concise, FizzBee does exhaustive model checking. Whereas, P does not.
 It explores various paths heuristically. That means, P cannot verify the correctness of the system, but FizzBee can.
 
 Note: This post shows the Actor/Object oriented style of implementation.
