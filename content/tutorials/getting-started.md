@@ -284,7 +284,7 @@ action Add:
 {{% /fizzbee %}}
 
 ## Parallel
-Serial block modifier indicates the steps will be executed in parallel.
+Parallel block modifier indicates the steps will be executed in parallel.
 And, there will be an implicit yield point between each step. When there is an yield point,
 in addition to the fact that a concurrent action can be interleaved, the system could also crash
 implying the later steps may not always be executed.
