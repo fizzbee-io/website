@@ -144,10 +144,8 @@ atomic action RemoveNode:
 
 {{% /fizzbee %}}
 
-{{% hint %}}
-Temporarily, function calls to roles can only be made from atomic context.
-This will be fixed soon.
-{{% /hint %}}
+## Role Communication
+Read more about [Role Communication](/tutorials/channels/)
 
 ## Example: Two Phase Commit with actor style
 Take a look at the [2-Phase Commit example](/examples/two_phase_commit_actors/) for
