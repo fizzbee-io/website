@@ -1,0 +1,154 @@
+---
+title: Actors / Roles
+weight: 10
+---
+
+Roles are like classes in object oriented programming. They have states and actions.
+But here, they may represent a participant in a system. It could be,
+- microservice
+- process
+- thread
+- just a role (Eg. coordinator, participant in 2-Phase Commit)
+- database
+
+If you are writing a design doc, and created a block diagram with it,
+they most likely represent a role in the system.
+
+Roles can have state, actions, functions and even assertions like
+a top level spec. So basically, roles just provide a way to organize the code.
+
+
+{{< toc >}}
+
+## Role
+
+Role is just a collection of states, actions and functions.
+
+The syntax should be familiar to most python programmers.
+The state variables will be initialized in the `Init` action,
+and the variables can be accessed using `self` reference.
+(Java and other languages use `this` instead of `self`)
+
+To initialize, just call the constructor with the role name.
+
+
+{{% fizzbee %}}
+Status = enum('INIT', 'DONE')
+
+role Node:
+
+  action Init:
+    self.status = Status.INIT
+
+  action Done:
+    self.status = Status.DONE
+
+action Init:
+  n = Node()
+
+{{% /fizzbee %}}
+
+Run it in the FizzBee playground, you can see the two possible states, and the graph.
+
+
+## Parameters
+
+You can pass in parameters to the role constructor as named parameters.
+The parameters will be automatically assigned to the role variables.
+
+For example, you can assign a unique id to a role instance.
+
+{{% fizzbee %}}
+Status = enum('INIT', 'DONE')
+
+role Node:
+
+  action Init:
+    self.status = Status.INIT
+
+  atomic action Done:
+    self.status = Status.DONE
+    done.add(self.ID)
+
+action Init:
+  n1 = Node(ID=1)
+  n2 = Node(ID=2)
+  done = set()
+
+{{% /fizzbee %}}
+
+Now, notice the ID is available as self.ID. You can set multiple parameters as needed.
+
+## Functions
+Again, like in the top level spec, you can define functions in the role.
+
+{{% fizzbee %}}
+Status = enum('INIT', 'DONE')
+
+role Node:
+
+  action Init:
+    self.status = Status.INIT
+
+  atomic action Done:
+    self.done()
+
+  atomic func done():
+    self.status = Status.DONE
+    done.add(self.ID)
+
+action Init:
+  n1 = Node(ID=1)
+  n2 = Node(ID=2)
+  done = set()
+
+{{% /fizzbee %}}
+
+## Dynamic Role Creation and Deletion
+
+You can create and delete roles dynamically. When a role is created, 
+from the next yield point on, the actions would be automatically scheduled.
+
+Similarly, when a role is deleted, the actions would be removed from the scheduler.
+
+{{% fizzbee %}}
+MIN_NODES=1
+MAX_NODES=2
+
+Status = enum('INIT', 'DONE')
+
+role Node:
+
+  action Init:
+    self.status = Status.INIT
+
+  atomic action Done:
+    self.status = Status.DONE
+    done.add(self.ID)
+
+
+action Init:
+  nodes = []
+  for i in range(0, MIN_NODES):
+      n = Node(ID=i)
+      nodes.append(n)
+  done = set()
+
+atomic action AddNode:
+  if len(nodes) < MAX_NODES:
+    n = Node(ID=len(nodes))
+    nodes.append(n)
+
+atomic action RemoveNode:
+  nodes = nodes[0:len(nodes)-1]
+
+{{% /fizzbee %}}
+
+{{% hint %}}
+Temporarily, function calls to roles can only be made from atomic context.
+This will be fixed soon.
+{{% /hint %}}
+
+## Example: Two Phase Commit with actor style
+Take a look at the [2-Phase Commit example](/examples/two_phase_commit_actors/) for
+a more complex example of roles in action.
