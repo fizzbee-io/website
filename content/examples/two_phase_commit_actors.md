@@ -16,7 +16,7 @@ There are two other styles,
 The significant benefit of this style is, it would feel more natural to the actual implementation,
 but at the same higher level of abstraction as the other styles but more concise than the other options.
 
-That said, it is work in progress, so not completely implemented yet.
+For more information about Roles, refer to [Roles](/tutorials/roles/).
 
 For the details on the algorithm read through the previous posts.
 
@@ -74,7 +74,7 @@ By default,
 - For intra role communication,
   * Blocking, exactly once, unordered
 - For inter role communication,
-  * Blocking, at least once, unordered
+  * Blocking, at most once, unordered
 
 
 ## Implementation
@@ -82,7 +82,7 @@ By default,
 ### Roles - Participants
 
 In the procedural approach, we had 3 state variables, `tmState`, `rmState`, `tmPrepared`.
-As the names indicate, `rmState` corresponds to the states of each participants.
+As the names indicate, `rmState` corresponds to the states of each participant.
 It's key and value, will become the state variables for each participant.
 
 Similarly, RmPrepare, RmAbort and RmCommit will become the functions for each participant.
@@ -90,15 +90,16 @@ Similarly, RmPrepare, RmAbort and RmCommit will become the functions for each pa
 At this point, the syntax should be familiar.
 
 ```python
+
 role Participant:
   action Init:
     self.state = "working"
 
-  atomic fair action Timeout:
+  fair action Timeout:
     if self.state == "working":
       self.state = "aborted"
 
-  atomic func Prepare():
+  func Prepare():
     if self.state != 'working':
       return self.state
     oneof:
@@ -106,15 +107,16 @@ role Participant:
       self.state = 'aborted'
     return self.state
 
-  atomic func Commit():
+  func Commit():
     self.state = 'committed'
 
-  atomic func Abort():
+  func Abort():
     self.state = 'aborted'
 
-  atomic action Terminated:
+  action Terminated:
     if self.state == 'committed':
       pass
+
 ```
 
 ### Role - Coordinator
@@ -122,6 +124,7 @@ Coordinator has `state` and list of prepared participants.
 
 
 ```python
+
 role Coordinator:
 
   action Init:
@@ -133,37 +136,36 @@ role Coordinator:
       return
     self.state = "working"
     for rm in self.PARTICIPANTS:
-      vote = ""
-      atomic:
-        vote = rm.Prepare()
+      vote = rm.Prepare()
 
       if vote == 'aborted':
-        atomic:
-          self.Abort()
-
+        self.Abort()
         return
 
       self.prepared.add(rm.ID)
-    atomic:
-      self.Commit()
+    
+    self.Commit()
 
 
-  atomic fair action Timeout:
+  fair action Timeout:
     if self.state != "committed":
       self.Abort()
+
+  fair action Restart:
+    if self.state == "committed":
+      for rm in self.PARTICIPANTS:
+        rm.Commit()
 
   func Abort():
       self.state = "aborted"
       for rm in self.PARTICIPANTS:
-        atomic:
           rm.Abort()
 
-  atomic func Commit():
+  func Commit():
     if self.state == 'working' and len(self.prepared) == len(self.PARTICIPANTS):
       self.state = 'committed'
       for rm in self.PARTICIPANTS:
         rm.Commit()
-
 ```
 
 ### Driver program 
@@ -208,7 +210,7 @@ eventually always assertion Terminated:
 
 {{% fizzbee %}}
 
-NUM_PARTICIPANTS = 3
+NUM_PARTICIPANTS = 2
 
 role Coordinator:
 
@@ -221,46 +223,47 @@ role Coordinator:
       return
     self.state = "working"
     for rm in self.PARTICIPANTS:
-      vote = ""
-      atomic:
-        vote = rm.Prepare()
+      vote = rm.Prepare()
 
       if vote == 'aborted':
-        atomic:
-          self.Abort()
-
+        self.Abort()
         return
 
       self.prepared.add(rm.ID)
-    atomic:
-      self.Commit()
+    
+    self.Commit()
 
 
-  atomic fair action Timeout:
+  fair action Timeout:
     if self.state != "committed":
       self.Abort()
+
+  fair action Restart:
+    if self.state == "committed":
+      for rm in self.PARTICIPANTS:
+        rm.Commit()
 
   func Abort():
       self.state = "aborted"
       for rm in self.PARTICIPANTS:
-        atomic:
           rm.Abort()
 
-  atomic func Commit():
+  func Commit():
     if self.state == 'working' and len(self.prepared) == len(self.PARTICIPANTS):
       self.state = 'committed'
       for rm in self.PARTICIPANTS:
         rm.Commit()
 
+
 role Participant:
   action Init:
     self.state = "working"
 
-  atomic fair action Timeout:
+  fair action Timeout:
     if self.state == "working":
       self.state = "aborted"
 
-  atomic func Prepare():
+  func Prepare():
     if self.state != 'working':
       return self.state
     oneof:
@@ -268,13 +271,13 @@ role Participant:
       self.state = 'aborted'
     return self.state
 
-  atomic func Commit():
+  func Commit():
     self.state = 'committed'
 
-  atomic func Abort():
+  func Abort():
     self.state = 'aborted'
 
-  atomic action Terminated:
+  action Terminated:
     if self.state == 'committed':
       pass
 
@@ -296,7 +299,6 @@ action Init:
     participants.append(p)
 
   coordinator = Coordinator(PARTICIPANTS=participants)
-
 {{% /fizzbee %}}
 
 ## Compare with P
