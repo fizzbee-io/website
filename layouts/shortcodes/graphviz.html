@@ -5,7 +5,16 @@
 <script>
   function RenderGraphviz(id, content) {
     Viz.instance().then(function(viz) {
-      document.getElementById(id).appendChild(viz.renderSVGElement(content));
+      parent = document.getElementById(id);
+      var width = parent.offsetWidth;
+      parent.appendChild(viz.renderSVGElement(content));
+      svg = parent.firstElementChild;
+      svgWidth = svg.getAttribute("width");
+
+      if (svgWidth.endsWith("pt") && Number(svgWidth.substring(0, svgWidth.length-2)) > width) {
+        parent.firstElementChild.removeAttribute("height");
+        parent.firstElementChild.removeAttribute("width");
+      }
     });
   }
 </script>
