@@ -9,7 +9,12 @@ When building distributed systems, behavioral correctness is only one part of th
 Performance, reliability, and security are also important. Probabilistic modeling 
 is a powerful tool for reasoning about these properties. It allows us to 
 reason about the likelihood of certain events happening, such as a 
-message being lost or a node failing.
+message being lost or a node failing or error rate of an api call and so on.
+
+Also, probabilistic modeling is a prerequisite for performance modeling like 
+expected latency, throughput, availability SLAs and so on, that we will learn in 
+the next tutorial.
+
 
 {{< toc >}}
 
@@ -23,9 +28,10 @@ This tutorial assumes, you have gone through at least the [FizzBee getting start
 ## Alternatives
 PRISM model checker is the state of the art for probabilistic model checking. Unfortunately, 
 the language is hard to use, and it is not suitable for large state spaces. Unlike PRISM,
-FizzBee uses Python-like language that is incredibly easy for anyone to quickly get started.
+FizzBee uses Python-like language that is incredibly easy for anyone to quickly get started,
+make it a powerful yet easier to use alternative to PRISM.
 
-In this page, we will constantly point to PRISM's examples to show how FizzBee is easier to use.
+In this page, we will point to PRISM's examples to show how FizzBee is easier to use.
 
 ## Installation
 As of now, the online playground only supports the basic behavioral model checking. To use
