@@ -217,6 +217,22 @@ State: {\"value\":\"3\"}
 
 With a for loop, the value will be 6, but with any, the value can be any of 1, 2 or 3 at the end of the Init.
 
+### Any syntactic sugar
+In many cases, if there is no step to be taken if nothing matched in the list of values,
+you can use this simplified form.
+
+{{% fizzbee %}}
+
+action Init:
+  value = 0
+
+action Next:
+  require value == 0
+  x = any [1, 2, 3]
+  value += x
+
+{{% /fizzbee %}}
+
 # Block modifiers
 Block modifiers are used to specify the behavior of the block.
 
@@ -587,6 +603,47 @@ atomic action FindEven:
 
 For the mathematically inclined, *this is equivalent to saying, 
 there exists a number x in the list [1, 3, 5] such that x is even.* which is obviously false.
+
+### require keyword
+Sometimes, it is convenient to explicitly specify the guard clause with `require` keyword.
+That would reduce the extra indentation.
+
+{{% fizzbee %}}
+action Init:
+  switch = "OFF"
+
+atomic action On:
+  require switch != "ON"
+  switch = "ON"
+
+atomic action Off:
+  require switch != "OFF"
+  switch = "OFF"
+
+{{% /fizzbee %}}
+Although this might look like a simple if condition, it is not in some cases.
+
+For example: the require statement aborts the current fork completely. So, when used within a loop, 
+the entire fork would be abandoned. So, when used within an for loop,
+a require on one, would imply the entire loop is abandoned (not just return/continue).
+
+{{% fizzbee %}}
+action Init:
+  has_even = False
+
+atomic action FindEven:
+  for x in [2, 3, 5]:
+    require x % 2 == 0
+    has_even = True
+
+#atomic action FindEven:
+#  for x in [2, 3, 5]:
+#    if x % 2 == 0:
+#      has_even = True
+{{% /fizzbee %}}
+
+When you run it, you will see, even though `2` is even, the `require` is expecting
+every element in the list to be even.
 
 ### Guard clauses with fairness
 Guard clauses define whether an action is enabled. Fairness defines whether an action will be taken if enabled.
