@@ -233,6 +233,19 @@ action Next:
 
 {{% /fizzbee %}}
 
+### Any with condition
+Another extension to the any is to specify a condition. 
+This is useful when you want to choose a value
+{{% fizzbee %}}
+
+action Init:
+  x = any [1, 2, 3]
+  y = any [1, 2, 3] : x != y
+
+{{% /fizzbee %}}
+The colon (:) here is 'such that'
+The y line can be read as, choose y as any value from 1, 2, 3 such that x is not equal to y.
+
 # Block modifiers
 Block modifiers are used to specify the behavior of the block.
 
@@ -531,7 +544,7 @@ it must eventually be taken.
 
 We will see more details with examples of fairness later.
 
-## Guard clauses / Enabling conditions
+# Guard clauses / Enabling conditions
 Guard clauses or enabling conditions are the predicates that tell whether an action/transition is allowed or not.
 Guard clauses are critical to test deadlocks and liveness properties.
 
@@ -587,7 +600,7 @@ atomic action Off:
 Implementation note: an action is enabled if there is at least one simple statement executed - that's it.
 {{< /hint >}}
 
-### Nested guard clauses
+## Nested guard clauses
 Guard clauses does not have to be at the top level. They can be nested inside a block,
 within loops, within a function that gets called and so on. 
 
@@ -604,7 +617,7 @@ atomic action FindEven:
 For the mathematically inclined, *this is equivalent to saying, 
 there exists a number x in the list [1, 3, 5] such that x is even.* which is obviously false.
 
-### require keyword
+## require keyword
 Sometimes, it is convenient to explicitly specify the guard clause with `require` keyword.
 That would reduce the extra indentation.
 
@@ -645,10 +658,10 @@ atomic action FindEven:
 When you run it, you will see, even though `2` is even, the `require` is expecting
 every element in the list to be even.
 
-### Guard clauses with fairness
+## Guard clauses with fairness
 Guard clauses define whether an action is enabled. Fairness defines whether an action will be taken if enabled.
 
-#### Weak fairness
+### Weak fairness
 As defined earlier, weak fairness is defined as 
 "If an action is infinitely enabled, it will be executed infinitely often".
 
@@ -700,7 +713,7 @@ is the not desired state. So, the fairness requirement on the Fail action should
 {{% /expand %}}
 
 
-#### Strong fairness
+### Strong fairness
 As defined earlier, strong fairness is defined as
 "If an action is enabled infinitely often, it will be executed infinitely often"
 
