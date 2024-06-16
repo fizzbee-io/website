@@ -177,6 +177,7 @@ The `any` keyword is similar in structure to the `for` loop. The only difference
 any indicates any one of the values in the list can be chosen. 
 
 The model checker will then explore the possibilities of choosing each of these values.
+Similar to `\E` in TLA+
 
 {{% fizzbee %}}
 action Init:
@@ -733,7 +734,7 @@ atomic action Finish:
     status = "idle"
 
 atomic action Shutdown:
-  if status == "idle":
+  if status != "working":
     status = "shutdown"
 
 {{% /fizzbee %}}
@@ -752,14 +753,27 @@ eventually always assertion SafelyShutdown:
   return status == "shutdown"
 {{< /highlight >}}
 
-2. Change the Shutdown action to be fair\<strong\>
+2. Change the Process action to be `fair<weak>` or just `fair`
 {{< highlight python >}}
-
-atomic action Shutdown:
-  if status == "idle":
-    status = "shutdown"
-
+  atomic fair action Finish:
+    if status == "working":
+    status = "idle"
 {{< /highlight >}}
+Weak fair is sufficient here, because once the `working` state is reached,
+the `Finish` action will be always enabled.
+
+3. Change the Shutdown action to be `fair<strong>`
+{{< highlight python >}}
+atomic fair<strong> action Shutdown:
+  if status != "working":
+    status = "shutdown"
+{{< /highlight >}}
+Here, strong fairness is required because once the `idle` state is reached,
+the `Shutdown` will be enabled. But the system can switch to the working state,
+at that point, the `Shutdown` action is not enabled. So the system can effectively,
+switch between `idle` and `working` states without ever reaching the `shutdown` state.
+
+
 
 {{% /expand %}}
 
