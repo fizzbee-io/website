@@ -5,7 +5,13 @@ geekdocAnchor: false
 geekdocBreadcrumb: false
 ---
 # Find bugs before you code
-FizzBee is a formal specification language and model checker to specify distributed systems.
+FizzBee is a design specification language and model checker to specify distributed systems
+at a much higher level of abstraction than a programming language for system analysis and design.
+
+Automatically analyze and find design issues like 
+
+consistency, fault tolerance, data corruption
+performance, latency, availability and a lot more.
 
 {{< button size="large" relref="tutorials/getting-started/" >}}Get Started{{< /button >}}
 

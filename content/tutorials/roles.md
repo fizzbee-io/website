@@ -68,16 +68,39 @@ role Node:
 
   atomic action Done:
     self.status = Status.DONE
-    done.add(self.ID)
+    done.add(self.NAME)
 
 action Init:
-  n1 = Node(ID=1)
-  n2 = Node(ID=2)
+  n1 = Node(NAME=1)
+  n2 = Node(NAME=2)
   done = set()
 
 {{% /fizzbee %}}
 
-Now, notice the ID is available as self.ID. You can set multiple parameters as needed.
+Now, notice the NAME is available as self.NAME. You can set multiple parameters as needed.
+
+### Unique ID for each role instance
+Roles have a unique ID assigned to them, which can be accessed using `self._id__`.
+
+{{% fizzbee %}}
+Status = enum('INIT', 'DONE')
+NUM_ROLES = 3
+role Node:
+
+  action Init:
+    self.status = Status.INIT
+
+  atomic action Done:
+    self.status = Status.DONE
+    done.add(self.__id__)
+
+action Init:
+  nodes = []
+  for i in range(0, NUM_ROLES):
+    nodes.add(Node())
+  done = set()
+
+{{% /fizzbee %}}
 
 ## Functions
 Again, like in the top level spec, you can define functions in the role.
@@ -95,11 +118,11 @@ role Node:
 
   atomic func done():
     self.status = Status.DONE
-    done.add(self.ID)
+    done.add(self.NAME)
 
 action Init:
-  n1 = Node(ID=1)
-  n2 = Node(ID=2)
+  n1 = Node(NAME=1)
+  n2 = Node(NAME=2)
   done = set()
 
 {{% /fizzbee %}}
