@@ -441,7 +441,6 @@ https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.rv_histogram.ht
 {{% /hint %}}
 
 ```yaml
-```yaml
 configs:
   LookupCache.call:
     counters:
@@ -456,12 +455,39 @@ configs:
     probability: 0.9
     counters:
       latency_ms:
-        distribution: lognorm(s=1, loc=100)
+        distribution: gamma(a=3, loc=100, scale=1)
   LookupDB.notfound:
     probability: 0.1
     counters_ms:
       latency:
         distribution: lognorm(s=0.5, loc=30)
+
+```
+
+If you use common cloud components, you can simply specify the latency profile.
+
+
+```yaml
+configs:
+  LookupCache.call:
+    counters:
+      latency_ms:
+        distribution: aws.elasticache.redis.read()
+  LookupCache.hit:
+    probability: 0.2
+  LookupCache.miss:
+    probability: 0.8
+
+  LookupDB.found:
+    probability: 0.9
+    counters:
+      latency_ms:
+        distribution: aws.dynamodb.query()
+  LookupDB.notfound:
+    probability: 0.1
+    counters_ms:
+      latency:
+        distribution: aws.dynamodb.query()
 
 ```
 

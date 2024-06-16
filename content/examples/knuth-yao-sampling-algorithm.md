@@ -283,7 +283,7 @@ If you noticed, the time taken to generate the output depends on the output gene
 This opens this algorithm for a side-channel attack. The attacker can measure the time taken to generate the output
 and make informed guess to narrow down the possible random numbers generated.
 
-To mitigate this, we will later look at other time-oblivious random variate generation algorithms 
+To mitigate this, we will later look at other [time-oblivious random variate generation](/examples/time-oblivious-sampling-algorithm/) algorithms 
 in a later post.
 
 ### Reducing the possible output space
@@ -384,7 +384,7 @@ that took 7.33333 bits, this algorithm takes only 4.388888 bits on average.
 
 ### PRISM model checker
 The Two Dice example is modelled in the PRISM model checker as well.
-You can find the model at [https://www.prismmodelchecker.org/casestudies/dice.php](Dice Case Study)
+You can find the model at [Dice Case Study](https://www.prismmodelchecker.org/casestudies/dice.php)
 
 As you can notice, the specification language is extremely simple with FizzBee,
 in fact, the generic version of the Knuth-Yao algorithm 
@@ -396,4 +396,5 @@ This makes FizzBee an incredible simple and easy to use alternative to PRISM.
 ## Conclusion
 We saw how to model the Knuth-Yao algorithm in FizzBee and do probabilistic and
 performance analysis automatically without any math.
+
 
