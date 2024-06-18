@@ -15,7 +15,7 @@ non-hashable types.
 
 To define an `enum`, Usually, these are defined at the top level.
 
-```python
+{{% fizzbee %}}
 Color = enum('RED', 'YELLOW', 'GREEN')
 
 action Init:
@@ -28,7 +28,26 @@ action Next:
     color = Color.YELLOW
   else:
     color = Color.RED
-```
+{{% /fizzbee %}}
+
+To choose iterate over the enum values in `for` or `any`, you can simply use `dir()` builtin.
+
+{{% fizzbee %}}
+Color = enum('RED', 'YELLOW', 'GREEN')
+
+action Init:
+  color = Color.RED
+
+action Next:
+  any c in dir(Color):
+    color = c
+{{% /fizzbee %}}
+
+{{% hint %}}
+`enum` in FizzBee is only a syntactic sugar over the standard string. So
+`Color.RED == 'RED'` is true. It is not a separate type, like Python's `enum.Enum`.
+
+{{% /hint %}}
 
 ## Records
 

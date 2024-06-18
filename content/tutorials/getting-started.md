@@ -757,7 +757,7 @@ eventually always assertion SafelyShutdown:
 {{< highlight python >}}
   atomic fair action Finish:
     if status == "working":
-    status = "idle"
+      status = "idle"
 {{< /highlight >}}
 Weak fair is sufficient here, because once the `working` state is reached,
 the `Finish` action will be always enabled.
