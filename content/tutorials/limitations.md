@@ -22,7 +22,7 @@ on next as a high priority.
 
 ## Fizz functions can be called only in a limited ways
 Currently, fizz functions can be called only in the following ways:
-```antlr
+```
 [variable_name =] [role.]fizz_function_name([parameters])
 ```
 That is,

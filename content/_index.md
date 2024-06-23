@@ -1,5 +1,5 @@
 ---
-geekdocNav: false
+geekdocNav: true
 geekdocAlign: center
 geekdocAnchor: false
 geekdocBreadcrumb: false

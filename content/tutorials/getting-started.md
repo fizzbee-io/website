@@ -111,6 +111,14 @@ State: {\"hour\":\"12\"}
 }
 {{% /graphviz %}}
 
+As anyone familiar with Python would simplify this to,
+{{% fizzbee %}}
+action Init:
+  hour = 1
+
+atomic action Tick:
+  hour = (hour % 12) + 1
+{{% /fizzbee %}}
 
 # Actions
 Actions represent the 'actions' that can be taken in the system. These could be
