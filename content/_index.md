@@ -10,7 +10,7 @@ at a much higher level of abstraction than a programming language for system ana
 
 Automatically analyze and find design issues like 
 
-consistency, fault tolerance, data corruption
+consistency, fault tolerance, data corruption  
 performance, latency, availability and a lot more.
 
 {{< button size="large" relref="tutorials/getting-started/" >}}Get Started{{< /button >}}
@@ -34,7 +34,7 @@ productive in minutes.
 ### Performance modeling
 
 FizzBee comes with probabilistic model checker for modeling performance characteristics like 
-expected of latency, throughput, availability SLAs.
+expected latency, throughput, availability SLAs.
 
 {{< /columns >}}
 

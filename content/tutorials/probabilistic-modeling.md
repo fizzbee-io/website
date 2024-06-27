@@ -20,16 +20,16 @@ the next tutorial.
 
 ## Introduction
 If you need to reason about performance of a system, you need to reason about probability.
-In this tutorial, we will see probabilistic modeling, and in the next one, we will how to 
+In this tutorial, we will see probabilistic modeling, and in the next one, we will see how to 
 model performance.
 
-This tutorial assumes, you have gone through at least the [FizzBee getting started](/tutorials/getting-started).
+This tutorial assumes, you have gone through at least the [FizzBee getting started](/tutorials/getting-started) tutorial.
 
 ## Alternatives
 PRISM model checker is the state of the art for probabilistic model checking. Unfortunately, 
 the language is hard to use, and it is not suitable for large state spaces. Unlike PRISM,
 FizzBee uses Python-like language that is incredibly easy for anyone to quickly get started,
-make it a powerful yet easier to use alternative to PRISM.
+making it a powerful yet easier to use alternative to PRISM.
 
 In this page, we will point to PRISM's examples to show how FizzBee is easier to use.
 

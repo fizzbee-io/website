@@ -5,8 +5,8 @@ weight: -20
 
 This tutorial assumes you have a basic programming experience
 and are familiar with Python programming language.
-You don't need to be an expert in Python, but if you had written
-some coding algorithms or scripts, you should be good to go.
+You don't need to be an expert in Python, but if you have written
+some algorithms or scripts, you should be good to go.
 
 {{< toc >}}
 
@@ -44,7 +44,7 @@ atomic action Tick:
 Click on the link above this code block, and click Run.
 
 On the right side, you will see the output of the model checker.
-And a link with 'States Graph' will show you all the state graph of the model.
+And a link with 'States Graph' will show you the states the model reached.
 
 {{% graphviz %}}
 digraph G {
@@ -134,7 +134,7 @@ An action indicates what can happen to the system.
 
 # Syntax
 The meat of the code is written in Starlark language that is a subset of Python.
-So, the body of the action must be familiar with most programmers. Most of the constructs
+So, the body of the action will be familiar to most programmers. Most of the constructs
 like if-else, for and while loops are similar to Python.
 
 Similarly, most common data structures like lists, dictionaries, tuples and sets are also similar to Python.
@@ -146,12 +146,14 @@ Same as python: if-elif-else
 ```python
 if a > b:
   b += 1
-else:
+elif a < b:
   a += 1
+else:
+  a += 2
 ```
 ## While
 Same as python: while. (Note: Python's else clause on while is not supported)
-```
+```python
 while a < 5:
   a += 1
 ```
@@ -195,7 +197,7 @@ action Init:
 
 {{% /fizzbee %}}
 
-Run this code in the play ground, and compare the state graph with
+Run this code in the playground, and compare the state graph with
 using the for loop.
 
 {{% graphviz %}}
@@ -224,7 +226,7 @@ State: {\"value\":\"3\"}
 {{% /graphviz %}}
 
 
-With a for loop, the value will be 6, but with any, the value can be any of 1, 2 or 3 at the end of the Init.
+With a for loop, the value will be 6, but with any, the value can be any of 1, 2 or 3 at the end of the Init action.
 
 ### Any syntactic sugar
 In many cases, if there is no step to be taken if nothing matched in the list of values,
@@ -243,7 +245,7 @@ action Next:
 {{% /fizzbee %}}
 
 ### Any with condition
-Another extension to the any is to specify a condition. 
+A condition can be specified when using the any keyword. 
 This is useful when you want to choose a value
 {{% fizzbee %}}
 
@@ -260,7 +262,7 @@ Block modifiers are used to specify the behavior of the block.
 
 ## Atomic
 Atomic block modifier is used to specify that the block is atomic.
-An atomic block is executed as a single step, without any yield points in between.
+An atomic block is executed as a single step, without any yield points in between statements.
 If two statements are executed atomically, either they both are executed or none are executed.
 
 {{% fizzbee %}}
@@ -285,11 +287,10 @@ action Init:
 atomic action Add:
     a = (a + 1) % 3
     b = (b + 1) % 3
-    
 {{% /fizzbee %}}
 
 ## Oneof
-Oneof block modifier indicates, only one of the statements in the block will be executed.
+Oneof block modifier indicates only one of the statements in the block will be executed.
 
 {{% fizzbee %}}
 action Init:
@@ -320,6 +321,9 @@ action Add:
     b = (b + 1) % 3
 
 {{% /fizzbee %}}
+
+
+When a block modifier is not specified, the serial block modifier is applied implicitly.
 
 ## Parallel
 Parallel block modifier indicates the steps will be executed in parallel.
@@ -353,7 +357,7 @@ we need to ensure the system does what we expect it to do.
 
 There are two types of correctness:
 - Safety: Something bad never happens. 
-For example: The API should never return a wrong value.
+For example: The API should never return the wrong value.
 - Liveness: Something good eventually happens.
 For example: The API should eventually return a value. 
 
@@ -450,17 +454,17 @@ atomic action Add:
 
 ### Safety Violation
 If you change the invariant to `always value <= 2`, and run the code, you will see the model checker will show a violation.
-Or, change the if condition in Add value < 3 to value <= 3.
+Or, change the if condition in Add from `value < 3` to `value <= 3`.
 
 Now, the model checker will show a violation. It will print the stack trace of the behavior that lead to the failure.
 You can also see the graph by clicking the link at the top of the output.
 
 ## Liveness
-Livenees is specified using the `eventually` keyword. In this, the liveness property is, the value should eventually be 0.
+Livenees is specified using the `eventually` keyword. In this example, the liveness property is the value should eventually be 0.
 But for most practical cases, we need to combine it with `always`. That leads to, two different possibilities:
 
 ### always eventually
-This means, given enough time, the behaviour will always reach the desired state eventually. For example: the above counter,
+This means, given enough time, the behavior will always reach the desired state eventually. For example: the above counter,
 will eventually reach 0. It can go above 0, but it will again come back to 0.
 
 always eventually value == 0
@@ -469,7 +473,7 @@ always eventually value == 2
 always eventually value == 3
 
 ### eventually always
-This asserts, the behaviour will reach the desired state, and stay there. For example: the above counter,
+This asserts, the behavior will reach the desired state, and stay there. For example: the above counter,
 will eventually reach 0 and stay between 0 and 3 (inclusive), even though the value might
 have started negative. This is expressed as:
 
@@ -540,7 +544,7 @@ eventually always assertion StayPositive:
 ```
 
 ### Weak Fairness
-If an action is specified as `fair<weak>` or simple `fair`, it is called weak fairness.
+If an action is specified as `fair<weak>` or simply `fair`, it is called weak fairness.
 Weak fairness is defined as "If an action is infinitely enabled, it will be executed
 infinitely often". In other words, if action A is *enabled* continuously (i.e. without interruptions), 
 it must eventually be taken.
@@ -571,7 +575,7 @@ atomic action On:
 {{% /fizzbee %}}
 
 Run this code. The model checker will show a deadlock. Open the state graph.
-You will notice that, once the `On` action taken the first time, no other action can happen from there.
+You will notice that, once the `On` action is taken the first time, no other action can happen from there.
 
 The On action is not enabled because the guard clause is false.
 
@@ -610,7 +614,7 @@ Implementation note: an action is enabled if there is at least one simple statem
 {{< /hint >}}
 
 ## Nested guard clauses
-Guard clauses does not have to be at the top level. They can be nested inside a block,
+Guard clauses do not have to be at the top level. They can be nested inside a block,
 within loops, within a function that gets called and so on. 
 
 {{% fizzbee %}}
@@ -646,8 +650,7 @@ atomic action Off:
 Although this might look like a simple if condition, it is not in some cases.
 
 For example: the require statement aborts the current fork completely. So, when used within a loop, 
-the entire fork would be abandoned. So, when used within an for loop,
-a require on one, would imply the entire loop is abandoned (not just return/continue).
+the entire fork would be abandoned. So, when used within a for loop, require would imply the entire loop is abandoned (not just return/continue).
 
 {{% fizzbee %}}
 action Init:

@@ -32,7 +32,7 @@ Two major new concepts used here are
 
 ### Roles
 Roles are like classes in object oriented programming. They have states and actions.
-But here, they may represent a participant in a system. It could be,
+But here, they may represent a participant in a system. It could be a,
 - microservice
 - process
 - thread
@@ -63,7 +63,7 @@ This simplifies modeling of message passing.
 - Delivery (at most once, at least once, exactly once) - default = “atmost_once”
 - Ordering (unordered, pairwise, ordered) - ordering = “unordered”
 
-Unlike P model checker that has separate send semantics and new method, to use the channels
+Unlike the P model checker that has separate send semantics and new method, to use the channels
 there is no syntax change. Just call the other function like a normal function call.
 
 As you saw in the previous example, message passing is just a function call. To make it even easier,

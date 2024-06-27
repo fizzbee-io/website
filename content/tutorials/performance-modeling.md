@@ -16,7 +16,7 @@ and so on.
 
 We will see how to model these in FizzBee.
 
-This article assumes, you have gone through [Probabilistic modeling](/tutorials/probabilistic-modeling)
+This article assumes, you have gone through [Probabilistic modeling](/tutorials/probabilistic-modeling).
 We will use the same examples probabilistic modeling and add performance characteristics to it. 
 
 {{< toc >}}
