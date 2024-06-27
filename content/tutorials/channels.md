@@ -27,7 +27,7 @@ This simplifies modeling of message passing.
 - Delivery (at most once, at least once, exactly once) - default = “atmost_once”
 - Ordering (unordered, pairwise, ordered) - ordering = “unordered”
 
-Unlike P model checker that has separate send semantics and new method, to use the channels
+Unlike the P model checker that has separate send semantics and new method, to use the channels
 there is no syntax change. Just call the other function like a normal function call.
 
 Message passing is just a function call. To make it even easier,
@@ -85,7 +85,7 @@ Follow the graph, there will be 3 terminal states - from left to right.
    it implies any of these scenario.
    - Application called the rpc code, but the process crashed before sending
    - Application sent, but the network dropped the message and call timeout
-   - Application sent, but the receiver received but the process crashed before it could process
+   - Application sent, the receiver received but the process crashed before it could process
 2. Receiver in 'done' state. Sender in 'calling' state. Implies, the receiver processed,
    but failed before the sender application could process the response.
 3. Sender and receiver in 'done' state. Implies, the call was successful.

@@ -64,8 +64,8 @@ action Init:
 You can try it by removing the `symmetric` keyword
 and see the difference in the number of states generated.
 
-## Order independent datastructures
+## Order independent data structures
 To reduce states explored, remember to use bags when possible instead of lists.
 This will ensure, the order of operations are not relevant.
-For more information on the available datastructures, see the [Datastructures](/tutorials/datastructures) tutorial.
+For more information on the available data structures, see the [Data structures](/tutorials/datastructures) tutorial.
 

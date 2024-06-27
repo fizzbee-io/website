@@ -139,7 +139,7 @@ d[{'status': 'pending', 'id': 2}] = 'two'
 
 ### Bag
 A bag is a collection of elements where duplicates are allowed.
-The standard methods like `add,add_all,clear,discard,pop,remove` and looping over the elements are supported.
+The standard methods like `add,add_all,clear,discard,pop,remove` and looping over the elements are supported.  Bag is also known as multiset.
 
 ```python
 

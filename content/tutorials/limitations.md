@@ -111,7 +111,7 @@ action SetVar2:
 ```
 
 In the first case, the assertion will always pass. But in the second case, the assertion
-will fail. This is because, imaging var1 and var2 are coming from a database.
+will fail. This is because, imagining var1 and var2 are coming from a database.
 When you extract the local variable, you are actually taking a snapshot of the database
 field. And them there could be some context switching that could change the value of var1.
 

@@ -4,7 +4,7 @@ weight: 10
 ---
 
 Roles are like classes in object oriented programming. They have states and actions.
-But here, they may represent a participant in a system. It could be,
+But here, they may represent a participant in a system. It could be a, 
 - microservice
 - process
 - thread
@@ -53,7 +53,7 @@ Run it in the FizzBee playground, you can see the two possible states, and the g
 
 ## Parameters
 
-You can pass in parameters to the role constructor as named parameters.
+You can pass in arguments to the role constructor as named parameters.
 The parameters will be automatically assigned to the role variables.
 
 For example, you can assign a unique id to a role instance.
