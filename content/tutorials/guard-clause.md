@@ -13,8 +13,7 @@ FizzBee follows languages like TLA+ use embedded guard clauses where the guard i
 But unlike TLA+, FizzBee infers the enabled status of the action using a simple but unconventional set of rules.
 
 
-
-{{toc}}
+{{< toc >}}
 
 ## Example: Simple Light Switch
 
@@ -66,11 +65,11 @@ action Init:
   switch = "OFF"
 
 atomic action On:
-  require switch == "ON"
+  require switch != "ON"
   switch = "ON"
 
 atomic action Off:
-  require switch == "OFF"
+  require switch != "OFF"
   switch = "OFF"
 
 {{% /fizzbee %}}

@@ -244,6 +244,8 @@ action Next:
 
 {{% /fizzbee %}}
 
+For more information on `require`, see the section on [guard clauses](/tutorials/guard-clause).
+
 ### Any with condition
 A condition can be specified when using the any keyword. 
 This is useful when you want to choose a value
