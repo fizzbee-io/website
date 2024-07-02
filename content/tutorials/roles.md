@@ -97,10 +97,14 @@ role Node:
 action Init:
   nodes = []
   for i in range(0, NUM_ROLES):
-    nodes.add(Node())
+    nodes.append(Node())
   done = set()
 
 {{% /fizzbee %}}
+
+## Symmetric Roles
+See [Symmetric Roles](/tutorials/symmetry_reduction/#symmetric-roles) for more details
+on symmetry reduction and how it applies to roles.
 
 ## Functions
 Again, like in the top level spec, you can define functions in the role.
