@@ -51,9 +51,9 @@ In this post, we will model [Floyd's tortoise and hare](https://en.wikipedia.org
 The linked list model won't use pointers. It'll be a map called `succ` where nodes are keys and the value associated to the key is the node's successor in the list.
 
 Given a list `A -> B -> C`, `succ` would look like this:
-{{% fizzbee %}}
+```python
 succ = {'A': 'B', 'B': 'C', 'C': None}
-{{% /fizzbee %}}
+```
 
 {{% hint type=note %}}
 C has None as its successor because it is that last element in the list.
@@ -119,7 +119,7 @@ If we add `print(succ)` at the end of `Init` we'll see that every possible list 
 
 The algorithm itself can be implemented using a single atomic function.
 
-{{% fizzbee %}}
+```python
 atomic func tortoise_and_hare():
   tortoise = start
   hare = start
@@ -139,11 +139,11 @@ atomic func tortoise_and_hare():
       
     if tortoise == hare:
       return True
-{{% /fizzbee %}}
+```
 
 We can also use an algorithm that keeps track of viisted nodes to detect cycles and compare the result with the algorithm we are modeling.  
 
-{{% fizzbee %}}
+```python
 atomic func find_cycle_by_keeping_visited_set():
   current = start
 
@@ -156,18 +156,18 @@ atomic func find_cycle_by_keeping_visited_set():
     current = succ.get(current)
 
   return False
-{{% /fizzbee %}}
+```
 
 ### Safety invariants
 
 Since the algorithm only returns `True` or `False`, the assertion can just check if the algorithm function returns the expecte result for each of the lists generated.
 
-{{% fizzbee %}}
+```python
 always assertion FindsCycle:
   has_cycle_1 = find_cycle_by_keeping_visited_set()
   has_cycle_2 = tortoise_and_hare()
   return has_cycle == has_cycle_1 and has_cycle == has_cycle_2
-{{% /fizzbee %}}
+```
 
 ## Full code
 
