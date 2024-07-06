@@ -38,15 +38,7 @@ In this post, we will model [Floyd's tortoise and hare](https://en.wikipedia.org
 - Given a linked list that may contain a cycle
 - The algorithm should detect the cycle if it exists
 
-## Algorithm
-
-- Let there be two pointers called `slow` and `fast`
-- Choose any node in the linked list
-- Both pointers point to the chosen node at first
-- In each step of the algorithm, the `slow` pointer advances to the next node and the `fast` pointer advances to the next next node.
-- At any point in time, if both pointers point to the same node, a cycle has been found. If any of the pointers reached the end of the list, there's no cycle.
-
-## How to model it with FizzBee
+## How to model the linked list with FizzBee
 
 The linked list model won't use pointers. It'll be a map called `succ` where nodes are keys and the value associated to the key is the node's successor in the list.
 
@@ -119,7 +111,13 @@ If we add `print(succ)` at the end of `Init` we'll see that every possible list 
 
 ### Floyd's algorithm
 
-The algorithm can be implemented using a single atomic function.
+The algorithm can be implemented using a single atomic function.  
+
+- Let there be two pointers called `slow` and `fast`
+- Choose any node in the linked list
+- Both pointers point to the chosen node at first
+- In each step of the algorithm, the `slow` pointer advances to the next node and the `fast` pointer advances to the next next node.
+- At any point in time, if both pointers point to the same node, a cycle has been found. If any of the pointers reached the end of the list, there's no cycle.
 
 ```python
 atomic func tortoise_and_hare():
@@ -145,7 +143,14 @@ atomic func tortoise_and_hare():
 
 ### Finding cycle by keeping track of visited nodes
 
-We can also use an algorithm that keeps track of viisted nodes to detect cycles and compare the result with the algorithm we are modeling.  
+We can also use an algorithm that keeps track of visited nodes to detect cycles and compare the result with the algorithm we are modeling.  
+
+- Initialize an empty set before executing the algorithm
+- Choose any node in the linked list to be the current node
+- If the node is in the set, a cycle has been found
+- Add the chosen node to the set
+- The current node becomes the successor of the current node
+- Repeat the process until a cycle has been found or the end of the list is reached
 
 ```python
 atomic func find_cycle_by_keeping_visited_set():
@@ -204,6 +209,7 @@ action Init:
 
   nodes = succ.keys()
   start = any nodes
+  print(succ)
 
 atomic func find_cycle_by_keeping_visited_set():
   current = start
