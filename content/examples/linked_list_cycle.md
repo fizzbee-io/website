@@ -160,52 +160,43 @@ atomic func find_cycle_by_keeping_visited_set():
 
 ### Safety invariants
 
-Since the algorithm only returns `True` or `False`, the assertion can just check if the algorithm function returns the expecte result for each of the lists generated.
+Since the both algorithms return `True` or `False`, the assertion for each algorithm can just check that the algorithm returns the expected result.
 
 ```python
-always assertion FindsCycle:
-  has_cycle_1 = find_cycle_by_keeping_visited_set()
-  has_cycle_2 = tortoise_and_hare()
-  return has_cycle == has_cycle_1 and has_cycle == has_cycle_2
+always assertion TortoiseAndHareFindsCycle:
+  found = tortoise_and_hare()
+  return has_cycle == found
+
+always assertion VisitedSetFindsCycle:
+  found = find_cycle_by_keeping_visited_set()
+  return has_cycle == found
 ```
 
 ## Full code
 
 {{% fizzbee %}}
-always assertion FindsCycle:
-  has_cycle_1 = find_cycle_by_keeping_visited_set()
-  has_cycle_2 = tortoise_and_hare()
-  return has_cycle == has_cycle_1 and has_cycle == has_cycle_2
+POSSIBLE_NODES = list(range(1, 4))
+
+always assertion TortoiseAndHareFindsCycle:
+  found = tortoise_and_hare()
+  return has_cycle == found
+
+always assertion VisitedSetFindsCycle:
+  found = find_cycle_by_keeping_visited_set()
+  return has_cycle == found
 
 action Init:
-  has_cycle = False
-
-  possible_nodes = range(1, 4)
-
-  current = any possible_nodes
-
   # A dict from node to its successor.
   # Example: {1: 2, 2: 3, 3: None}
   succ = {}
-
-  while True:
-    # The current node points to either:
-    oneof:
-      # None, which means the current pointer is the last one in the list.
-      atomic: 
-        succ[current] = None 
-        break
-      # Any other node, including itself.
-      atomic:
-        next = any possible_nodes
-        succ[current] = next
-        # If the current node is now pointing to a node that's already in the list,
-        # a cycle has been created, we can exit the loop.
-        if next in succ:
-          has_cycle = True
-          break
-        succ[next] = None
-        current = next
+  current = any POSSIBLE_NODES
+  has_cycle = False
+  while (current and not has_cycle):
+    next = any list(POSSIBLE_NODES) + [None]
+    succ[current] = next  
+      
+    has_cycle = next in succ
+    current = next  
 
   nodes = succ.keys()
   start = any nodes
