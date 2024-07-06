@@ -56,7 +56,7 @@ succ = {'A': 'B', 'B': 'C', 'C': None}
 ```
 
 {{% hint type=note %}}
-C has None as its successor because it is that last element in the list.
+C has None as its successor because it is the last element in the list.
 {{% /hint %}}
 
 ## Implementation
