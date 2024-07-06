@@ -73,6 +73,9 @@ action Init:
 
   nodes = succ.keys()
   start = any nodes
+
+action NoOp:
+  pass
 {{% /fizzbee %}}
 
 We set `has_cycle` to `True` when a list that contains a cycle is generated.  
