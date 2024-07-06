@@ -117,7 +117,9 @@ If we add `print(succ)` at the end of `Init` we'll see that every possible list 
 <rest of output omitted for brevity>
 ```
 
-The algorithm itself can be implemented using a single atomic function.
+### Floyd's algorithm
+
+The algorithm can be implemented using a single atomic function.
 
 ```python
 atomic func tortoise_and_hare():
@@ -140,6 +142,8 @@ atomic func tortoise_and_hare():
     if tortoise == hare:
       return True
 ```
+
+### Finding cycle by keeping track of visited nodes
 
 We can also use an algorithm that keeps track of viisted nodes to detect cycles and compare the result with the algorithm we are modeling.  
 
@@ -192,7 +196,7 @@ action Init:
   current = any POSSIBLE_NODES
   has_cycle = False
   while (current and not has_cycle):
-    next = any list(POSSIBLE_NODES) + [None]
+    next = any POSSIBLE_NODES + [None]
     succ[current] = next  
       
     has_cycle = next in succ
