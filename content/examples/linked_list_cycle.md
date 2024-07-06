@@ -153,7 +153,7 @@ We can also use an algorithm that keeps track of visited nodes to detect cycles 
 - If the node is in the set, a cycle has been found
 - Add the chosen node to the set
 - The current node becomes the successor of the current node
-- Repeat the process until a cycle has been found or the end of the list is reached
+- Repeat the process starting from the set membership test until a cycle has been found or the end of the list is reached
 
 ```python
 atomic func find_cycle_by_keeping_visited_set():
