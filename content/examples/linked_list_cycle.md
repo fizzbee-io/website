@@ -64,35 +64,20 @@ C has None as its successor because it is that last element in the list.
 We can start by generating a linked list that may contain a cycle.
 
 {{% fizzbee %}}
+POSSIBLE_NODES = list(range(1, 4))
+
 action Init:
-  hasCycle = False
-
-  possibleNodes = range(1, 4)
-
-  current = any possibleNodes
-
   # A dict from node to its successor.
   # Example: {1: 2, 2: 3, 3: None}
   succ = {}
-
-  while True:
-    # The current node points to either:
-    oneof:
-      # None, which means the current pointer is the last one in the list.
-      atomic: 
-        succ[current] = None 
-        break
-      # Any other node, including itself.
-      atomic:
-        next = any possibleNodes
-        succ[current] = next
-        # If the current node is now pointing to a node that's already in the list,
-        # a cycle has been created, we can exit the loop.
-        if next in succ:
-          hasCycle = True
-          break
-        succ[next] = None
-        current = next
+  current = any POSSIBLE_NODES
+  hasCycle = False
+  while (current and not hasCycle):
+    next = any list(POSSIBLE_NODES) + [None]
+    succ[current] = next  
+      
+    hasCycle = next in succ
+    current = next  
 
   nodes = succ.keys()
   start = any nodes
