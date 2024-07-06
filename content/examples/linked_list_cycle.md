@@ -71,19 +71,19 @@ action Init:
   # Example: {1: 2, 2: 3, 3: None}
   succ = {}
   current = any POSSIBLE_NODES
-  hasCycle = False
-  while (current and not hasCycle):
+  has_cycle = False
+  while (current and not has_cycle):
     next = any list(POSSIBLE_NODES) + [None]
     succ[current] = next  
       
-    hasCycle = next in succ
+    has_cycle = next in succ
     current = next  
 
   nodes = succ.keys()
   start = any nodes
 {{% /fizzbee %}}
 
-We set `hasCycle` to `True` when a list that contains a cycle is generated.  
+We set `has_cycle` to `True` when a list that contains a cycle is generated.  
 
 If we add `print(succ)` at the end of `Init` we'll see that every possible list with and without cycles is being generated:  
 ```
@@ -120,7 +120,7 @@ If we add `print(succ)` at the end of `Init` we'll see that every possible list 
 The algorithm itself can be implemented using a single atomic function.
 
 {{% fizzbee %}}
-atomic func tortoiseAndHare():
+atomic func tortoise_and_hare():
   tortoise = start
   hare = start
 
@@ -144,7 +144,7 @@ atomic func tortoiseAndHare():
 We can also use an algorithm that keeps track of viisted nodes to detect cycles and compare the result with the algorithm we are modeling.  
 
 {{% fizzbee %}}
-atomic func findCycleByKeepingVisitedSet():
+atomic func find_cycle_by_keeping_visited_set():
   current = start
 
   visited = set()
@@ -164,25 +164,25 @@ Since the algorithm only returns `True` or `False`, the assertion can just check
 
 {{% fizzbee %}}
 always assertion FindsCycle:
-  hasCycle1 = findCycleByKeepingVisitedSet()
-  hasCycle2 = tortoiseAndHare()
-  return hasCycle == hasCycle1 and hasCycle == hasCycle2
+  has_cycle_1 = find_cycle_by_keeping_visited_set()
+  has_cycle_2 = tortoise_and_hare()
+  return has_cycle == has_cycle_1 and has_cycle == has_cycle_2
 {{% /fizzbee %}}
 
 ## Full code
 
 {{% fizzbee %}}
 always assertion FindsCycle:
-  hasCycle1 = findCycleByKeepingVisitedSet()
-  hasCycle2 = tortoiseAndHare()
-  return hasCycle == hasCycle1 and hasCycle == hasCycle2
+  has_cycle_1 = find_cycle_by_keeping_visited_set()
+  has_cycle_2 = tortoise_and_hare()
+  return has_cycle == has_cycle_1 and has_cycle == has_cycle_2
 
 action Init:
-  hasCycle = False
+  has_cycle = False
 
-  possibleNodes = range(1, 4)
+  possible_nodes = range(1, 4)
 
-  current = any possibleNodes
+  current = any possible_nodes
 
   # A dict from node to its successor.
   # Example: {1: 2, 2: 3, 3: None}
@@ -197,12 +197,12 @@ action Init:
         break
       # Any other node, including itself.
       atomic:
-        next = any possibleNodes
+        next = any possible_nodes
         succ[current] = next
         # If the current node is now pointing to a node that's already in the list,
         # a cycle has been created, we can exit the loop.
         if next in succ:
-          hasCycle = True
+          has_cycle = True
           break
         succ[next] = None
         current = next
@@ -210,7 +210,7 @@ action Init:
   nodes = succ.keys()
   start = any nodes
 
-atomic func findCycleByKeepingVisitedSet():
+atomic func find_cycle_by_keeping_visited_set():
   current = start
 
   visited = set()
@@ -223,7 +223,7 @@ atomic func findCycleByKeepingVisitedSet():
 
   return False
 
-atomic func tortoiseAndHare():
+atomic func tortoise_and_hare():
   tortoise = start
   hare = start
 
