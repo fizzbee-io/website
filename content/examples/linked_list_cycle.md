@@ -31,12 +31,12 @@ A -> B -> C
 A -> B means that node A points to node B.
 {{% /hint %}}
 
-In this post, we will model [Floyd's tortoise and hare](https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare) algorithm for cycle detection.
+In this post, we will model [Floyd's tortoise and hare](https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare) algorithm for cycle detection and an algorithm that keeps track of the visited nodes to find cycles.
 
 ## Problem statement:
 
 - Given a linked list that may contain a cycle
-- Floyd's algorithm should detect the cycle if it exists
+- The algorithm should detect the cycle if it exists
 
 ## Algorithm
 
