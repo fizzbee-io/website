@@ -40,11 +40,11 @@ In this post, we will model two algorithms:
 
 ## How to model the linked list with FizzBee
 
-The linked list model won't use pointers. It'll be a map called `succ` where nodes are keys and the value associated to the key is the node's successor in the list.
+The linked list model won't use pointers. It'll be a map called `successor` where nodes are keys and the value associated to the key is the node's successor in the list.
 
-Given a list `A -> B -> C`, `succ` would look like this:
+Given a list `A -> B -> C`, `successor` would look like this:
 ```python
-succ = {'A': 'B', 'B': 'C', 'C': None}
+successor = {'A': 'B', 'B': 'C', 'C': None}
 ```
 
 {{% hint type=note %}}
@@ -61,17 +61,17 @@ POSSIBLE_NODES = list(range(1, 4))
 action Init:
   # A dict from node to its successor.
   # Example: {1: 2, 2: 3, 3: None}
-  succ = {}
+  successor = {}
   current = any POSSIBLE_NODES
   has_cycle = False
   while (current and not has_cycle):
     next = any list(POSSIBLE_NODES) + [None]
-    succ[current] = next  
+    successor[current] = next  
       
-    has_cycle = next in succ
+    has_cycle = next in successor
     current = next  
 
-  nodes = succ.keys()
+  nodes = successor.keys()
   start = any nodes
 
 action NoOp:
@@ -80,7 +80,7 @@ action NoOp:
 
 We set `has_cycle` to `True` when a list that contains a cycle is generated.  
 
-If we add `print(succ)` at the end of `Init` we'll see that every possible list with and without cycles is being generated:  
+If we add `print(successor)` at the end of `Init` we'll see that every possible list with and without cycles is being generated:  
 ```
 {1: None}
 {2: None}
@@ -130,12 +130,12 @@ atomic func tortoise_and_hare():
   while True:
     # If the slow pointer has not reached the end of the list. Advance it by 1.
     if tortoise != None:
-      tortoise = succ.get(tortoise)
+      tortoise = successor.get(tortoise)
 
     # Advance the fast pointer by 2.
     for _ in range(0, 2):
       if hare != None:
-        hare = succ.get(hare)
+        hare = successor.get(hare)
           
     if tortoise == None or hare == None:
       return False
@@ -165,7 +165,7 @@ atomic func find_cycle_by_keeping_visited_set():
     if current in visited:
       return True
     visited.add(current)
-    current = succ.get(current)
+    current = successor.get(current)
 
   return False
 ```
@@ -200,19 +200,19 @@ always assertion VisitedSetFindsCycle:
 action Init:
   # A dict from node to its successor.
   # Example: {1: 2, 2: 3, 3: None}
-  succ = {}
+  successor = {}
   current = any POSSIBLE_NODES
   has_cycle = False
   while (current and not has_cycle):
     next = any POSSIBLE_NODES + [None]
-    succ[current] = next  
+    successor[current] = next  
       
-    has_cycle = next in succ
+    has_cycle = next in successor
     current = next  
 
-  nodes = succ.keys()
+  nodes = successor.keys()
   start = any nodes
-  print(succ)
+  print(successor)
 
 atomic func find_cycle_by_keeping_visited_set():
   current = start
@@ -223,7 +223,7 @@ atomic func find_cycle_by_keeping_visited_set():
     if current in visited:
       return True
     visited.add(current)
-    current = succ.get(current)
+    current = successor.get(current)
 
   return False
 
@@ -234,12 +234,12 @@ atomic func tortoise_and_hare():
   while True:
     # If the slow pointer has not reached the end of the list. Advance it by 1.
     if tortoise != None:
-      tortoise = succ.get(tortoise)
+      tortoise = successor.get(tortoise)
 
     # Advance the fast pointer by 2.
     for _ in range(0, 2):
       if hare != None:
-        hare = succ.get(hare)
+        hare = successor.get(hare)
           
     if tortoise == None or hare == None:
       return False
