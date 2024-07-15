@@ -5,9 +5,12 @@ weight: 10
 
 # Detect cycle in a linked list
 
-A [linked list](https://en.wikipedia.org/wiki/Linked_list) is linear collection of elements where each element points to the next.
-
 A linked list may have a cycle if one of the elements points to an element that's already in the list.
+
+## Problem statement:
+
+- Given a linked list that may contain a cycle
+- The algorithm should detect the cycle if it exists
 
 Here' a few examples of linked lists that contain cycles:
 
@@ -32,11 +35,6 @@ A -> B means that node A points to node B.
 {{% /hint %}}
 
 In this post, we will model [Floyd's tortoise and hare](https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare) algorithm for cycle detection and an algorithm that keeps track of the visited nodes to find cycles.
-
-## Problem statement:
-
-- Given a linked list that may contain a cycle
-- The algorithm should detect the cycle if it exists
 
 ## How to model the linked list with FizzBee
 
