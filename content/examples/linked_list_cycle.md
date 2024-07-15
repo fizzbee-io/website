@@ -34,7 +34,9 @@ A -> B -> C
 A -> B means that node A points to node B.
 {{% /hint %}}
 
-In this post, we will model [Floyd's tortoise and hare](https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare) algorithm for cycle detection and an algorithm that keeps track of the visited nodes to find cycles.
+In this post, we will model two algorithms:  
+- [Floyd's tortoise and hare](https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare) algorithm for cycle detection 
+- An algorithm that keeps track of the visited nodes to find cycles.
 
 ## How to model the linked list with FizzBee
 
