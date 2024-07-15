@@ -1,5 +1,5 @@
 ---
-title: Linked List cycle
+title: Cycle Detection in Linked List
 weight: 10
 ---
 
