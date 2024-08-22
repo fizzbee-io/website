@@ -215,6 +215,10 @@ label="participants";
 
 
 ## Insertion Sort example
+Let's try another visualization - the Insertion Sort algorithm. FizzBee is a formal
+verification language, so verifying Insertion Sort is not the best use case. But this introduces
+the visualization capabilities.
+
 If you look at the insertion_sort method, the code is actually a working python code
 (with only the method definition syntax being different)
 
@@ -229,6 +233,7 @@ or when there are any yields.
 You can set explicit checkpoints using `` `checkpoint` ``.
 
 ### FizzBee spec
+
 {{% fizzbee %}}
 ---
 deadlock_detection: false
@@ -279,6 +284,29 @@ action Init:
 4. While the states are shown, with `cur` and `ins` variable, it would be nicer
    to show them as pointers to the position in the array. This information is not
    available in the spec so far. So this should be added as an additional config.
+   {{% graphviz %}}
+   digraph G {
+   compound=true;
+   subgraph "cluster_null.arr" {
+   style=dashed;
+   label="arr";
+   "arr" [shape=plaintext, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6"><tr>
+<td port="before" sides="r"></td>
+<td port="0">12</td>
+<td port="1">11</td>
+<td port="2">13</td>
+<td port="3">5</td>
+<td port="4">6</td>
+<td port="after" sides="l"></td>
+</tr></table>>];
+}
+
+"cur" [label="cur = 1" shape=ellipse];
+"ins" [label="ins = 0" shape=ellipse];
+"key" [label="key = 11" shape=ellipse];
+}
+   {{% /graphviz %}}
+
 5. On the left-bottom, you will see the `Config` text area. Insert the following code.
    ```yaml
    variables:
@@ -287,4 +315,29 @@ action Init:
      ins:
        index_of: arr
    ```
-   
+   {{% graphviz %}}
+   digraph G {
+   compound=true;
+   subgraph "cluster_null.arr" {
+   style=dashed;
+   label="arr";
+   "arr" [shape=plaintext, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6"><tr>
+<td port="before" sides="r"></td>
+<td port="0">12</td>
+<td port="1">11</td>
+<td port="2">13</td>
+<td port="3">5</td>
+<td port="4">6</td>
+<td port="after" sides="l"></td>
+</tr></table>>];
+}
+
+"cur" [label="cur = 1" shape=ellipse];
+"ins" [label="ins = 0" shape=ellipse];
+"key" [label="key = 11" shape=ellipse];
+"cur" -> "arr":1;
+"ins" -> "arr":0;
+}
+   {{% /graphviz %}}
+
+6. Click on buttons to see the states change as the algorithm progresses.
