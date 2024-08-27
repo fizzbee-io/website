@@ -13,17 +13,14 @@ These are helpful in understanding the algorithm and the system behavior.
 
 {{% toc %}}
 
-If you are design a system or defining an algorithm, with FizzBee you can model check
-and prove your design meets all the requirements. While other tools like TLA+, P etc
-do the same, FizzBee uses a more Pythonic syntax making it easier to learn and use.
-
-While writing the spec helps you prove the correctness, to explain and share the design to
-your teammates the spec is not sufficient. Traditionally you'll explain the design in a design document
-giving both the details of the design and the reasoning behind the design.
-
-Usually, the design explanation will involve a lot of diagrams. 
-
-FizzBee generates these diagrams. Better yet, it gives an interactive explorer.
+| **Feature**                  | **Description**                                                                                                                                              |
+|------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Pseudo Code to Visualizations** | Generates sequence, state, and algorithm diagrams directly from high-level, Python-like pseudo code.                                                                 |
+| **Zero Extra Effort**        | Visualizations are created directly from your pseudo code with no additional manual input required.                                                          |
+| **Interactive Experience**   | Provides a dynamic, whiteboard-like interface to explore states, transitions, and scenarios in real time.                                                    |
+| **Comprehensive Simulation** | Automatically simulates complex scenarios like non-atomic operations, crashes, message loss, concurrency, and visualizes all possible states.                |
+| **Correctness Assertion**    | Enables adding assertions to ensure the design meets safety and liveness requirements.                                                                       |
+| **Easy to Use**              | Familiar Python-like syntax reduces the learning curve compared to other formal methods tools.                                                               |
 
 ## Enable whiteboard visualizations
 On the fizzbee playground, you can enable the whiteboard visualizations by setting
@@ -187,7 +184,7 @@ action Init:
    it should start the sequence diagram. Continue to click on the buttons to see the sequence diagram.
    If you always choose the success path, you will see eventually both the participants and the coordinator 
    reach the `committed` state.
-   {{% mermaid %}}
+   {{< mermaid class="text-center" >}}
 sequenceDiagram
 	note left of 'Coordinator#0': Write
 	'Coordinator#0' ->> 'Participant#0': Prepare()
@@ -198,7 +195,7 @@ sequenceDiagram
 	'Participant#0' -->> 'Coordinator#0': .
 	'Coordinator#0' ->> 'Participant#1': Commit()
 	'Participant#1' -->> 'Coordinator#0': .
-   {{% /mermaid %}}
+   {{< /mermaid >}}
 
    {{% graphviz %}}
 digraph G {
@@ -250,7 +247,7 @@ label="participants";
    {{% /graphviz %}}
 
 6. Play around with the explorer to see what happens when a participant aborted.
-   {{% mermaid %}}
+   {{< mermaid class="text-center" >}}
    sequenceDiagram
    note left of 'Coordinator#0': Write
    'Coordinator#0' ->> 'Participant#0': Prepare()
@@ -261,7 +258,7 @@ label="participants";
    'Participant#0' -->> 'Coordinator#0': .
    'Coordinator#0' ->> 'Participant#1': Abort()
    'Participant#1' -->> 'Coordinator#0': .
-   {{% /mermaid %}}
+   {{< /mermaid >}}
 
    {{% graphviz %}}
    digraph G {
@@ -877,12 +874,12 @@ action Init:
 
 Once you run with the whiteboard enabled, open the explorer, and click `Process` button, you will see the sequence diagram. 
 
-{{% mermaid %}}
+{{< mermaid class="text-center" >}}
 sequenceDiagram
 	note left of 'Sender#0': Process
 	'Sender#0' ->> 'Receiver#0': Greet(name: "Alice")
 	'Receiver#0' -->> 'Sender#0': ("Hello Alice")
-{{% /mermaid %}}
+{{< /mermaid >}}
 
 As a trivial example, there is only one action and none of these have any states.
 Since there are no states, the system does not explore what happens if receiver is not available or if the message is lost,
@@ -931,13 +928,13 @@ Obviously,
 An example state where the caller is in `calling` state and server is in `done` state is shown below.
 
 
-{{% mermaid %}}
+{{< mermaid class="text-center" >}}
 sequenceDiagram
 	note left of 'Caller#0': Send
 	'Caller#0' ->> 'Server#0': Process()
 	'Server#0' -->> 'Caller#0': .
 	'Caller#0'->>'Caller#0': crash
-{{% /mermaid %}}
+{{< /mermaid >}}
 
 {{% graphviz %}}
 digraph G {
