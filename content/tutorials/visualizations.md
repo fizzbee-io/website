@@ -36,9 +36,10 @@ Before we go over the tutorial, let's see a complete working example.
 1. Open the [Two Phase Commit](/examples/two_phase_commit_actors/#complete-code) example
 in the play ground
 
-{{% expand "Show fizzbee spec for Two Phase Commit" %}}
+{{< expand "Show fizzbee spec for Two Phase Commit" >}}
 For the detailed explanation of the spec, see [Two Phase Commit](/examples/two_phase_commit_actors/)
 Click 'Run in playground'
+
 {{< fizzbee >}}
 
 NUM_PARTICIPANTS = 2
@@ -130,6 +131,7 @@ action Init:
     participants.append(p)
 
   coordinator = Coordinator(PARTICIPANTS=participants)
+
 {{< /fizzbee >}}
 
 {{< /expand >}}
