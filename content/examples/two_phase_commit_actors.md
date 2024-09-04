@@ -301,6 +301,112 @@ action Init:
   coordinator = Coordinator(PARTICIPANTS=participants)
 {{% /fizzbee %}}
 
+## Diagrams
+### Communication Diagram
+Click on the `Communication Diagram` link to see the communication diagram.
+This shows the various roles and the messages exchanged between them.
+
+{{% graphviz %}}
+digraph G {
+  node [shape=box];
+  splines=false;
+  rankdir=LR;
+  "Participant" [shape=none label=<<table cellpadding="14" cellspacing="8" style="dashed">
+      <tr><td port="p0">Participant#0</td></tr>
+      <tr><td port="p1" border="0">&#x022EE;</td></tr>
+      <tr><td port="p2">Participant#2</td></tr>
+      </table>>]
+  "Coordinator" -> "Participant":p0 [label="Prepare, Abort, Commit"];
+  "Coordinator" -> "Participant":p2 [label="Prepare, Abort, Commit"];
+  "FairActionParticipant" [shape=none label=<<table cellpadding="14" cellspacing="8" style="invisible"><tr>
+      <td port="Timeout"></td>
+      </tr></table>>]
+  { rank=same; "Participant"; "FairActionParticipant"; }
+  "FairActionParticipant":Timeout -> "Participant" [label="Timeout"];
+  "actionCoordinatorWrite" [label="" shape="none"]
+  "actionCoordinatorWrite" -> "Coordinator" [label="Write"];
+  "FairActionCoordinator" [shape=none label=<<table cellpadding="14" cellspacing="8" style="invisible"><tr>
+      <td port="Timeout"></td>
+      <td port="Restart"></td>
+      </tr></table>>]
+  { rank=same; "Coordinator"; "FairActionCoordinator"; }
+  "FairActionCoordinator":Timeout -> "Coordinator" [label="Timeout"];
+  "FairActionCoordinator":Restart -> "Coordinator" [label="Restart"];
+}
+
+{{% /graphviz %}}
+
+### Interactive Sequence Diagram
+This is a more detailed diagram. To generate this, first enable whiteboard and then run.
+You will see `Explorer` link, click to open it.
+
+On the left, play with the buttons to generate the sequence diagram.
+
+  {{< mermaid class="text-center" >}}
+sequenceDiagram
+	note left of 'Coordinator#0': Write
+	'Coordinator#0' ->> 'Participant#0': Prepare()
+	'Participant#0' -->> 'Coordinator#0': ("prepared")
+	'Coordinator#0' ->> 'Participant#1': Prepare()
+	'Participant#1' -->> 'Coordinator#0': ("prepared")
+	'Coordinator#0' ->> 'Participant#0': Commit()
+	'Participant#0' -->> 'Coordinator#0': .
+	'Coordinator#0' ->> 'Participant#1': Commit()
+	'Participant#1' -->> 'Coordinator#0': .
+   {{< /mermaid >}}
+
+### Whiteboard diagram
+
+
+   {{% graphviz %}}
+digraph G {
+compound=true;
+subgraph "cluster_Participant#0" {
+style=dashed;
+label="Participant#0";
+"Participant#0_placeholder" [label="" shape=point width=0 height=0 style=invis];
+"Participant#0.state" [label="state = committed" shape=ellipse];
+}
+subgraph "cluster_Participant#1" {
+style=dashed;
+label="Participant#1";
+"Participant#1_placeholder" [label="" shape=point width=0 height=0 style=invis];
+"Participant#1.state" [label="state = committed" shape=ellipse];
+}
+subgraph "cluster_Coordinator#0" {
+style=dashed;
+label="Coordinator#0";
+"Coordinator#0_placeholder" [label="" shape=point width=0 height=0 style=invis];
+subgraph "cluster_Coordinator#0.prepared" {
+style=dashed;
+label="prepared";
+"Coordinator#0.prepared" [shape=plaintext, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6"><tr>
+<td port="before" sides="r"></td>
+<td port="0">0</td>
+<td port="1">1</td>
+<td port="after" sides="l"></td>
+</tr></table>>];
+}
+
+"Coordinator#0.state" [label="state = committed" shape=ellipse];
+}
+"coordinator" [label="coordinator = role Coordinator#0" shape=ellipse];
+"coordinator" -> "Coordinator#0_placeholder" [lhead="cluster_Coordinator#0"];
+subgraph "cluster_null.participants" {
+style=dashed;
+label="participants";
+"participants" [shape=plaintext, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6"><tr>
+<td port="before" sides="b"></td></tr>
+<tr><td port="0">role Participant#0</td></tr>
+<tr><td port="1">role Participant#1</td></tr>
+<tr><td port="after" sides="t"></td>
+</tr></table>>];
+}
+"participants":0 -> "Participant#0_placeholder" [lhead="cluster_Participant#0"];
+"participants":1 -> "Participant#1_placeholder" [lhead="cluster_Participant#1"];
+}
+   {{% /graphviz %}}
+
 ## Compare with P
 
 Compare this with the P model checker code.

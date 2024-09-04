@@ -1,6 +1,7 @@
 ---
 title: Whiteboard Visualizations
 weight: 30
+description: From simple pseudo code to powerful visualizations, FizzBee makes designing and understanding systems easier than ever. Explore every state and transition interactively, ensuring your algorithms meet all your requirements.
 
 ---
 
@@ -109,9 +110,6 @@ role Participant:
   func Abort():
     self.state = 'aborted'
 
-  action Terminated:
-    if self.state == 'committed':
-      pass
 
 always assertion ResMgrsConsistent:
   for rm1 in participants:
@@ -137,8 +135,38 @@ action Init:
 {{< /expand >}}
 
 2. Enable `Enable Whiteboard` checkbox, and Run. 
-3. Once the model checker completes, click on the `Explorer` link in the console.
-4. You would see the Init state of the system 
+3. Once the model checker completes, click on `Communication Diagram` link in the console.
+   This will show the block diagram for the two phase commit protocol.
+    {{% graphviz %}}
+digraph G {
+  node [shape=box];
+  splines=false;
+  rankdir=LR;
+  "Participant" [shape=none label=<<table cellpadding="14" cellspacing="8" style="dashed">
+      <tr><td port="p0">Participant#0</td></tr>
+      <tr><td port="p1" border="0">&#x022EE;</td></tr>
+      <tr><td port="p2">Participant#2</td></tr>
+      </table>>]
+  "Coordinator" -> "Participant":p0 [label="Prepare, Abort, Commit"];
+  "Coordinator" -> "Participant":p2 [label="Prepare, Abort, Commit"];
+  "FairActionParticipant" [shape=none label=<<table cellpadding="14" cellspacing="8" style="invisible"><tr>
+      <td port="Timeout"></td>
+      </tr></table>>]
+  { rank=same; "Participant"; "FairActionParticipant"; }
+  "FairActionParticipant":Timeout -> "Participant" [label="Timeout"];
+  "actionCoordinatorWrite" [label="" shape="none"]
+  "actionCoordinatorWrite" -> "Coordinator" [label="Write"];
+  "FairActionCoordinator" [shape=none label=<<table cellpadding="14" cellspacing="8" style="invisible"><tr>
+      <td port="Timeout"></td>
+      <td port="Restart"></td>
+      </tr></table>>]
+  { rank=same; "Coordinator"; "FairActionCoordinator"; }
+  "FairActionCoordinator":Timeout -> "Coordinator" [label="Timeout"];
+  "FairActionCoordinator":Restart -> "Coordinator" [label="Restart"];
+}
+    {{% /graphviz %}}
+4. Click on the `Explorer` link in the console.
+5. You would see the Init state of the system 
    {{% graphviz %}}
    digraph G {
    compound=true;
