@@ -44,6 +44,9 @@ In this example, there are two roles - Sender and Receiver. Sender just calls
 a function Process() on Receiver.
 
 {{% fizzbee %}}
+---
+deadlock_detection: false
+---
 
 role Sender:
   action Init:
@@ -64,15 +67,13 @@ action Init:
   r = Receiver()
   s = Sender()
 
-action NoOp:
-  pass
-
-
 {{% /fizzbee %}}
 
 Note:
 1. To simplify understanding, this spec limits to a single function call.
-2. The NoOp action, is just to hide deadlock error.
+2. The yaml frontmatter at the top disables the deadlock detection. This is because, the
+   receiver is in 'done' state, and the sender is in 'calling' state. This is a deadlock
+   scenario, but it is intentional to show the different states.
 
 If you are running on the local machine, you can remove those lines, and just
 specify these as config in the yaml file.

@@ -277,10 +277,6 @@ role Participant:
   func Abort():
     self.state = 'aborted'
 
-  action Terminated:
-    if self.state == 'committed':
-      pass
-
 always assertion ResMgrsConsistent:
   for rm1 in participants:
     for rm2 in participants:
