@@ -135,14 +135,14 @@ role Coordinator:
     if self.state != "init":
       return
     self.state = "working"
-    for rm in self.PARTICIPANTS:
-      vote = rm.Prepare()
+    for p in participants:
+      vote = p.Prepare()
 
       if vote == 'aborted':
         self.Abort()
         return
 
-      self.prepared.add(rm.ID)
+      self.prepared.add(p.ID)
     
     self.Commit()
 
@@ -153,19 +153,19 @@ role Coordinator:
 
   fair action Restart:
     if self.state == "committed":
-      for rm in self.PARTICIPANTS:
-        rm.Commit()
+      for p in participants:
+        p.Commit()
 
   func Abort():
       self.state = "aborted"
-      for rm in self.PARTICIPANTS:
-          rm.Abort()
+      for p in participants:
+          p.Abort()
 
   func Commit():
-    if self.state == 'working' and len(self.prepared) == len(self.PARTICIPANTS):
+    if self.state == 'working' and len(self.prepared) == len(participants):
       self.state = 'committed'
-      for rm in self.PARTICIPANTS:
-        rm.Commit()
+      for p in participants:
+        p.Commit()
 ```
 
 ### Driver program 
@@ -179,7 +179,7 @@ action Init:
     p = Participant(ID=i)
     participants.append(p)
 
-  coordinator = Coordinator(PARTICIPANTS=participants)
+  coordinator = Coordinator()
 
 ```
 
@@ -193,9 +193,9 @@ In our case, we can put that in the global part itself.
 
 ```python
 always assertion ResMgrsConsistent:
-  for rm1 in participants:
-    for rm2 in participants:
-      if rm1.state == 'committed' and rm2.state == 'aborted':
+  for p1 in participants:
+    for p2 in participants:
+      if p1.state == 'committed' and p2.state == 'aborted':
         return False
   return True
 ```
@@ -222,14 +222,14 @@ role Coordinator:
     if self.state != "init":
       return
     self.state = "working"
-    for rm in self.PARTICIPANTS:
-      vote = rm.Prepare()
+    for p in participants:
+      vote = p.Prepare()
 
       if vote == 'aborted':
         self.Abort()
         return
 
-      self.prepared.add(rm.ID)
+      self.prepared.add(p.ID)
     
     self.Commit()
 
@@ -240,19 +240,19 @@ role Coordinator:
 
   fair action Restart:
     if self.state == "committed":
-      for rm in self.PARTICIPANTS:
-        rm.Commit()
+      for p in participants:
+        p.Commit()
 
   func Abort():
       self.state = "aborted"
-      for rm in self.PARTICIPANTS:
-          rm.Abort()
+      for p in participants:
+          p.Abort()
 
   func Commit():
-    if self.state == 'working' and len(self.prepared) == len(self.PARTICIPANTS):
+    if self.state == 'working' and len(self.prepared) == len(participants):
       self.state = 'committed'
-      for rm in self.PARTICIPANTS:
-        rm.Commit()
+      for p in participants:
+        p.Commit()
 
 
 role Participant:
@@ -278,9 +278,9 @@ role Participant:
     self.state = 'aborted'
 
 always assertion ResMgrsConsistent:
-  for rm1 in participants:
-    for rm2 in participants:
-      if rm1.state == 'committed' and rm2.state == 'aborted':
+  for p1 in participants:
+    for p2 in participants:
+      if p1.state == 'committed' and p2.state == 'aborted':
         return False
   return True
 
@@ -294,7 +294,7 @@ action Init:
     p = Participant(ID=i)
     participants.append(p)
 
-  coordinator = Coordinator(PARTICIPANTS=participants)
+  coordinator = Coordinator()
 {{% /fizzbee %}}
 
 ## Diagrams
@@ -403,8 +403,9 @@ label="participants";
 }
    {{% /graphviz %}}
 
-## Compare with P
+## Compare with other modeling languages
 
+### Comparison with P
 Compare this with the P model checker code.
 
 https://github.com/p-org/P/tree/master/Tutorial/2_TwoPhaseCommit/PSrc
@@ -412,6 +413,20 @@ https://github.com/p-org/P/tree/master/Tutorial/2_TwoPhaseCommit/PSrc
 If you notice, the FizzBee code is more concise and closer to pseudocode.
 In addition to being concise, FizzBee does exhaustive model checking. Whereas, P does not.
 It explores various paths heuristically. That means, P cannot verify the correctness of the system, but FizzBee can.
+
+### Comparison with TLA+
+
+This TLA+ example is written by Leslie Lamport in TLA+:
+https://github.com/tlaplus/Examples/blob/master/specifications/transaction_commit/TwoPhase.tla
+
+Take a look at the readability of the FizzBee spec vs the TLA+ spec, making FizzBee a viable
+alternative to TLA+ and the easiest formal methods language so far.
+
+### Comparison with PlusCal
+
+I couldn't find a pure PlusCal implementation, but a slightly modified version
+https://github.com/muratdem/PlusCal-examples/blob/master/2PCTM/2PCwithBTM.tla
+
 
 Note: This post shows the Actor/Object oriented style of implementation.
 
