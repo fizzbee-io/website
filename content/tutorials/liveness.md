@@ -94,6 +94,35 @@ atomic fair action Restart:
 Specifying liveness properties is easy. Just define the predicate as above, and
 use the `always eventually` or `eventually always` keywords.
 
+### CTL property: exists
+At present, FizzBee does not support CTL properties. But it is in the roadmap.
+But you can use the `exists` keyword to assert there is at least one state in one timeline
+where this property holds. 
+
+This is useful to assure that the state space covered some specific state.
+Typically when modelling, we tend to temporarily add a safety assertion that will obviously fail.
+This will give us the confidence the model checker is exploring the state space as intended.
+
+And then we would remove those assertions before running the final model check.
+Instead, you could use the `exists` keyword to assert that the state space covers the state.
+
+Note: When this assertion fails, there won't be any counter example or stack trace. Because
+the error is we can't find a state that satisfies the property. So, it is not a bug in the model checker.
+
+Add this to the previous example:
+{{< highlight python >}}
+
+exists assertion HasFailedState:
+  return status == "failed"
+
+{{< /highlight >}}
+
+You can test it by removing the Fail action. The assertion will fail.
+
+
+
+
+
 ## Fairness
 Fairness is a crucial concept in liveness properties. When defining the model, we say what can happen to the system.
 
