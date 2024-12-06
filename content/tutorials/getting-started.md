@@ -462,7 +462,7 @@ Now, the model checker will show a violation. It will print the stack trace of t
 You can also see the graph by clicking the link at the top of the output.
 
 ## Liveness
-Livenees is specified using the `eventually` keyword. In this example, the liveness property is the value should eventually be 0.
+Liveness is specified using the `eventually` keyword. In this example, the liveness property is the value should eventually be 0.
 But for most practical cases, we need to combine it with `always`. That leads to, two different possibilities:
 
 ### always eventually

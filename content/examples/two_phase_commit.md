@@ -289,7 +289,7 @@ In this spec, I tried to match the TLA+ style of modeling, where every action is
 following this example written by Leslie Lamport:
 https://github.com/tlaplus/Examples/blob/master/specifications/transaction_commit/TwoPhase.tla
 
-Feel free to notice the readability of the FizzBee spec vs the TLA+ spec, making FizzBee a viable
+Take a look at the readability of the FizzBee spec vs the TLA+ spec, making FizzBee a viable
 alternative to TLA+ and the easiest formal methods language so far.
 
 If you are a TLA+ user, this style will be the quickest to get used to.
