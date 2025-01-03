@@ -1,34 +1,35 @@
 ---
-title: Automated Fault Injection
+title: Implicit Fault Injection
 weight: 15
 ---
 
-FizzBee is designed specifically for software engineers and architects working on distributed systems.
-Therefore, FizzBee supports some unique features that are not common in typical formal methods tools like TLA+.
+FizzBee is tailored for engineers and architects designing distributed systems, 
+offering features not commonly found in formal methods tools like TLA+. 
 
-One such feature is that FizzBee model checker handles fault injection automatically. 
-We will see how to use the implicit fault injection in FizzBee. 
+One standout capability is implicit fault injection in its model checker, 
+enabling automated testing of system resilience to common failures.
 
 {{< toc >}}
 
-## Use non-atomic actions
+## Atomic vs. Non-Atomic Actions
+In TLA+, actions are strictly atomic, representing a single state transition. 
+While this approach simplifies reasoning about individual state transitions, 
+it introduces several challenges:
 
-Unlike TLA+ where every action is atomic, FizzBee allows you to define actions as atomic or non-atomic.
-When every action is modelled as atomic, 
-- you will be responsible to model various failure scenarios explicitly.
-- you will need to explicitly model sequential operations.
+- **Explicitly model the network as memory**: You must treat network communication as if it were shared memory, modeling its behavior explicitly.
+- **Explicitly model potential failure scenarios**: Failures like message loss or process crashes must be manually accounted for.
+- **Represent sequences of operations using program counters**: Sequential workflows require additional bookkeeping to simulate step-by-step progression.
+- **Mentally reason about all possible transitions**: You are responsible for considering all intermediate and potential system states.
 
-In TLA+, an action defines a single state transition. That means, each action must be atomic and isolated.
+### FizzBee’s Non-Atomic Approach
+While FizzBee supports that approach, it also introduces a new paradigm: non-atomic actions.
+FizzBee allows actions to span multiple state transitions within a single invocation, such as a user/client request or a timer action. This shift in design brings several benefits:
 
-Whereas, in FizzBee, an action is just like any other function call, but the caller of that function
-is not modelled explicitly. For example, an action in FizzBee could be something invoked by
-an user action, or a timer, or a network message or any other thing. Here, we don't care
-how the action is triggered, but just say that could be triggered.
-So, an action could involve a sequence of operations, and that means multiple state transitions.
+- **Natural modeling of complex operations**: Actions like threading, sequential workflows, or distributed transactions can be modeled directly.
+- **Automatic fault injection**: FizzBee automatically handles failures (e.g., message loss, process crashes) during multi-step operations.
+- **Automated reasoning**: The most significant advantage is that FizzBee reasons about the system for you, exploring all possible transitions and failure scenarios.
 
-When there are multiple state transitions in an action, there could be a failure in between.
-So, fizzbee injects various types of faults automatically. But the only way to leverage is to
-model the actions as non-atomic.
+By letting you describe your design as naturally as you think about it, FizzBee reduces cognitive overhead and ensures that fault scenarios are systematically and thoroughly analyzed.
 
 ## Faults injected
 
