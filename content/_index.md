@@ -1,4 +1,8 @@
 ---
+Title: FizzBee – Design Reliable, Scalable Distributed Systems
+Description: Designing a distributed system? FizzBee makes it easy to model, visualize, and
+  validate your design—catching flaws before you code. The easiest-ever formal methods,
+  built for developers.
 geekdocNav: true
 geekdocAlign: center
 geekdocAnchor: false
