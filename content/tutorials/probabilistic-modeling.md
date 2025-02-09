@@ -1,5 +1,6 @@
 ---
 title: Probabilistic Modeling
+description: "Learn how to model uncertainty in distributed systems using probabilities. This tutorial covers random events like message loss, failures, and API errors—laying the foundation for performance and reliability analysis."
 weight: 25
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Enums, Records, and Collections
+description: Learn how to use enums, records, collections, and other common data structures in FizzBee.
 weight: -15
 ---
 

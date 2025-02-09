@@ -1,5 +1,6 @@
 ---
 title: Guard Clauses And Enabling Conditions
+description: Learn how guard clauses and enabling conditions work in FizzBee to control action transitions. This guide covers testing for deadlocks, liveness, and common pitfalls—a must-read before you start writing your first model.
 weight: -20
 ---
 

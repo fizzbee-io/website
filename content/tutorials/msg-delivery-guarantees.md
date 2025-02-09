@@ -1,5 +1,6 @@
 ---
 title: Modeling msg delivery guarantees
+description: Learn how to model message delivery guarantees in distributed systems—ordered vs. unordered delivery, at most once, exactly once, at least once, message deduplication, and more.
 weight: -10
 ---
 

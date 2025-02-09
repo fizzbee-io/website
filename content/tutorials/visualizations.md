@@ -1,7 +1,7 @@
 ---
 title: Whiteboard Visualizations
 weight: 30
-description: From simple pseudo code to powerful visualizations, FizzBee makes designing and understanding systems easier than ever. Explore every state and transition interactively, ensuring your algorithms meet all your requirements.
+description: "Automatically generate sequence diagrams, state diagrams, and algorithm animations from simple pseudo code. Explore every state and transition interactively, ensuring your algorithms meet all requirements with zero extra effort."
 
 ---
 
