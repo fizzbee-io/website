@@ -1,5 +1,6 @@
 ---
 title: Implicit Fault Injection
+description: "Explore FizzBee’s built-in fault injection for modeling failures in distributed systems. Learn how the model checker simulates message loss, network partitions, crashes, and more to test system resilience."
 weight: 15
 ---
 

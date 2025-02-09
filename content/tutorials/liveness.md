@@ -1,5 +1,6 @@
 ---
 title: Liveness and Fairness
+description: Liveness ensures something good eventually happens. Learn how to model and verify liveness properties in FizzBee, from fairness levels to temporal logic—crucial for designing reliable distributed systems.
 weight: -18
 ---
 

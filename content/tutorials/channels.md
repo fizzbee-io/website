@@ -1,6 +1,7 @@
 ---
 title: Channels
 weight: 15
+description: "Channels make modeling message passing as intuitive as sketching on a whiteboard. Learn how to define delivery, ordering, and blocking behavior with default and custom channels."
 ---
 
 Channels are the communication mechanism to connect two roles, and provides a concise
