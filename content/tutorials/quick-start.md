@@ -61,7 +61,7 @@ role Server:
     pass  # Empty block, we'll replace this later
 ```
 
-{{< hint type="info" >}}
+{{< hint type="note" >}}
 `pass` in fizzbee is the same as `pass` in python. It is a placeholder for an empty statement or an block.
 Equivalent to `{}` or `;` in C, Java, and other languages.
 
@@ -163,7 +163,7 @@ role Server:
 ```
 The spec will now look like this.
 
-{{< hint type="info" >}}
+{{< hint type="note" >}}
 The `self` keyword is used to refer to the current instance of the class.
 It is similar to `self` in Python or `this` in other languages like Java, C++, etc.
 
@@ -318,7 +318,7 @@ action Init:
 
 {{% /fizzbee %}}
 
-{{< hint type="info" >}}
+{{< hint type="note" >}}
 We can now remove the line that disables deadlock detection, because there is a possible action that can be triggered.
 So, no chance of a deadlock.
 {{< /hint >}}
@@ -426,7 +426,7 @@ As the syntax is similar to Python (actually starlark), we can use the `max` fun
     self.cache = [max(self.cache[i], received_cache[i]) for i in range(NUM_SERVERS)]
 ```
 
-{{< hint type="warn" >}}
+{{< hint type="warning" >}}
 Even though in python this will be equivalent to,
 ```python
     for i in range(NUM_SERVERS):
@@ -480,7 +480,7 @@ action Init:
 
 At this point, the model checker will start taking a bit longer to run.
 
-{{< hint type="warn" >}}
+{{< hint type="warning" >}}
 The online playground has limited capacity, and it was designed mainly for learning and small models.
 If you can run it on your local machine, you can increase the number of servers to 3 or 4.
 

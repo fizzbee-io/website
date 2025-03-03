@@ -87,7 +87,7 @@ A message loss is modelled as a crash before or after the call depending on what
 If the call happened in an atomic block, it is a helper function call.
 If it is not atomic (serial/parallel), it is a helper function call.
 
-{{% hint type="info" %}}
+{{% hint type="note" %}}
 At present, the function call must be `atomic` even if the function implementation
 does not have to be. So to model message loss you will have to model with a temp variable,
 
