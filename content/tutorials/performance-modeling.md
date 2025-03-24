@@ -441,12 +441,15 @@ If you only have some data points, you can create a histogram and use the `rv_hi
 https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.rv_histogram.html#scipy.stats.rv_histogram
 {{% /hint %}}
 
+{{% hint type="caution" %}}
+This is a work in progress, contact us if you face any issues.
+{{% /hint %}}
 ```yaml
 configs:
   LookupCache.call:
     counters:
       latency_ms:
-        distribution: lognorm(s=0.3, loc=10)
+        distribution: lognorm(s=0.3, loc=2)
   LookupCache.hit:
     probability: 0.2
   LookupCache.miss:
@@ -461,7 +464,7 @@ configs:
     probability: 0.1
     counters_ms:
       latency:
-        distribution: lognorm(s=0.5, loc=30)
+        distribution: lognorm(s=0.5, loc=3)
 
 ```
 
