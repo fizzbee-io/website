@@ -102,15 +102,19 @@ This code will create 3 possible paths, one for each of the values 0, 1, 2.
 ```
 
 {{% hint type=note %}}
-At present, FizzBee doesn't support constants, so just use the values directly.
+In FizzBee, the variables declared at the top are treated as constants. To declare the
+actual state variables, initialize them within the action.
 {{% /hint %}}
 
 {{% fizzbee %}}
-atomic action Init:
-    N = 4  # Number of servers
-    M = 3  # Number of possible values
-    NODES = range(0, N)
+# Globally declared variables are constants
+N = 4  # Number of servers
+M = 3  # Number of possible values
+NODES = range(0, N)
 
+
+atomic action Init:
+    # state variables are declared with the global action Init
     counters = [0] * N
     for i in NODES:
         any j in range(0, M):
@@ -151,14 +155,21 @@ In other words, the guard condition is, the value of 0 is same as the value of N
 To pass the value, just increment the value and roll over if it is over M.
 
 {{% highlight python %}}
-atomic  action CreateToken:
   if counters[0] == counters[N-1]:
     counters[0] = (counters[N-1] + 1) % M
 {{% /highlight %}}
 
 
-
 ### Pass the token from i to i + 1
+
+{{% highlight python %}}
+  # When i != 0  
+  if counters[i] != counters[i-1]:
+    counters[i] = counters[i-1]
+{{% /highlight %}}
+
+## PassToken action
+
 {{% highlight python %}}
 atomic  action PassToken:
   # some code here
@@ -169,26 +180,38 @@ independently as long as the server has the token.
 
 Any server can take the next action is modeled with the `any` keyword, obviously.
 
-{{% highlight python "hl_lines=2"%}}
+{{% highlight python "hl_lines=2 3 5"%}}
 atomic  action PassToken:
   any i in NODES:
-    # some code here
+    if i == 0:
+      # Handle 0th node special case
+    else:
+      # Handle all other nodes
 {{% /highlight %}}
 
 Since the token is passed only if the server has the token, we need to add the guard condition.
-{{% highlight python "hl_lines=3"%}}
+{{% highlight python "hl_lines=4 7"%}}
 atomic  action PassToken:
   any i in NODES:
-    if counters[i] != counters[i-1]:
-      # pass the token
+    if i == 0:
+      if counters[0] == counters[N-1]:
+        # pass the token
+    else:
+      if counters[i] != counters[i-1]:
+        # pass the token
 {{% /highlight %}}
 
-Finally, passing the token is simply copying the value of the left side neighbor.
-{{% highlight python "hl_lines=4"%}}
-atomic  action PassToken:
+Finally, passing the token is simply copying the value of the left side neighbor, or incrementing the value for the 0th node.
+{{% highlight python "hl_lines=5 8"%}}
+atomic action PassToken:
   any i in NODES:
-    if counters[i] != counters[i-1]:
-      counters[i] = counters[i-1]
+    if i == 0:
+      if counters[0] == counters[N-1]:
+        counters[0] = (counters[N-1] + 1) % M
+    else:
+      if counters[i] != counters[i-1]:
+        counters[i] = counters[i-1]
+      
 {{% /highlight %}}
 
 That's it. The token is passed from i to i+1.
@@ -196,6 +219,26 @@ That's it. The token is passed from i to i+1.
 The complete code would look like this:
 
 {{% fizzbee %}}
+
+N = 4
+M = 3
+NODES = range(0, N)
+
+atomic action Init:
+    counters = [0] * N
+    for i in NODES:
+        any j in range(0, M):
+            counters[i] = j
+
+atomic action PassToken:
+  any i in NODES:
+    if i == 0:
+      if counters[0] == counters[N-1]:
+        counters[0] = (counters[N-1] + 1) % M
+    else:
+      if counters[i] != counters[i-1]:
+        counters[i] = counters[i-1]
+
 
 always assertion HasTokens:
     tokens = 0
@@ -208,28 +251,11 @@ always assertion HasTokens:
             tokens += 1
     return tokens >= 1
 
-atomic action Init:
-    N = 4
-    M = 3
-    NODES = range(0, N)
-    counters = [0] * N
-    for i in NODES:
-        any j in range(0, M):
-            counters[i] = j
-
-atomic action CreateToken:
-    if counters[0] == counters[N-1]:
-        counters[0] = (counters[N-1] + 1) % M
-
-atomic action PassToken:
-    any i in NODES[1:]:
-        if counters[i] != counters[i-1]:
-            counters[i] = counters[i-1]
 {{% /fizzbee %}}
 
 Run the above code and see the possible states generated.
 {{% hint %}}
-Play with the state space and again convice yourself that
+Play with the state space and again convince yourself that
 the number of tokens will never be 0.
 {{% /hint %}}
 
@@ -261,16 +287,10 @@ Add fairness to the actions. We just need weak fairness.
 
 {{% highlight udiff %}}
 @@ -1,8 +1,8 @@
--atomic action CreateToken:
-+atomic fair action CreateToken:
-     if counters[0] == counters[N-1]:
-         counters[0] = (counters[N-1] + 1) % M
- 
+
 -atomic action PassToken:
 +atomic fair action PassToken:
-     any i in NODES[1:]:
-         if counters[i] != counters[i-1]:
-             counters[i] = counters[i-1]
+     any i in NODES:
 {{% /highlight %}}
 
 Run the code again. This time, the liveness check will pass.
@@ -287,6 +307,26 @@ Check with N = 4, and M = 2 and see why it never stabilizes.
 ## Complete Code
 {{% expand "Show full code" %}}
 {{< fizzbee >}}
+N = 4
+M = 3
+NODES = range(0, N)
+
+atomic action Init:
+    counters = [0] * N
+    for i in NODES:
+        any j in range(0, M):
+            counters[i] = j
+
+atomic fair action PassToken:
+    i = any NODES
+    if i == 0:
+      if counters[0] == counters[N-1]:
+        counters[0] = (counters[N-1] + 1) % M
+    else:
+      if counters[i] != counters[i-1]:
+        counters[i] = counters[i-1]
+
+
 eventually always assertion UniqueToken:
     tokens = 0
     if counters[0] == counters[N-1]:
@@ -298,26 +338,49 @@ eventually always assertion UniqueToken:
             tokens += 1
     return tokens == 1
 
-atomic action Init:
-    N = 4
-    M = 3
-    NODES = range(0, N)
-    counters = [0] * N
-    for i in NODES:
-        any j in range(0, M):
-            counters[i] = j
-
-atomic fair action CreateToken:
-    if counters[0] == counters[N-1]:
-        counters[0] = (counters[N-1] + 1) % M
-
-atomic fair action PassToken:
-    any i in NODES[1:]:
-        if counters[i] != counters[i-1]:
-            counters[i] = counters[i-1]
 {{< /fizzbee >}}
 {{% /expand %}}
 
+## Alternate modeling using roles
+While the above representation works and sufficient for this problem, many distributed algorithms are
+expressed naturally using roles.
+
+{{% fizzbee %}}
+
+N = 4
+M = 3
+NODES = range(0, N)
+
+role Node:
+    action Init:
+        i = any range(M) # can't assign to self.counter directly
+        self.counter = i
+
+    atomic fair action PassToken:
+        if self.ID == 0:
+          if self.counter == nodes[N-1].counter:
+            self.counter = (nodes[N-1].counter + 1) % M
+        else:
+          if self.counter != nodes[self.ID-1].counter:
+            self.counter = nodes[self.ID-1].counter
+
+atomic action Init:
+    nodes = []
+    for i in NODES:
+        nodes.append(Node(ID=i))
+
+eventually always assertion UniqueToken:
+    tokens = 0
+    if nodes[0].counter == nodes[N-1].counter:
+        # 0 has token
+        tokens += 1
+    for i in range(1, N):
+        if nodes[i].counter != nodes[i-1].counter:
+            # i has token
+            tokens += 1
+    return tokens == 1
+
+{{% /fizzbee %}}
 
 ## Comparsion with other formal languages
 
