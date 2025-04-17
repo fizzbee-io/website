@@ -1,6 +1,8 @@
 ---
 title: Two Phase Commit (Procedural)
 weight: 10
+aliases:
+  - "/examples/two_phase_commit_procedural/"
 ---
 
 {{< toc >}}
@@ -8,8 +10,11 @@ weight: 10
 # Two Phase Commit (Procedural style implementation)
 
 This is another implementation style in FizzBee to model the Two Phase Commit protocol.
-[Previous post](/examples/two_phase_commit/) was in functional style like TLA+ with only atomic actions. This post is in procedural style,
+[Previous post](/design/examples/two_phase_commit/) was in functional style like TLA+ with only atomic actions. This post is in procedural style,
 closely resembling PlusCal or pseudocode.
+
+While multiple paradigms are supported, [we recommend using the OOP style (or actor style)](/design/examples/two_phase_commit_actors).
+
 
 For the details on the algorithm read through the previous post.
 
@@ -427,5 +432,5 @@ Note: This article shows the Procedural style of implementation.
 
 FizzBee is a multi-paradigm language, so you can use the style that suits you best.
 
-- [Two phase commit - functional style](/examples/two_phase_commit/)
-- [Two phase commit - actors style](/examples/two_phase_commit_actors/)
+- [Two phase commit - functional style](/design/examples/two_phase_commit/)
+- [Two phase commit - actors style](/design/examples/two_phase_commit_actors/)

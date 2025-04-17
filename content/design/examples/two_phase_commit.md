@@ -1,6 +1,8 @@
 ---
 title: Two Phase Commit
 weight: 10
+aliases:
+  - "/examples/two_phase_commit/"
 ---
 
 # Two Phase Commit
@@ -17,7 +19,10 @@ In the post, we will model the Two Phase Commit protocol using FizzBee.
 
 FizzBee is a multi-paradigm formal specification language and model checker.
 Therefore, you can use functional style like TLA+, or imperative style like PlusCal
-or even OOP style like Alloy.
+or even OOP style.
+
+While multiple paradigms are supported, [we recommend using the OOP style (or actor style)](/design/examples/two_phase_commit_actors).
+
 {{< toc >}}
 
 ## Problem statement:
@@ -296,5 +301,5 @@ If you are a TLA+ user, this style will be the quickest to get used to.
 
 Remember, FizzBee is a multi-paradigm language, so you can use the style that suits you best.
 
-- [Two phase commit - procedural style](/examples/two_phase_commit_procedural/)
-- [Two phase commit - with Actors syle](/examples/two_phase_commit_actors/)
+- [Two phase commit - procedural style](/design/examples/two_phase_commit_procedural/)
+- [Two phase commit - with Actors syle](/design/examples/two_phase_commit_actors/)

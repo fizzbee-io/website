@@ -1,6 +1,8 @@
 ---
 title: Two Phase Commit (Actor model/Object oriented)
 weight: 11
+aliases:
+  - "/examples/two_phase_commit_actors/"
 ---
 
 {{< toc >}}
@@ -9,8 +11,8 @@ weight: 11
 
 This is another implementation style in FizzBee to model the Two Phase Commit protocol.
 There are two other styles,
-1. [Functional style](/examples/two_phase_commit/) similar to TLA+
-2. [Procedural style](/examples/two_phase_commit_procedural/) similar to PlusCal
+1. [Functional style](/design/examples/two_phase_commit/) similar to TLA+
+2. [Procedural style](/design/examples/two_phase_commit_procedural/) similar to PlusCal
 3. Object oriented style (this post) similar to P
 
 The significant benefit of this style is, it would feel more natural to how you think about the design of 
@@ -30,7 +32,7 @@ For more information about Roles, refer to [Roles](/design/tutorials/roles/).
 ### Preparation
 
 0. **Start with some rough design diagrams:**
-   Sketch a rough system design and sequence diagram to clarify roles and interactions. 
+   Sketch a rough system design and sequence diagram to clarify roles and interactions as we had done above. 
    They don’t need to be precise or complete - this reduces cognitive load and helps you focus on the modeling process.
 
 ### Modelling
@@ -345,6 +347,11 @@ role Coordinator:
 
 ### Exploring the model
 We now have a working description of what we want to design. Let us explore the design in the UI.
+
+Run the following code in the playgroud.
+"Run in playground" will open the snippet in the playground.
+Then, click "Enable whiteboard" checkbox and click Run.
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/EnableWhiteboardAndRun.png" alt="Enable whiteboard and Run" caption="The screenshot of the playground highlighting the Enable whiteboard and Run steps" >}}
 
 {{% fizzbee %}}
 
@@ -894,5 +901,5 @@ Note: This post shows the Actor/Object oriented style of implementation.
 
 FizzBee is a multi-paradigm language, so you can use the style that suits you best.
 
-- [Two phase commit - functional style](/examples/two_phase_commit/)
-- [Two phase commit - procedural style](/examples/two_phase_commit_procedural/)
+- [Two phase commit - functional style](/design/examples/two_phase_commit/)
+- [Two phase commit - procedural style](/design/examples/two_phase_commit_procedural/)

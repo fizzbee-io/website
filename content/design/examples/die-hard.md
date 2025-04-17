@@ -1,6 +1,8 @@
 ---
 title: Die Hard
 weight: 10
+aliases:
+  - "/examples/die-hard/"
 ---
 
 # Die Hard Water Jug Problem
