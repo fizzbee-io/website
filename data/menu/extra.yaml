@@ -4,3 +4,7 @@ header:
     ref: https://github.com/fizzbee-io/fizzbee
     icon: gdoc_github
     external: true
+  - name: Discord
+    ref: https://discord.gg/f3mk6eb9Bc
+    icon: discord
+    external: true

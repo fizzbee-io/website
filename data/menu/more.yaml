@@ -2,7 +2,11 @@
 more:
   - name: Blog
     ref: "/posts"
-  - name: "View Source"
+  - name: "GitHub"
     ref: "https://github.com/fizzbee-io/fizzbee"
     external: true
     icon: "gdoc_github"
+  - name: "Discord"
+    ref: "https://discord.gg/f3mk6eb9Bc"
+    external: true
+    icon: "discord"
