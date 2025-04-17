@@ -2,6 +2,8 @@
 title: Getting Started
 description: Learn how to model systems with FizzBee. This guide walks you through writing your first FizzBee model, covering key concepts like actions, control flow, non-determinism, fairness, and correctness properties—no prior formal methods experience needed.
 weight: -20
+aliases:
+  - "/tutorials/getting-started/"
 ---
 
 This tutorial assumes you have a basic programming experience

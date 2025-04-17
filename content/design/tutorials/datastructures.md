@@ -2,6 +2,8 @@
 title: Enums, Records, and Collections
 description: Learn how to use enums, records, collections, and other common data structures in FizzBee.
 weight: -15
+aliases:
+  - "/tutorials/datastructures/"
 ---
 
 As with standard Python, FizzBee supports the standard sets, lists, and dictionaries. 

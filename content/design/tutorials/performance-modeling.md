@@ -2,6 +2,8 @@
 title: Performance Modeling
 description: "Go beyond correctness—model system performance in FizzBee. Analyze response latency, throughput, error rates, resource utilization, and scalability using probabilistic techniques."
 weight: 30
+aliases:
+  - "/tutorials/performance-modeling/"
 ---
 
 When designing any system, besides evaluating the behavioral properties like

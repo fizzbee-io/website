@@ -1,6 +1,8 @@
 ---
 title: Symmetry Reduction
 weight: 15
+aliases:
+  - "/tutorials/symmetry_reduction/"
 ---
 
 Symmetry reduction is a technique used in model checking to reduce the state space

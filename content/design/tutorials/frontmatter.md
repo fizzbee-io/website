@@ -1,6 +1,8 @@
 ---
 title: Config and Front Matter
 weight: -18
+aliases:
+  - "/tutorials/frontmatter/"
 ---
 
 FizzBee has some additional features and configurations, that can be enabled via yaml file.

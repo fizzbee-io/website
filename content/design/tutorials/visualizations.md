@@ -3,6 +3,8 @@ title: Whiteboard Visualizations
 weight: 30
 description: "Automatically generate sequence diagrams, state diagrams, and algorithm animations from simple pseudo code. Explore every state and transition interactively, ensuring your algorithms meet all requirements with zero extra effort."
 
+aliases:
+  - "/tutorials/visualizations/"
 ---
 
 FizzBee generates multiple visualizations and diagrams. So far you would have seen,

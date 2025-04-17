@@ -2,6 +2,8 @@
 title: Probabilistic Modeling
 description: "Learn how to model uncertainty in distributed systems using probabilities. This tutorial covers random events like message loss, failures, and API errors—laying the foundation for performance and reliability analysis."
 weight: 25
+aliases:
+  - "/tutorials/probabilistic-modeling/"
 ---
 
 In this tutorial, we will introduce the basics of probabilistic modeling with FizzBee.

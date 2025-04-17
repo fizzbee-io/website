@@ -287,7 +287,7 @@ Metrics(mean={'toss': 3.666666567325592}, histogram=[(0.75, {'toss': 3.0}), (0.9
 ```
 
 ## Two Dice Problem
-We previously solved the [two dice problem](/tutorials/performance-modeling/#simulating-two-dice-with-a-fair-coin) 
+We previously solved the [two dice problem](/design/tutorials/performance-modeling/#simulating-two-dice-with-a-fair-coin) 
 using a simpler approach that is non-optimal. It took a mean of `7.333333` tosses to generate the output.
 
 Now, let us model the same problem using the Knuth-Yao algorithm.
@@ -344,7 +344,7 @@ In this post, we saw the time oblivious sampling algorithm for random variate ge
 And, how to analyze algorithms for probability and performance characteristics
 typically necessary for cryptographic algorithms.
 
-Learn more about how to use FizzBee by going through the [tutorials](/tutorials/).
+Learn more about how to use FizzBee by going through the [tutorials](/design/tutorials/).
 
 
 
