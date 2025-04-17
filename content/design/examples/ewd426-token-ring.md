@@ -1,6 +1,8 @@
 ---
 title: EWD426 Token Ring
 weight: 10
+aliases:
+  - "/examples/ewd426-token-ring/"
 ---
 
 # EWD426 Dijkstra's Self Stabilizing Token Ring Algorithm

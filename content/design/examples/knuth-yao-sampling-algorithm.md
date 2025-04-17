@@ -1,6 +1,8 @@
 ---
 title: Knuth-Yao Sampling Algorithm for Random Variate Generation
 weight: 30
+aliases:
+  - "/examples/knuth-yao-sampling-algorithm/"
 ---
 
 Given a fair coin, how do you generate random numbers with arbitrary probabilities?

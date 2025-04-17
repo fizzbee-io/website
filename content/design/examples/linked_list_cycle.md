@@ -1,6 +1,8 @@
 ---
 title: Cycle Detection in Linked List
 weight: 10
+aliases:
+  - "/examples/linked_list_cycle/"
 ---
 
 # Detect cycle in a linked list
