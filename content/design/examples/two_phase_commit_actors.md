@@ -16,7 +16,7 @@ There are two other styles,
 The significant benefit of this style is, it would feel more natural to how you think about the design of 
 the distributed systems.
 
-For more information about Roles, refer to [Roles](/tutorials/roles/).
+For more information about Roles, refer to [Roles](/design/tutorials/roles/).
 
 
 ## Quick overview
@@ -399,7 +399,7 @@ action Init:
 {{% /fizzbee %}}
 
 You can see the state diagram and explore how the state space can change. Additionally, you may notice how faults, like a thread crash, are simulated.
-[FizzBee automatically simulates various types of faults](/tutorials/fault-injection/) to help model your system under these scenarios.
+[FizzBee automatically simulates various types of faults](/design/tutorials/fault-injection/) to help model your system under these scenarios.
 
 #### State graph
 In the state diagram, you'll notice that when a thread crashes, the coordinator remains in the "working" state. However, there is no outgoing transition from this state, which implies a potential deadlock.

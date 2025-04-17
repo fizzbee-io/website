@@ -68,8 +68,8 @@ geekdocBreadcrumb: false
 
 ## Try Fizz
 
-Read the [quick start guide](/tutorials/getting-started/) to learn how to write your first FizzBee model
-or comb through the [examples](/examples/)
+Read the [quick start guide](/design/tutorials/getting-started/) to learn how to write your first FizzBee model
+or comb through the [examples](/design/examples/)
 or tinker with the [FizzBee online playground](/play)
 
 ### An example: Travel Booking Service using Two Phase Commit

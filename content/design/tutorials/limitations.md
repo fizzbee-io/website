@@ -1,6 +1,8 @@
 ---
 title: Current Limitations
 weight: 1000
+aliases:
+  - "/tutorials/limitations/"
 ---
 
 FizzBee being a new system, that is continuously being improved up on.

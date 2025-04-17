@@ -5,7 +5,7 @@ weight: 30
 
 Given a fair coin, how do you generate random numbers with arbitrary probabilities?
 
-There were a few simple algorithms in the [performance analysis](/tutorials/performance-modelling/) tutorial.
+There were a few simple algorithms in the [performance analysis](/design/tutorials/performance-modeling/) tutorial.
 But what if you have a more complex distribution?
 
 The Knuth-Yao algorithm is a general method to generate random variates with arbitrary probabilities, it is also
@@ -311,7 +311,7 @@ Metrics(mean={'toss': 2.6875}, histogram=[(0.5, {'toss': 2.0}), (0.875, {'toss':
 ```
 
 ## Two Dice Problem
-We previously solved the [two dice problem](/tutorials/performance-modeling/#simulating-two-dice-with-a-fair-coin) 
+We previously solved the [two dice problem](/design/tutorials/performance-modeling/#simulating-two-dice-with-a-fair-coin) 
 using a simpler approach that is non-optimal. It took a mean of `7.333333` tosses to generate the output.
 
 Now, let us model the same problem using the Knuth-Yao algorithm.

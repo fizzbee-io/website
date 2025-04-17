@@ -2,6 +2,8 @@
 title: Actors / Roles
 description: "Roles are a core concept in FizzBee, simplifying how we model system participants like microservices, processes, and threads. Learn how to define roles, manage state, handle communication, and model dynamic behaviors."
 weight: 10
+aliases:
+  - "/tutorials/roles/"
 ---
 
 Roles are like classes in object oriented programming. They have states and actions.

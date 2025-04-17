@@ -187,7 +187,7 @@ Now run this model checker, you will notice the model checker passes. This impli
 
 Note: The model will not be directly transferable to code because wire_requests cannot be implemented in the current form. Is it a database in the same bank as the sender? Then, the receiver’s bank will not be able to atomically update along with crediting the sender. We will address it in a later post.
 
-You can read more about [FizzBee](https://fizzbee.io/tutorials) and try other examples(https://fizzbee.io/examples).
+You can read more about [FizzBee](https://fizzbee.io/design/tutorials) and try other examples(https://fizzbee.io/design/examples).
 
 #### Formal Verification Is Testing Your Design Before Coding
 Formal verification allows you to test your design before coding. As demonstrated above, it helps you concentrate on the essentials and abstract away the details, similar to explaining a design using a basic example on a whiteboard.
