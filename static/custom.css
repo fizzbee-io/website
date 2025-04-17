@@ -12,3 +12,141 @@
     text-align: center;
     z-index: 1000;
 }
+
+
+.gdoc-markdown {
+    font-size: 1.2rem;
+    line-height: 1.8;
+}
+.gdoc-markdown pre, .gdoc-markdown code {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.gdoc-columns__content ul {
+    text-align: left;
+}
+
+
+
+/* Light mode theming */
+:root,
+:root[color-theme="light"] {
+    --header-background: #243342;
+    --body-background: #ffffff;
+    --body-font-color: #111;
+
+    --testimonial-text-person: #555;
+}
+@media (prefers-color-scheme: light) {
+    :root {
+        --header-background: #243342;
+        --body-background: #ffffff;
+        --body-font-color: #111;
+
+        --testimonial-text-person: #555;
+    }
+}
+
+/* Dark mode theming */
+:root[color-theme="dark"] {
+    --header-background: #243342;
+    --body-background: #1e1e1e;
+    --body-font-color: #e0e0e0;
+
+    --testimonial-bg-light: #2a2a2a;
+    --testimonial-text-color-light: #ddd;
+    --testimonial-text-person: #aaa;
+}
+
+
+:root[color-theme="dark"] {
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --header-background: #243342;
+            --body-background: #1e1e1e;
+            --body-font-color: #e0e0e0;
+
+            --testimonial-bg-dark: #2a2a2a;
+            --testimonial-text-color-dark: #ddd;
+            --testimonial-text-person: #aaa;
+        }
+        .testimonial {
+            background-color: var(--testimonial-bg-dark);
+            color: var(--testimonial-text-color-dark);
+        }
+    }
+}
+
+    /* Load Inter from Google Fonts in your HTML <head> */
+/*@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");*/
+
+/* Font family override */
+:root {
+    --header-font-family: "Inter", sans-serif;
+    --body-font-family: "Inter", sans-serif;
+    --code-font-family: "JetBrains Mono", monospace;
+
+    --code-max-height: 60rem;
+}
+
+
+
+:root {
+    --testimonial-bg-light: #f9f9f9;
+    --testimonial-bg-dark: #2a2a2a;
+    --testimonial-text-color-light: #333;
+    --testimonial-text-color-dark: #ddd;
+    --testimonial-quote-color: #4ec58a;
+}
+
+@media (prefers-color-scheme: dark) {
+    .testimonial {
+        background-color: var(--testimonial-bg-dark);
+        color: var(--testimonial-text-color-dark);
+    }
+}
+
+.testimonial-slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 2rem;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 1rem;
+}
+
+.testimonial {
+    flex: 0 0 450px;
+    background-color: var(--testimonial-bg-light);
+    color: var(--testimonial-text-color-light);
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    scroll-snap-align: start;
+    font-size: 1rem;
+    line-height: 1.6;
+    position: relative;
+}
+
+.testimonial::before {
+    content: "\201C"; /* Fancy left quote */
+    font-size: 3rem;
+    color: var(--testimonial-quote-color);
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    line-height: 1;
+}
+
+.testimonial strong {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--testimonial-text-person);
+}
+
+@media (prefers-color-scheme: dark) {
+    .testimonial strong {
+        color: #aaa;
+    }
+}
