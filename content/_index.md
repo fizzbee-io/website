@@ -63,7 +63,7 @@ geekdocBreadcrumb: false
 
 ## Why Model Your System?
 
-{{< figure src="https://storage.cloud.google.com/fizzbee-public/website/homepage/what_fizzbee_does_graph.png" alt="Why Model Your System" caption="Modeling helps you explore edge cases, eliminate ambiguity, catch bugs early, and iterate with confidence. In addition to validating the design, you can verify the implementation" >}}
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/homepage/what_fizzbee_does_graph.png" alt="Why Model Your System" caption="Modeling helps you explore edge cases, eliminate ambiguity, catch bugs early, and iterate with confidence. In addition to validating the design, you can verify the implementation" >}}
 
 
 ## Try Fizz
