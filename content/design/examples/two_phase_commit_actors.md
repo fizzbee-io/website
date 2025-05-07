@@ -270,7 +270,7 @@ Participant Implementation
 ```python
 role Participant:
     action Init:
-        self.state = "init"
+        self.status = "init"
 
     func Prepare():
         vote = any ["prepared", "aborted"]
@@ -383,7 +383,7 @@ role Coordinator:
     
 role Participant:
     action Init:
-        self.state = "init"
+        self.status = "init"
 
     func Prepare():
         vote = any ["prepared", "aborted"]
