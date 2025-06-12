@@ -432,6 +432,7 @@ State: {\"value\":\"3\"}
 {{< /graphviz >}}
 {{% /expand %}}
 ## Safety
+### State invariants
 Safety is specified using the `always` keyword. In this, the safety property is, the value should never be greater than 3.
 
 Add this code to the top of the file.
@@ -457,12 +458,127 @@ atomic action Add:
     
 {{% /fizzbee %}}
 
-### Safety Violation
+#### Safety Violation
 If you change the invariant to `always value <= 2`, and run the code, you will see the model checker will show a violation.
 Or, change the if condition in Add from `value < 3` to `value <= 3`.
 
 Now, the model checker will show a violation. It will print the stack trace of the behavior that lead to the failure.
 You can also see the graph by clicking the link at the top of the output.
+
+### Transition invariants
+Although in most cases, the state invariant is sufficient, there are cases where we need to assert on the transitions.
+Whether a state can change from a certain state to another state. For example, a committed transaction cannot be rolled back.
+This is done using the `transition` keyword.
+
+{{% fizzbee %}}
+
+MAX_HOUR=12
+action Init:
+    # In a 12-hour clock, typically the click starts with 12 but not with 0 or 1.
+    hour = MAX_HOUR
+    meridiem = "am" 
+
+atomic action HourChange:
+    hour = (hour%MAX_HOUR) + 1
+
+atomic action MeridiemChange:
+    # Wrong implementation: blindly change the meridiem
+    meridiem = "pm" if meridiem == "am" else "am"
+
+
+transition assertion ClockBehavior(before, after):
+    if before.meridiem != after.meridiem:
+        # Change form 11:xx AM to 12:xx PM or 11.xx PM to 12.xxAM
+        return before.hour == MAX_HOUR - 1 and after.hour == MAX_HOUR 
+    else:
+        return (before.hour == 12 and after.hour == 1) or (after.hour == before.hour + 1)
+        
+{{%/ fizzbee %}}
+
+When you run it, you could see the error.
+
+```
+Model checking BuzzyMcBee.json
+configFileName: fizz.yaml
+StateSpaceOptions: options:{max_actions:100  max_concurrent_actions:2  crash_on_yield:true}  liveness:"strict"  deadlock_detection:true
+Nodes: 2, queued: 2, elapsed: 768.916µs
+Time taken for model checking: 774.334µs
+------
+Init
+--
+state: {"hour":"12","meridiem":"\"am\""}
+------
+MeridiemChange
+--
+state: {"hour":"12","meridiem":"\"pm\""}
+------
+
+```
+Or the partial state graph, you could see the transition from 12:00 am to 12:00 pm.
+{{% graphviz %}}
+digraph G {
+  "0x14000231e60" [label="yield
+Actions: 0, Forks: 0
+State: {\"hour\":\"12\",\"meridiem\":\"\"am\"\"}
+", color="black" penwidth="2" ];
+  "0x14000231e60" -> "0x140002da2a0" [label="HourChange", color="black" penwidth="1" ];
+  "0x140002da2a0" [label="yield
+Actions: 1, Forks: 1
+State: {\"hour\":\"1\",\"meridiem\":\"\"am\"\"}
+", color="black" penwidth="2" ];
+  "0x14000231e60" -> "0x140002da360" [label="MeridiemChange", color="red" penwidth="1" ];
+  "0x140002da360" [label="yield
+Actions: 1, Forks: 1
+State: {\"hour\":\"12\",\"meridiem\":\"\"pm\"\"}
+", color="black" penwidth="2" ];
+}
+
+{{% /graphviz %}}
+
+**Wrong Fix 1**:
+```python
+atomic action MeridiemChange:
+    # Still wrong. Try it in the playground
+    if hour == MAX_HOUR:
+        meridiem = "pm" if meridiem == "am" else "am"
+```
+**Wrong Fix 2**:
+```python
+atomic action MeridiemChange:
+    # Still wrong. Try it in the playground
+    if hour == MAX_HOUR-1:
+        meridiem = "pm" if meridiem == "am" else "am"
+```
+**Correct Fix**:
+```python
+# The correct fix is to move the meridiem change to the HourChange action.
+atomic action HourChange:
+    hour = (hour%MAX_HOUR) + 1
+    if hour == MAX_HOUR:
+        meridiem = "pm" if meridiem == "am" else "am"
+```
+
+{{% fizzbee %}}
+
+MAX_HOUR=12
+action Init:
+    # In a 12-hour clock, typically the click starts with 12 but not with 0 or 1.
+    hour = MAX_HOUR
+    meridiem = "am" 
+
+atomic action HourChange:
+    hour = (hour%MAX_HOUR) + 1
+    if hour == MAX_HOUR:
+        meridiem = "pm" if meridiem == "am" else "am"
+
+transition assertion ClockBehavior(before, after):
+    if before.meridiem != after.meridiem:
+        # Change form 11:xx AM to 12:xx PM or 11.xx PM to 12.xxAM
+        return before.hour == MAX_HOUR - 1 and after.hour == MAX_HOUR 
+    else:
+        return (before.hour == 12 and after.hour == 1) or (after.hour == before.hour + 1)
+        
+{{% /fizzbee %}}
 
 ## Liveness
 Liveness is specified using the `eventually` keyword. In this example, the liveness property is the value should eventually be 0.
