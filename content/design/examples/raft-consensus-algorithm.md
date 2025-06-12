@@ -811,7 +811,7 @@ action_options:
     "Node.ElectionTimeout":
         max_actions: 2
     "Node.SubmitCommand":
-        max_actions: 2
+        max_actions: 1
     "Node.SendHeartbeat":
         max_actions: 2
     "Node#.SendHeartbeat":
@@ -843,7 +843,8 @@ role Node:
 
         candidate_term, votes = self.currentTerm, 1  # Save the term and vote for yourself before requesting votes
 
-        for node in nodes:
+        parallel for node in nodes:
+          serial:
             if node.__id__ != self.__id__:
                 vote_granted = node.RequestVote(self.currentTerm, self.__id__, len(self.log), self.log[-1][0]) # Call RequestVote and store the result
                 if vote_granted:
