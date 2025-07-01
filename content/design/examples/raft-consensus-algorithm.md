@@ -4,7 +4,7 @@ date: 2025-04-21
 description: "A step-by-step guide to modeling the Raft consensus algorithm using FizzBee's actor-based approach."
 tags: ["raft", "consensus", "distributed systems", "fizzbee", "tutorial"]
 weight: 12
-geekdocHidden: true
+geekdocHidden: false
 ---
 
 # Modeling Raft Consensus Protocol with FizzBee
@@ -799,7 +799,7 @@ And the implementation of the AppendEntries RPC
 
 
 
-# Complete FizzBee
+# Complete FizzBee Spec for Raft Protocol
 
 {{% fizzbee %}}
 ---
