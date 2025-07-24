@@ -64,6 +64,11 @@ one leader. So, this representation simplifies that property.
 
 ## Step 1: Define the roles and state variables.
 
+Run the following code in the playground.
+"Run in playground" will open the snippet in the playground.
+Then, click "Enable whiteboard" checkbox and click Run.
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/EnableWhiteboardAndRun.png" alt="Enable whiteboard and Run" caption="The screenshot of the playground highlighting the Enable whiteboard and Run steps" >}}
+
 {{% fizzbee %}}
 ---
 deadlock_detection: false
@@ -87,6 +92,14 @@ action Init:
         nodes.append(Node())
 
 {{% /fizzbee %}}
+
+When you run it, you'll see an `Explorer` link. Click you'll see an explorer.
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/ClickExplorerLink.png" alt="Click Explorer Link to open the Explorer view" caption="The screenshot of the playground highlighting the Explorer link to open the Explorer view" >}}
+
+At present, it will only show the init state.
+As we start filling in the details, you'll see more interactive exploration.
+
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-0-role-states.png" alt="Raft states" caption="The screenshot of the Explorer view with the initial states of the Raft specification" >}}
 
 
 ## Step 2: Define the actions
@@ -135,6 +148,11 @@ action Init:
         nodes.append(Node())
 
 {{% /fizzbee %}}
+
+When you run it, it will show these actions defined. At present, the actions do nothing when you click.
+You'll eventually see the states change with the actions.
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-1-role-actions.png" alt="Raft actions" caption="The screenshot of the Explorer view with the defined actions" >}}
+
 
 ### 2.1 Failed leader election
 Let's start with the simplest action. A term could pass by without electing a leader. 
@@ -552,15 +570,18 @@ You might notice some issues.
 
 The scenario is,
 1. Node 0 becomes the leader, receives an entry, replicates to Node 1, commits this entry.
+   {{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-2.1.0-committed1.png" alt="Command 1 committed by leader Node#0" caption="Node#0 committed cmd1 after replicating to Node#1" >}}
+
 2. Node 0 goes offline.  
 3. Node 2 becomes the leader, replicates to Node 1.
 At this point, both Node 1 and Node 2 has the same log entry 2. But Node 0 has previously committed entry 1, but it is not present in any active node's log.
 
-INSERT IMAGE HERE
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-2.1.1-committed1-majority2.png" alt="Node#2 became the leader and replicated cmd 2 to Node#1" caption="Node#2 after replicating cmd2 to Node#1" >}}
 
 It can get worse. After Node 0 comes back online, it will receive the AppendEntries from Node 2, and it will truncate its log to match the common prefix, which is empty, and it will lose the committed entry 1.
 
-INSERT IMAGE HERE
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-2.1.2-committed-gone.png" alt="Node#2 replicated cmd 2 to Node#0 losing previously committed log" caption="Node#0 after replacing cmd2 in its log" >}}
+
 
 This is an obvious issue, and leader based consensus algorithms like Multi-Paxos and Raft addresses these differently.
 In Multi Paxos, any server can win election. The winner transfers missing log entries from its peers before becoming leader.
@@ -586,6 +607,8 @@ of the leaders for all higher-numbered terms. §5.4
 5. **State Machine Safety:** if a server has applied a log entry
 at a given index to its state machine, no other server
 will ever apply a different log entry for the same index. §5.4.3
+
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-assertions-paper.png" alt="Raft assertions" caption="The screenshot of the Explorer view with the defined assertions" >}}
 
 Of these, with the current spec, as we have represented leader as a global list indexed by term, invalid election state is not representable. 
 Then, for the State Machine Safety, we have not represented the state machine, so we will skip that for now. 
@@ -667,6 +690,8 @@ Step 5: Node#2.AppendEntries         <-- Node#2 accepts the log entry from Node#
 Step 6: Any:term_leader=(1, Node0)
 Step 7: Node#0.Commit
 ```
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-3.3.0-leader-completeness-failure1.png" alt="Leader Completeness failure" caption="The screenshot of the Explorer view showing the Leader Completeness assertion failure" >}}
+
 The issue happens because the old leader was allowed to commit the log entry even though a new leader was elected.
 This happened because, majority of the nodes accepted entries from old leader, even though a new leader was elected.
 This is because, at present, our leader election is pretty naive. In Raft, a node can become a leader only 
@@ -768,6 +793,9 @@ Step 7: Node#0.Commit                  <-- Node#0 commits the entry after replic
 Step 8: Node#2.BecomeLeader            
 Step 9: Any:voters=(Node0,)            <-- Node#2 becomes the leader with vote from Node#0
 ```
+
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-3.3.1-leader-completeness-failure2.png" alt="Leader Completeness failure 2" caption="The screenshot of the Explorer view showing the Leader Completeness assertion failure after fixing the first issue" >}}
+
 ### Fix: Ensure the leader is up-to-date
 This will address the first TODO in the BecomeLeader action. Raft protocol specification addresses this issue,
 by limiting who can become a leader. This is done by limiting who can vote for a new candidate.
@@ -813,6 +841,8 @@ Step 12: Node#0.Commit
 Step 13: Node#1.BecomeLeader
 Step 14: Any:voters=(Node0,)
 ```
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-3.3.1-leader-completeness-failure3.png" alt="Leader Completeness failure 3" caption="The screenshot of the Explorer view showing the Leader Completeness assertion failure after fixing the second issue" >}}
+
 What happens here is, 
 1. Node 0 and Node 1 become leaders in terms 1 and 2 respectively, and added separate log entries each.
 2. Node 0 became the leader in term 3 with vote from Node 2.
@@ -830,11 +860,13 @@ The Raft paper shows this violation in section 5.4.2, and it is a crucial part o
 
 This is a complex scenario to identify without exhaustive checking showcases the power of formal methods.
 
-INSERT IMAGE HERE (Screenshots from RAFT paper)
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-3.3.3.1-paper-issue-commit-from-prev-terms.png" width=400 alt="Raft paper screenshot describing this error" caption="The screenshot form the Raft paper showing the potential issue with committing from previous terms" >}}
 
-INSERT IMAGE HERE (Screenshots from RAFT paper)
 
 ### Fix: Ensure the leader commits only from its current term
+
+The Raft paper describes this issue in section 5.4.2, and it is a crucial part of the Raft protocol.
+{{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/raft-reasoning-3.3.3.2-paper-commit-from-current-term-only.png" width=400 alt="Raft paper screenshot describing the fix" caption="The screenshot form the Raft paper showing the fix that a leader can commit a log only from its current term" >}}
 
 As noted in the attached screenshots of the Raft paper, at present, the leader determines commitment of log entries from previous terms by counting replicas.
 Instead, the leader should only commit log entries from its current term by counting replicas.
