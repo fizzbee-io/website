@@ -130,7 +130,7 @@ action Init:
 
 ```
 
-Run the following code in the playgroud. 
+Run the following code in the playground. 
 "Run in playground" will open the snippet in the playground. 
 Then, click "Enable whiteboard" checkbox and click Run.
 {{< figure src="https://storage.googleapis.com/fizzbee-public/website/tutorials/img/EnableWhiteboardAndRun.png" alt="Enable whiteboard and Run" caption="The screenshot of the playground highlighting the Enable whiteboard and Run steps" >}}
