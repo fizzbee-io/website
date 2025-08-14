@@ -27,10 +27,15 @@
     text-align: left;
 }
 
-
+:root {
+    --testimonial-bg-light: #f9f9f9;
+    --testimonial-bg-dark: #2a2a2a;
+    --testimonial-text-color-light: #333;
+    --testimonial-text-color-dark: #ddd;
+    --testimonial-quote-color: #4ec58a;
+}
 
 /* Light mode theming */
-:root,
 :root[color-theme="light"] {
     --header-background: #243342;
     --body-background: #ffffff;
@@ -39,7 +44,7 @@
     --testimonial-text-person: #555;
 }
 @media (prefers-color-scheme: light) {
-    :root {
+    :root:not([color-theme]) {
         --header-background: #243342;
         --body-background: #ffffff;
         --body-font-color: #111;
@@ -54,27 +59,24 @@
     --body-background: #1e1e1e;
     --body-font-color: #e0e0e0;
 
-    --testimonial-bg-light: #2a2a2a;
-    --testimonial-text-color-light: #ddd;
     --testimonial-text-person: #aaa;
 }
+:root[color-theme="dark"] .testimonial {
+    background-color: var(--testimonial-bg-dark);
+    color: var(--testimonial-text-color-dark);
+}
 
+@media (prefers-color-scheme: dark) {
+    :root:not([color-theme]) {
+        --header-background: #243342;
+        --body-background: #1e1e1e;
+        --body-font-color: #e0e0e0;
 
-:root[color-theme="dark"] {
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --header-background: #243342;
-            --body-background: #1e1e1e;
-            --body-font-color: #e0e0e0;
-
-            --testimonial-bg-dark: #2a2a2a;
-            --testimonial-text-color-dark: #ddd;
-            --testimonial-text-person: #aaa;
-        }
-        .testimonial {
-            background-color: var(--testimonial-bg-dark);
-            color: var(--testimonial-text-color-dark);
-        }
+        --testimonial-text-person: #aaa;
+    }
+    :root:not([color-theme]) .testimonial {
+        background-color: var(--testimonial-bg-dark);
+        color: var(--testimonial-text-color-dark);
     }
 }
 
@@ -88,23 +90,6 @@
     --code-font-family: "JetBrains Mono", monospace;
 
     --code-max-height: 60rem;
-}
-
-
-
-:root {
-    --testimonial-bg-light: #f9f9f9;
-    --testimonial-bg-dark: #2a2a2a;
-    --testimonial-text-color-light: #333;
-    --testimonial-text-color-dark: #ddd;
-    --testimonial-quote-color: #4ec58a;
-}
-
-@media (prefers-color-scheme: dark) {
-    .testimonial {
-        background-color: var(--testimonial-bg-dark);
-        color: var(--testimonial-text-color-dark);
-    }
 }
 
 .testimonial-slider {
