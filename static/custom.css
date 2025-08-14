@@ -129,9 +129,3 @@
     font-size: 0.9rem;
     color: var(--testimonial-text-person);
 }
-
-@media (prefers-color-scheme: dark) {
-    .testimonial strong {
-        color: #aaa;
-    }
-}
