@@ -273,7 +273,7 @@ label="servers";
 In the gossip protocol, we expect only one RPC method. Let's call it `gossip()` in each of these servers.
 
 ```python
-    func gossip(cache):
+    func gossip(received_cache):
         pass  # Empty block, we'll fill this later
 ```
 Someone should trigger this. Let's add a `GossipTimer` action to the `Server` role.
@@ -289,7 +289,7 @@ The GossipTimer will trigger the `gossip` method in an arbitrarily selected serv
     action GossipTimer:
         i = any range(NUM_SERVERS)
         server = servers[i]
-        server.gossip(cache)
+        server.gossip(self.cache)
 ```
 
 Here, `any` keyword indicates, we are selection one of the elements on the collection arbitrarily.
@@ -309,7 +309,7 @@ role Server:
         server = servers[i]
         server.gossip(self.cache)
 
-    func gossip(cache):
+    func gossip(received_cache):
         pass  # Empty block, we'll fill this later
 
 
@@ -384,7 +384,7 @@ role Server:
         server = servers[i]
         server.gossip(self.cache)
 
-    func gossip(cache):
+    func gossip(received_cache):
         pass  # Empty block, we'll fill this later
 
 
