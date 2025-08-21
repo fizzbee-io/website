@@ -448,8 +448,8 @@ Now, we can fill in the `GossipTimer` on the sender and `gossip` function for th
 {{% fizzbee %}}
 ---
 action_options:
-       "Server#.GossipTimer":
-              max_concurrent_actions: 1
+    "Server#.GossipTimer":
+        max_concurrent_actions: 1
 ---
 
 NUM_SERVERS=2  # Reducing the number of servers to 2 temporarily. We will increase it later.
