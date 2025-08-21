@@ -990,12 +990,12 @@ For the gossip protocol, the safety property is not that relevant, but just as a
 
 The cached version of any server should never be less than the remote server's version.
 
-We can represent it with
+We can represent it with:
 ```python
 always assertion CachedVersionBelowActualVersion:
     return all([server.cache[i] <= servers[i].version for server in servers for i in range(NUM_SERVERS)])
 ```
-For forks, not familiar with Python, this is the same as
+For those not familiar with Python, this is the same as:
 ```python
 always assertion CachedVersionBelowActualVersion:
     for server in servers:
