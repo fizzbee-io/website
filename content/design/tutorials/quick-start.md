@@ -612,10 +612,10 @@ action_options:
     "Server#.GossipTimer":
         max_concurrent_actions: 1
 ```
-Notice the `Server.BumpVersion`. This means, the `BumpVersion` action can only be run once acros all `Server` instances.
-Whereas, if it was `Server#.BumpVersion`, it would mean, each `Server` instance can run the `BumpVersion` action once.
+Notice the `Server.BumpVersion`. This means that the `BumpVersion` action can only be run once acros all `Server` instances.
+If it were `Server#.BumpVersion`, it would mean that each `Server` instance can run the `BumpVersion` action once.
 
-Now, we run the model checker, and explore the states.
+Now we run the model checker and explore the states.
 
 {{% fizzbee %}}
 ---
@@ -759,7 +759,7 @@ label="servers";
 
 
 ## Add Durability and Ephemeral Annotations
-In our design, the `version` is a durable state, and the `cache` is ephemeral. In FizzBee, by default 
+In our design, the `version` is a durable state and the `cache` is ephemeral. In FizzBee, by default 
 all state are assumed to be durable. To mark the `cache` as ephemeral, we just need to set an annotation.
 
 ```python
@@ -812,10 +812,10 @@ action Init:
 
 
 {{% /fizzbee %}}
-Now, when you run the model checker and try the state explorer, you will see a few more action buttons titled
-`crash-role Server#0`, `crash-role Server#0` and `crash-role Server#0`. When you click one of these,
+Now when you run the model checker and try the state explorer, you will see a few more action buttons titled
+`crash-role Server#0`, `crash-role Server#0` and `crash-role Server#0`. When you click one of these
 it simulates a process restart. You will see the ephemeral data (`cache`) wiped out to its initial state
-but the `version` would be preserved. 
+but the `version` will be preserved. 
 
 For example, lets get to this state.
 
@@ -903,7 +903,7 @@ label="servers";
 }
 {{% /graphviz %}}
 
-Now, click on `crash-role Server#0`, the new state would look like,
+Now click on `crash-role Server#0`. The new state would look like:
 {{% graphviz %}}
 digraph G {
 compound=true;
