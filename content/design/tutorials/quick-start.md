@@ -564,11 +564,11 @@ For now, let us limit the number of actions that can be run concurrently to 1.
 ```yaml
 ---
 options:
-       max_concurrent_actions: 1
+    max_concurrent_actions: 1
 action_options:
-       "Server#.GossipTimer":
-              # This is not needed, as global max_concurrent_actions will be applied to all actions.
-              max_concurrent_actions: 1
+    "Server#.GossipTimer":
+        # This is not needed, as global max_concurrent_actions will be applied to all actions.
+        max_concurrent_actions: 1
 ---
 ```
 With this setting, if you run with 2 servers, it will produce around 70 states and 
