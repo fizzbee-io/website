@@ -1010,12 +1010,11 @@ Due to the implementation details, the first version runs much faster than the s
 Liveness properties are those that must eventually be true. While safety property actually says, nothing bad ever happens,
 liveness property says, something good eventually happens.
 
-For the gossip protocol, we can say, eventually, all servers should have the same version.
+For this gossip protocol, all servers should eventually have the same version.
 
 ```python
-
 always eventually assertion ConsistentCache:
-  return all([server.cache[i] == servers[i].version for server in servers for i in range(NUM_SERVERS)])
+    return all([server.cache[i] == servers[i].version for server in servers for i in range(NUM_SERVERS)])
 
 ```
 {{% fizzbee %}}
@@ -1098,13 +1097,12 @@ diff tmp/spec1.txt tmp/spec2.txt
 
 ```
 
-Now, when you run, you won't see any error.
+When you run this, you won't see any error.
 
 Now, try increasing the number of servers to 4. You will see the liveness property failing.
-But unfortunately, in the online playground the number of states would have exceeded so high, it will timeout.
+Unfortunately this will time out in the online playground since the number of states exceeds the maximum.
 
-We can temporarily reduce the statespace further by marking the gossip action as atomic and probably remove the BumpVersion action
-as well.
+We can temporarily reduce the statespace by marking the gossip action as atomic and removingf the BumpVersion action.
 
 ```diff
 11c11
@@ -1176,11 +1174,10 @@ action Init:
 
 {{% /fizzbee %}}
 
-When you run this spec, you'll see an error. The generated trace for liveness is not the shortest at this moment. 
-But if you open the error graph, and scroll to the bottom right, you will see, there is a possibility that
-two servers might choose each other and form a partition to gossip, and so the information about
-some server do not reach some others. 
-That is because, even though all servers are gossiping as we marked them fair, we didn't specify
+When you run this spec, you'll see an error. The generated trace for liveness is rather long,
+but if you open the error graph and scroll to the bottom right you should see a scenario where
+two servers choose each other, forming a partition. This prevents state information from reaching some servers.
+This is because, even though all servers are gossiping as we marked them fair, we didn't specify
 how they should select the server to communicate with. Specifically this line.
 
 ```python
@@ -1205,9 +1202,8 @@ sequenceDiagram
 	'Server#2' --&gt;&gt; 'Server#3': ([0, 0, 1, 1])
 {{% /mermaid %}}
 
-Imagine, in the implementation, each server maintains a `set` of urls for other servers, and it selects the first one each time.
-So this could cause the liveness issue. To fix this, in the implementation, all we need to do is,
-select a random server from the set of urls.
+Imagine, in the implementation, each server maintains a `set` of urls for other servers and selects the first one each time.
+This could cause the liveness issue. To fix this in the implementation, all we need to do is select a random server from the set of urls.
 That is, we will make a fair selection of the server to gossip with.
 
 ```diff
