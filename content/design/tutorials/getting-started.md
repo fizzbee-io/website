@@ -160,7 +160,7 @@ Same as python: while. (Note: Python's else clause on while is not supported)
 while a < 5:
   a += 1
 ```
-If a is 10 at the beginning, a will be 15 at the end.
+If a is 0 at the beginning, a will be 5 at the end.
 
 ## For
 Same as python: for. (Note: Python's else clause on for is not supported)
