@@ -152,7 +152,7 @@ Indicating, there are three servers. Each of these servers do not have any state
 
 ### Define the states
 
-There are two variables, `version` and `cache`. The `version` is an integer, and the `cache` is a list of integers.
+Let's add two variables, `version` and `cache`. The `version` is an integer, and the `cache` is a list of integers.
 
 The expressions are starlark (a limited Python subset) statements. Similar to Python's __init__ function of a class, 
 the state variables will be defined in the `Server` role's `Init` action.
@@ -273,7 +273,7 @@ label="servers";
 In the gossip protocol, we expect only one RPC method. Let's call it `gossip()` in each of these servers.
 
 ```python
-    func gossip(cache):
+    func gossip(received_cache):
         pass  # Empty block, we'll fill this later
 ```
 Someone should trigger this. Let's add a `GossipTimer` action to the `Server` role.
@@ -289,10 +289,10 @@ The GossipTimer will trigger the `gossip` method in an arbitrarily selected serv
     action GossipTimer:
         i = any range(NUM_SERVERS)
         server = servers[i]
-        server.gossip(cache)
+        server.gossip(self.cache)
 ```
 
-Here, `any` keyword indicates, we are selection one of the elements on the collection arbitrarily.
+The `any` keyword here indicates that we are selecting one element of the collection arbitrarily.
 The model checker will check for all possible values of `i` and `server`.
 
 {{% fizzbee %}}
@@ -309,7 +309,7 @@ role Server:
         server = servers[i]
         server.gossip(self.cache)
 
-    func gossip(cache):
+    func gossip(received_cache):
         pass  # Empty block, we'll fill this later
 
 
@@ -384,7 +384,7 @@ role Server:
         server = servers[i]
         server.gossip(self.cache)
 
-    func gossip(cache):
+    func gossip(received_cache):
         pass  # Empty block, we'll fill this later
 
 
@@ -394,8 +394,8 @@ action Init:
         servers.append(Server(ID=i))
 {{% /fizzbee %}}
 
-While, during the exploration, you might notice that you can have multiple concurrent `GossipTimer` running
-that is acceptable. But can a single server run multiple `GossipTimer` concurrently?
+You might notice during exploration that multiple concurrent `GossipTimer` are running.
+That is acceptable. But can a single server run multiple `GossipTimer` concurrently?
 In a typical implementation, this is usually not done. So we can simply restrict the number of concurrent actions for each server's `GossipTimer` to 1.
 
 ```yaml
@@ -406,19 +406,18 @@ action_options:
 ---
 ```
 
-Now, we have go the states modeled and started on the interactions. We now just need to fix
-what actually happens when gossipping.
+Now that we have the states modeled we can start to define what actually happens while gossipping.
 
 ## Translate Pseudo Code to FizzBee Statements
 It is time to fill in the logic of the `gossip` protocol in both the sending and receiving pairs.
 
 **Sender:**
-- Before sending its info, the sender should set its version to the cache.
-- On receiving, the receiving the response from the receiver, the sender should update its cache with the received version.
+- Before sending its state, the sender should set its version to the cache.
+- After receiving a response from the receiver, the sender should update its cache with the received state.
 
 **Receiver:**
-- On receiving the version from the sender, the receiver should update its cache with the received version.
-- And before sending the response, the receiver should set its version to the cache.
+- On receiving the state from the sender, the receiver should update its cache with the received state.
+- The receiver should then set its version to the cache and send its cached state as a response.
 
 In both the cases, the merge operation is selecting the maximum of its current cached version and the received version.
 
@@ -429,14 +428,14 @@ As the syntax is similar to Python (actually starlark), we can use the `max` fun
 ```
 
 {{< hint type="warning" >}}
-Even though in python this will be equivalent to,
+Even though the following python would be equivalent...
 ```python
     for i in range(NUM_SERVERS):
         self.cache[i] = max(self.cache[i], received_cache[i])
 ```
-There model checking semantics is different. If you change it to this, it will take a lot of time to model check, because
-the model checker will explore scenarios where there is a context switching after each iteration.
-To be equivalent, we need to say the entire list is updated at once by marking this atomic.
+The model checking semantics are different. If you write it like this, the model check will take a long time to run
+because it will explore all scenarios where there is a context switch between iterations. In order to make this for loop
+equivalent to a list comprehension we can mark the for loop `atomic`.
 ```python
     atomic for i in range(NUM_SERVERS):
         self.cache[i] = max(self.cache[i], received_cache[i])
@@ -448,8 +447,8 @@ Now, we can fill in the `GossipTimer` on the sender and `gossip` function for th
 {{% fizzbee %}}
 ---
 action_options:
-       "Server#.GossipTimer":
-              max_concurrent_actions: 1
+    "Server#.GossipTimer":
+        max_concurrent_actions: 1
 ---
 
 NUM_SERVERS=2  # Reducing the number of servers to 2 temporarily. We will increase it later.
@@ -565,11 +564,11 @@ For now, let us limit the number of actions that can be run concurrently to 1.
 ```yaml
 ---
 options:
-       max_concurrent_actions: 1
+    max_concurrent_actions: 1
 action_options:
-       "Server#.GossipTimer":
-              # This is not needed, as global max_concurrent_actions will be applied to all actions.
-              max_concurrent_actions: 1
+    "Server#.GossipTimer":
+        # This is not needed, as global max_concurrent_actions will be applied to all actions.
+        max_concurrent_actions: 1
 ---
 ```
 With this setting, if you run with 2 servers, it will produce around 70 states and 
@@ -613,10 +612,10 @@ action_options:
     "Server#.GossipTimer":
         max_concurrent_actions: 1
 ```
-Notice the `Server.BumpVersion`. This means, the `BumpVersion` action can only be run once acros all `Server` instances.
-Whereas, if it was `Server#.BumpVersion`, it would mean, each `Server` instance can run the `BumpVersion` action once.
+Notice the `Server.BumpVersion`. This means that the `BumpVersion` action can only be run once acros all `Server` instances.
+If it were `Server#.BumpVersion`, it would mean that each `Server` instance can run the `BumpVersion` action once.
 
-Now, we run the model checker, and explore the states.
+Now we run the model checker and explore the states.
 
 {{% fizzbee %}}
 ---
@@ -760,7 +759,7 @@ label="servers";
 
 
 ## Add Durability and Ephemeral Annotations
-In our design, the `version` is a durable state, and the `cache` is ephemeral. In FizzBee, by default 
+In our design, the `version` is a durable state and the `cache` is ephemeral. In FizzBee, by default 
 all state are assumed to be durable. To mark the `cache` as ephemeral, we just need to set an annotation.
 
 ```python
@@ -813,10 +812,10 @@ action Init:
 
 
 {{% /fizzbee %}}
-Now, when you run the model checker and try the state explorer, you will see a few more action buttons titled
-`crash-role Server#0`, `crash-role Server#0` and `crash-role Server#0`. When you click one of these,
+Now when you run the model checker and try the state explorer, you will see a few more action buttons titled
+`crash-role Server#0`, `crash-role Server#0` and `crash-role Server#0`. When you click one of these
 it simulates a process restart. You will see the ephemeral data (`cache`) wiped out to its initial state
-but the `version` would be preserved. 
+but the `version` will be preserved. 
 
 For example, lets get to this state.
 
@@ -904,7 +903,7 @@ label="servers";
 }
 {{% /graphviz %}}
 
-Now, click on `crash-role Server#0`, the new state would look like,
+Now click on `crash-role Server#0`. The new state would look like:
 {{% graphviz %}}
 digraph G {
 compound=true;
@@ -991,12 +990,12 @@ For the gossip protocol, the safety property is not that relevant, but just as a
 
 The cached version of any server should never be less than the remote server's version.
 
-We can represent it with
+We can represent it with:
 ```python
 always assertion CachedVersionBelowActualVersion:
     return all([server.cache[i] <= servers[i].version for server in servers for i in range(NUM_SERVERS)])
 ```
-For forks, not familiar with Python, this is the same as
+For those not familiar with Python, this is the same as:
 ```python
 always assertion CachedVersionBelowActualVersion:
     for server in servers:
@@ -1011,12 +1010,11 @@ Due to the implementation details, the first version runs much faster than the s
 Liveness properties are those that must eventually be true. While safety property actually says, nothing bad ever happens,
 liveness property says, something good eventually happens.
 
-For the gossip protocol, we can say, eventually, all servers should have the same version.
+For this gossip protocol, all servers should eventually have the same version.
 
 ```python
-
 always eventually assertion ConsistentCache:
-  return all([server.cache[i] == servers[i].version for server in servers for i in range(NUM_SERVERS)])
+    return all([server.cache[i] == servers[i].version for server in servers for i in range(NUM_SERVERS)])
 
 ```
 {{% fizzbee %}}
@@ -1099,13 +1097,12 @@ diff tmp/spec1.txt tmp/spec2.txt
 
 ```
 
-Now, when you run, you won't see any error.
+When you run this, you won't see any error.
 
 Now, try increasing the number of servers to 4. You will see the liveness property failing.
-But unfortunately, in the online playground the number of states would have exceeded so high, it will timeout.
+Unfortunately this will time out in the online playground since the number of states exceeds the maximum.
 
-We can temporarily reduce the statespace further by marking the gossip action as atomic and probably remove the BumpVersion action
-as well.
+We can temporarily reduce the statespace by marking the gossip action as atomic and removingf the BumpVersion action.
 
 ```diff
 11c11
@@ -1177,11 +1174,10 @@ action Init:
 
 {{% /fizzbee %}}
 
-When you run this spec, you'll see an error. The generated trace for liveness is not the shortest at this moment. 
-But if you open the error graph, and scroll to the bottom right, you will see, there is a possibility that
-two servers might choose each other and form a partition to gossip, and so the information about
-some server do not reach some others. 
-That is because, even though all servers are gossiping as we marked them fair, we didn't specify
+When you run this spec, you'll see an error. The generated trace for liveness is rather long,
+but if you open the error graph and scroll to the bottom right you should see a scenario where
+two servers choose each other, forming a partition. This prevents state information from reaching some servers.
+This is because, even though all servers are gossiping as we marked them fair, we didn't specify
 how they should select the server to communicate with. Specifically this line.
 
 ```python
@@ -1206,9 +1202,8 @@ sequenceDiagram
 	'Server#2' --&gt;&gt; 'Server#3': ([0, 0, 1, 1])
 {{% /mermaid %}}
 
-Imagine, in the implementation, each server maintains a `set` of urls for other servers, and it selects the first one each time.
-So this could cause the liveness issue. To fix this, in the implementation, all we need to do is,
-select a random server from the set of urls.
+Imagine, in the implementation, each server maintains a `set` of urls for other servers and selects the first one each time.
+This could cause the liveness issue. To fix this in the implementation, all we need to do is select a random server from the set of urls.
 That is, we will make a fair selection of the server to gossip with.
 
 ```diff
