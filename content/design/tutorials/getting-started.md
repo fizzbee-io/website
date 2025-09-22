@@ -15,8 +15,8 @@ some algorithms or scripts, you should be good to go.
 
 # Installation
 [FizzBee](https://github.com/fizzbee-io/fizzbee) is an open-source project and is available on GitHub.
-At present, there are no prebuilt binaries. You need to build the binary using Bazel.
-The instructions are posted on the README.md file.
+Prebuilt binaries are available for macOS and Linux. [Download the latest release](https://github.com/fizzbee-io/fizzbee/releases/latest).
+Instructions for building the binary from source are available in [README.md](https://github.com/fizzbee-io/fizzbee/blob/main/README.md#build-from-source).
 
 # Online Playground
 A good way to get started is to use the [Online Playground](/play).
