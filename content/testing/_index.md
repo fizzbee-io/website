@@ -12,7 +12,7 @@ weight: -10
 ## Why Model-Based Testing?
 Hand-written test cases don’t scale. As systems grow more stateful and concurrent, it becomes impossible to anticipate every edge case. Most testing completely misses concurrency issues.
 
-With **Model-based testing (MBT)**, instead of writing tests, you define *how your system should behave*. FizzBee then generates and runs thousands of scenarios, automatically checking your implementation against the model.
+With **Model-based testing (MBT)**, instead of writing tests, you define *how your system should behave*. FizzBee then generates and runs lots and lots of scenarios, automatically checking your implementation against the model.
 
 It’s like property-based testing for **stateful, concurrent systems**.
 
@@ -69,4 +69,4 @@ It’s like property-based testing for **stateful, concurrent systems**.
 FizzBee MBT lets you focus on **what the system should do**, not how to manually test it.  
 Define the rules once. Let FizzBee do the rest.
 
-👉 [Get Started with Model-Based Testing](/get-started)  
+👉 [Get Started with Model-Based Testing](tutorials/quick-start/)  
