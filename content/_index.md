@@ -21,27 +21,6 @@ geekdocBreadcrumb: false
     </div>
   </section>
 
-  <section class="fb-section fb-section--compact" aria-label="FizzBee workflow">
-    <div class="fb-loop" aria-label="FizzBee workflow">
-      <a class="fb-loop__item" href="#model">
-        <h3>Model</h3>
-        <p>Describe actors, actions, state, faults, and invariants in readable code.</p>
-      </a>
-      <a class="fb-loop__item" href="#verify">
-        <h3>Verify</h3>
-        <p>Check every schedule for safety, liveness, deadlocks, and counterexamples.</p>
-      </a>
-      <a class="fb-loop__item" href="#visualize">
-        <h3>Visualize</h3>
-        <p>Generate sequence diagrams, state views, and traces your team can review.</p>
-      </a>
-      <a class="fb-loop__item" href="#test">
-        <h3>Test</h3>
-        <p>Map the model to real code and exercise every behavior the design allows.</p>
-      </a>
-    </div>
-  </section>
-
   <section class="fb-section fb-artifact fb-artifact--model" id="model" aria-labelledby="fb-model-title">
     <div class="fb-artifact__copy">
       <h2 id="fb-model-title">Model</h2>
