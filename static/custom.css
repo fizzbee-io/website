@@ -40,6 +40,8 @@
     --body-font-family: "Inter", sans-serif;
     --code-font-family: "JetBrains Mono", monospace;
     --code-max-height: 60rem;
+    --fb-home-max-width: 1140px;
+    --fb-home-gutter: 40px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -320,7 +322,7 @@ body {
     position: relative;
     z-index: 1;
     min-width: 0;
-    width: min(1180px, calc(100% - 48px));
+    width: min(var(--fb-home-max-width), calc(100% - var(--fb-home-gutter)));
     margin: 0 auto;
     padding: 3rem 0 3.25rem;
 }
@@ -771,7 +773,7 @@ body {
 }
 
 .fb-section {
-    width: min(1180px, calc(100% - 48px));
+    width: min(var(--fb-home-max-width), calc(100% - var(--fb-home-gutter)));
     margin: 0 auto;
     padding: 6rem 0;
 }
@@ -1314,8 +1316,8 @@ body {
 
     .fb-hero__inner,
     .fb-section {
-        width: calc(100% - 28px);
-        max-width: 1180px;
+        width: calc(100% - var(--fb-home-gutter));
+        max-width: var(--fb-home-max-width);
     }
 
     .fb-hero__inner {
