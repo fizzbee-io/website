@@ -583,8 +583,35 @@ body {
 }
 
 .fb-loop > div {
+    position: relative;
     padding: 1.85rem 2rem;
-    border-right: 1px solid var(--fb-line);
+    border-right: 1px solid rgba(22, 32, 28, 0.12);
+    background: var(--fb-loop-bg);
+}
+
+.fb-loop > div::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 4px;
+    background: var(--fb-loop-accent);
+}
+
+.fb-loop > div:nth-child(1) {
+    --fb-loop-bg: #eaf6ef;
+    --fb-loop-accent: var(--fb-green);
+}
+
+.fb-loop > div:nth-child(2) {
+    --fb-loop-bg: #fff2d8;
+    --fb-loop-accent: #d88914;
+}
+
+.fb-loop > div:nth-child(3) {
+    --fb-loop-bg: #e7f4f6;
+    --fb-loop-accent: var(--fb-cyan);
 }
 
 .fb-loop > div + div {
