@@ -1451,8 +1451,10 @@ body {
     }
 
     .gdoc-brand__img {
-        width: 34px;
-        height: 34px;
+        display: block;
+        width: 24px;
+        height: 24px;
+        margin-right: 0.4rem;
     }
 
     .gdoc-brand__title {
