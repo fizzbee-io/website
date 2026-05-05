@@ -213,10 +213,6 @@ body {
     .gdoc-nav nav {
         border-right: 0;
     }
-
-    #menu-control:checked ~ main .gdoc-nav nav {
-        border-right: 1px solid var(--fb-line);
-    }
 }
 
 .gdoc-nav__entry,
