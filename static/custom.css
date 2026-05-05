@@ -882,8 +882,8 @@ body {
     }
 
     .fb-home {
-        width: 100vw;
-        margin-left: calc(50% - 50vw + 7.5px);
+        width: calc(100% + 40px);
+        margin-left: -20px;
         margin-top: calc(-1.5rem - 1.25rem);
     }
 
