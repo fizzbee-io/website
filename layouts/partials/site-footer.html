@@ -1,13 +1,16 @@
 <footer class="gdoc-footer fb-site-footer">
-  <nav class="container fb-footer-nav" aria-label="Footer navigation">
-    <a class="fb-footer-brand" href="{{ "/" | relURL }}">FizzBee</a>
-    <div class="fb-footer-links">
+  <div class="container fb-footer-shell">
+    <div class="fb-footer-brand-block">
+      <a class="fb-footer-brand" href="{{ "/" | relURL }}">FizzBee</a>
+      <p>Model, verify, visualize, and test distributed systems.</p>
+    </div>
+    <nav class="fb-footer-nav" aria-label="Footer navigation">
       <a class="gdoc-footer__link fb-footer-link" href="{{ "/privacy.html" | relURL }}">Privacy policy</a>
       <a class="gdoc-footer__link fb-footer-link" href="{{ "/design/" | relURL }}">Design verification docs</a>
       <a class="gdoc-footer__link fb-footer-link" href="{{ "/testing/" | relURL }}">Testing docs</a>
       <a class="gdoc-footer__link fb-footer-link" href="{{ "/posts/" | relURL }}">Blog</a>
       <a class="gdoc-footer__link fb-footer-link fb-footer-link--top" href="#">{{ i18n "nav_top" }}</a>
-    </div>
-  </nav>
+    </nav>
+  </div>
   {{ partial "consent" . }}
 </footer>
