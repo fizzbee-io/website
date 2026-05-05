@@ -12,7 +12,7 @@ geekdocBreadcrumb: false
   <section class="fb-hero" aria-labelledby="fb-hero-title">
     <div class="fb-hero__inner">
       <div class="fb-hero__copy">
-        <h1 id="fb-hero-title">Design distributed systems you can test before you build.</h1>
+        <h1 id="fb-hero-title">Design reliable, scalable distributed systems</h1>
         <p class="fb-hero__lead">Write a compact, Python-like model. FizzBee explores the behaviors, draws the diagrams, and turns the same design into tests.</p>
         <div class="fb-actions" aria-label="Primary actions">
           <a class="fb-button fb-button--primary" href="/design/tutorials/getting-started/">Start modeling</a>
