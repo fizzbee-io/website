@@ -89,7 +89,7 @@ geekdocBreadcrumb: false
     <div class="fb-artifact__copy">
       <h2 id="fb-model-title">Look familiar?</h2>
       <p>FizzBee uses <a href="https://github.com/bazelbuild/starlark">Starlark</a>, the same Python dialect as <a href="https://bazel.build/">Bazel</a>. Your models stay both human-readable and AI-friendly.</p>
-      <a class="fb-text-link" href="/play">Open in playground</a>
+      <a class="fb-text-link" href="/play#embed-home-travel-booking" onclick="return fizzbeeOpenPlaygroundFromElement(event, 'home-travel-booking', 'fb-home-travel-booking-code', '/play#embed-home-travel-booking')">Run in playground</a>
     </div>
     <div class="fb-artifact__media">
       <div class="fb-workbench fb-workbench--inline" aria-label="travel_booking.fizz model">
@@ -97,7 +97,7 @@ geekdocBreadcrumb: false
           <strong>travel_booking.fizz</strong>
         </div>
         <div class="fb-workbench__body">
-          <pre><code>role Participant:
+          <pre><code id="fb-home-travel-booking-code">role Participant:
   action Init:
       self.status = "init"
 

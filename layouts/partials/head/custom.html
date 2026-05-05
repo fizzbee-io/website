@@ -4,6 +4,35 @@
 <link rel="dns-prefetch" href="//www.google-analytics.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+<script>
+    (function() {
+        function playgroundTarget(id, playUrl) {
+            return playUrl || ('/play#embed-' + id);
+        }
+
+        window.fizzbeeOpenPlayground = function(event, id, content, playUrl) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            try {
+                sessionStorage.setItem('fizzbee-embed-' + id, content);
+            } catch (error) {
+                console.error('Unable to save playground snippet.', error);
+            }
+
+            window.open(playgroundTarget(id, playUrl), '_blank');
+            return false;
+        };
+
+        window.fizzbeeOpenPlaygroundFromElement = function(event, id, codeElementId, playUrl) {
+            var codeElement = document.getElementById(codeElementId);
+            var content = codeElement ? codeElement.textContent : '';
+            return window.fizzbeeOpenPlayground(event, id, content, playUrl);
+        };
+    })();
+</script>
+
 
 <script>
     (function() {

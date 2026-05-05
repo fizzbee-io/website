@@ -1,19 +1,10 @@
 <!-- layouts/shortcodes/fizzbee.html -->
-{{ if not (.Page.Scratch.Get "jhandler_defined") }}
-  {{ .Page.Scratch.Set "jhandler_defined" true }}
-<script>
-    function jhandler(id, content) {
-        // Your JavaScript code here
-        event.preventDefault();
-        sessionStorage.setItem('fizzbee-embed-'+id, content);
-
-        window.open('/play#' + 'embed-' + id , '_blank');
-        return false;
-    }
-</script>
-{{ end }}
+{{ $id := printf "fizzbee-%d" .Ordinal }}
+{{ $playURL := "/play" | relURL }}
+{{ $targetURL := printf "%s#embed-%s" $playURL $id }}
+{{ $content := trim .Inner "\r\n" }}
 <div style="text-align: left">
-<a href="/play" onclick="jhandler(crypto.randomUUID(), {{ trim .Inner "\r\n"}})">Run in playground</a>
+<a href="{{ $targetURL }}" onclick="return fizzbeeOpenPlayground(event, '{{ $id }}', {{ $content | jsonify | safeJS }}, {{ $targetURL | jsonify | safeJS }});">Run in playground</a>
 {{ printf "%s%s%s" "{{< highlight Shell \"linenos=python\" >}}" .Inner  "{{< /highlight >}}" | markdownify }}
 </div>
 {{ with .Site.BaseURL }}<script>window.baseURL = '{{ . }}';</script>{{ end }}
