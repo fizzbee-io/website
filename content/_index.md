@@ -132,19 +132,19 @@ always assertion ParticipantsConsistent:
     </div>
     <div class="fb-quotes">
       <figure class="fb-quote">
-        <blockquote>FizzBee upholds the rigor of TLA+ while making formal verification simpler and more accessible for engineers.</blockquote>
+        <blockquote>FizzBee upholds the rigor of TLA+ while making formal verification simpler and more accessible for engineers. By leveraging Python, it reduces the learning curve, with the potential to surpass TLA+ as the go-to tool for engineers.</blockquote>
         <figcaption>Jack Vanlightly, Principal Technologist, Confluent</figcaption>
       </figure>
       <figure class="fb-quote">
-        <blockquote>By the next day, I had a working spec that uncovered a real concurrency bug.</blockquote>
+        <blockquote>I discovered FizzBee while designing the manifest for SlateDB, an embedded key-value store. FizzBee's concepts were easy to grasp in hours, and by the next day, I had a working spec that uncovered a real concurrency bug!</blockquote>
         <figcaption>Vignesh Chandramohan, Engineering Manager, DoorDash</figcaption>
       </figure>
       <figure class="fb-quote">
-        <blockquote>The Python-like syntax made it easy to learn and use, unlike other formal methods languages.</blockquote>
+        <blockquote>FizzBee's Python-like syntax made it easy to learn and use, unlike other formal methods languages. I picked it up over a weekend and successfully modeled our streaming ingestion platform to identify correctness bugs. It's intuitive and incredibly effective!</blockquote>
         <figcaption>Franklyn D'souza, Staff Software Developer, Shopify</figcaption>
       </figure>
       <figure class="fb-quote">
-        <blockquote>FizzBee cured my fear of formal methods after struggling with TLA+ years ago.</blockquote>
+        <blockquote>FizzBee cured my fear of formal methods after struggling with TLA+ years ago. It's surprisingly easy to learn and a refreshing experience, something I never thought I could master. Universities should teach FizzBee!</blockquote>
         <figcaption>Li Yazhou, Tech Lead, Cloud Platform, Databend</figcaption>
       </figure>
     </div>
