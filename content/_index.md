@@ -82,12 +82,16 @@ always assertion ParticipantsConsistent:
   <section class="fb-section fb-section--compact" aria-label="FizzBee workflow">
     <div class="fb-loop" aria-label="FizzBee workflow">
       <div>
-        <h3>Specify</h3>
-        <p>Model actors, actions, faults, and invariants in readable code.</p>
+        <h3>Model</h3>
+        <p>Describe actors, actions, state, faults, and invariants in readable code.</p>
       </div>
       <div>
-        <h3>Explore</h3>
-        <p>Generate sequence diagrams, state views, counterexamples, and performance signals.</p>
+        <h3>Verify</h3>
+        <p>Check every schedule for safety, liveness, deadlocks, and counterexamples.</p>
+      </div>
+      <div>
+        <h3>Visualize</h3>
+        <p>Generate sequence diagrams, state views, and traces your team can review.</p>
       </div>
       <div>
         <h3>Test</h3>

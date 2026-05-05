@@ -567,7 +567,7 @@ body {
 
 .fb-loop {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0;
     margin-top: 0;
     border-top: 0;
@@ -604,6 +604,11 @@ body {
 .fb-loop > div:nth-child(3) {
     --fb-loop-bg: #e7f4f6;
     --fb-loop-accent: var(--fb-cyan);
+}
+
+.fb-loop > div:nth-child(4) {
+    --fb-loop-bg: #f8eee9;
+    --fb-loop-accent: var(--fb-rust);
 }
 
 .fb-loop > div + div {
