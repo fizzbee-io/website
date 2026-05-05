@@ -16,7 +16,6 @@ geekdocBreadcrumb: false
         <p class="fb-hero__lead">Write a compact, Python-like model. FizzBee explores the behaviors, draws the diagrams, and turns the same design into tests.</p>
         <div class="fb-actions" aria-label="Primary actions">
           <a class="fb-button fb-button--primary" href="/design/tutorials/getting-started/">Start modeling</a>
-          <a class="fb-button fb-button--secondary" href="/play">Open playground</a>
         </div>
       </div>
 
@@ -24,6 +23,7 @@ geekdocBreadcrumb: false
         <div class="fb-workbench__topbar">
           <span></span><span></span><span></span>
           <strong>travel_booking.fizz</strong>
+          <a class="fb-workbench__play" href="/play">Open playground</a>
         </div>
         <div class="fb-workbench__body">
           <pre><code>role Coordinator:
