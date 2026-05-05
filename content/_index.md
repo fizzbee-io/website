@@ -18,6 +18,38 @@ geekdocBreadcrumb: false
           <a class="fb-button fb-button--primary" href="/design/tutorials/getting-started/">Start modeling</a>
         </div>
       </div>
+      <div class="fb-hero__visual" aria-hidden="true">
+        <div class="fb-state-map">
+          <span class="fb-state-edge fb-state-edge--one"></span>
+          <span class="fb-state-edge fb-state-edge--two"></span>
+          <span class="fb-state-edge fb-state-edge--three"></span>
+          <span class="fb-state-edge fb-state-edge--four"></span>
+          <div class="fb-state-node fb-state-node--init">
+            <span>state 00</span>
+            <strong>Init</strong>
+            <small>participants ready</small>
+          </div>
+          <div class="fb-state-node fb-state-node--checkout">
+            <span>state 12</span>
+            <strong>Checkout</strong>
+            <small>coordinator in progress</small>
+          </div>
+          <div class="fb-state-node fb-state-node--crash">
+            <span>state 31</span>
+            <strong>Crash</strong>
+            <small>deadlock found</small>
+          </div>
+          <div class="fb-state-node fb-state-node--safe">
+            <span>assertion</span>
+            <strong>Consistent</strong>
+            <small>committed != aborted</small>
+          </div>
+          <div class="fb-state-trace">
+            <span>$ fizz check travel_booking.fizz</span>
+            <strong>counterexample: Init -> Checkout -> crash</strong>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
