@@ -44,8 +44,6 @@
       <text x="756" y="312" fill="#2d3d35" font-size="15" font-weight="700">Participants</text>
       <text x="756" y="336" fill="#58645f" font-size="14">status = init</text>
     </g>
-    <text x="318" y="220" fill="#2f7d63" font-size="14" font-family="JetBrains Mono, monospace">1: Checkout</text>
-    <text x="642" y="346" fill="#b75a32" font-size="14" font-family="JetBrains Mono, monospace">2: crash</text>
     <text x="40" y="500" fill="#58645f" font-size="14" font-family="JetBrains Mono, monospace">error-graph.dot from fizz --output-dir /tmp/fizzbee-home-run travel_booking.fizz</text>
   </g>
 </svg>
