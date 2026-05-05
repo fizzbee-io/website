@@ -13,7 +13,7 @@ geekdocBreadcrumb: false
     <div class="fb-hero__inner">
       <div class="fb-hero__copy">
         <h1 id="fb-hero-title">Design reliable software</h1>
-        <p class="fb-hero__lead">Design software in a Pythonic modeling language. Let FizzBee verify your design and generate a test harness for your code.</p>
+        <p class="fb-hero__lead">Specify your system design in a Pythonic modeling language. Let FizzBee verify your design and generate a test harness for your code.</p>
         <div class="fb-actions" aria-label="Primary actions">
           <a class="fb-button fb-button--primary" href="/design/tutorials/getting-started/">Start modeling</a>
         </div>
