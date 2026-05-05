@@ -57,12 +57,12 @@ geekdocBreadcrumb: false
     <div class="fb-artifact__copy">
       <h2 id="fb-model-title">Model</h2>
       <p>Capture the protocol directly: participants vote, the coordinator decides, and the assertion documents the consistency rule.</p>
+      <a class="fb-text-link" href="/play">Open in playground</a>
     </div>
     <div class="fb-artifact__media">
       <div class="fb-workbench fb-workbench--inline" aria-label="travel_booking.fizz model">
         <div class="fb-workbench__topbar">
           <strong>travel_booking.fizz</strong>
-          <a class="fb-workbench__play" href="/play">Open playground</a>
         </div>
         <div class="fb-workbench__body">
           <pre><code>role Participant:
