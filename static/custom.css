@@ -1192,6 +1192,9 @@ body {
     display: grid;
     grid-template-columns: minmax(220px, 0.55fr) minmax(0, 2fr);
     align-items: center;
+    width: min(1180px, calc(100% - 2.5rem));
+    max-width: 1180px;
+    margin: 0 auto;
     gap: 2rem;
     padding: 2rem 0;
 }
