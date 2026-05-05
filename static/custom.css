@@ -215,6 +215,10 @@ body {
     text-decoration: none;
 }
 
+.gdoc-search__input {
+    background: #ffffff;
+}
+
 .gdoc-page {
     padding: 2.5rem 0 4rem;
 }
