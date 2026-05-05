@@ -201,7 +201,7 @@ Writen error states as html: /tmp/fizzbee-home-run/error-states.html</code></pre
 
   <section class="fb-section fb-artifact fb-artifact--visualize" id="visualize" aria-labelledby="fb-visualize-title">
     <div class="fb-artifact__copy">
-      <h2 id="fb-visualize-title">Visualize</h2>
+      <h2 id="fb-visualize-title">Visualize Design Complexity</h2>
       <p>The same run emits graph data for the state explorer. The error graph shows the short path from Init to Checkout to the crash state.</p>
       <a class="fb-text-link" href="/design/tutorials/visualizations/">Explore visualizations</a>
     </div>
