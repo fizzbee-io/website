@@ -19,41 +19,25 @@ geekdocBreadcrumb: false
         </div>
       </div>
       <div class="fb-hero__visual" aria-hidden="true">
-        <div class="fb-proof-card">
-          <div class="fb-proof-card__topbar">
-            <span>travel_booking.fizz</span>
-            <strong>Model check</strong>
-          </div>
-          <div class="fb-proof-card__body">
-            <div class="fb-proof-code">
-              <span>role Coordinator:</span>
-              <span>  action Checkout:</span>
-              <span>    require(status == "init")</span>
-              <span>    vote = participant.placehold()</span>
-              <span>    finalize(decision)</span>
+        <div class="fb-orbit-visual">
+          <div class="fb-orbit-field">
+            <span class="fb-orbit-ring fb-orbit-ring--outer"></span>
+            <span class="fb-orbit-ring fb-orbit-ring--middle"></span>
+            <span class="fb-orbit-ring fb-orbit-ring--inner"></span>
+            <div class="fb-orbit-bee">
+              <span class="fb-orbit-bee__wing fb-orbit-bee__wing--rear"></span>
+              <span class="fb-orbit-bee__wing fb-orbit-bee__wing--front"></span>
+              <span class="fb-orbit-bee__body"></span>
+              <span class="fb-orbit-bee__head"></span>
+              <span class="fb-orbit-bee__antenna fb-orbit-bee__antenna--top"></span>
+              <span class="fb-orbit-bee__antenna fb-orbit-bee__antenna--bottom"></span>
             </div>
-            <div class="fb-proof-result">
-              <span class="fb-proof-badge">deadlock found</span>
-              <dl>
-                <div>
-                  <dt>states</dt>
-                  <dd>32</dd>
-                </div>
-                <div>
-                  <dt>queued</dt>
-                  <dd>0</dd>
-                </div>
-                <div>
-                  <dt>elapsed</dt>
-                  <dd>8.5ms</dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-          <div class="fb-proof-trace">
-            <span>Init</span>
-            <span>Checkout</span>
-            <span>Crash</span>
+            <span class="fb-state-dot fb-state-dot--init"><strong>init</strong></span>
+            <span class="fb-state-dot fb-state-dot--vote"><strong>vote</strong></span>
+            <span class="fb-state-dot fb-state-dot--hold"><strong>hold</strong></span>
+            <span class="fb-state-dot fb-state-dot--commit"><strong>commit</strong></span>
+            <span class="fb-state-dot fb-state-dot--abort"><strong>abort</strong></span>
+            <span class="fb-state-dot fb-state-dot--crash"><strong>crash</strong></span>
           </div>
         </div>
       </div>
