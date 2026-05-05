@@ -403,7 +403,7 @@ body {
     position: absolute;
     right: max(24px, calc((100vw - 1180px) / 2));
     top: 50%;
-    z-index: 2;
+    z-index: 4;
     min-width: 0;
     width: min(590px, 48vw);
     overflow: hidden;
