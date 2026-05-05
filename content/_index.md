@@ -1,148 +1,147 @@
 ---
-Title: FizzBee – Design Reliable, Scalable Distributed Systems
-Description: Designing a distributed system? FizzBee makes it easy to model, visualize, and
-  validate your design—catching flaws before you code. The easiest-ever formal methods,
-  built for developers.
-#geekdocNav: false
-geekdocAlign: center
+Title: FizzBee - Design Reliable Distributed Systems
+Description: FizzBee helps engineers model, visualize, validate, and test distributed system designs before implementation.
+geekdocNav: false
+geekdocAlign: left
 geekdocAnchor: false
 geekdocBreadcrumb: false
 ---
 
-
-{{< columns >}}
-
-### Analyze & Visualize Your Design
-
-- Specify your system design as code. 
-- FizzBee automatically:
-  - Generates sequence & block diagrams
-  - Checks for behavioral correctness
-  - Analyzes performance metrics
-
-<--->
-
-### Generate & Run Tests
-
-- Specify how the design maps to your code.
-- FizzBee automatically:
-    - Exhaustively tests every behavior
-    - Simulates faults and edge cases
-    - Validates concurrency and integration
-
-{{< /columns >}}
-
-{{% rawhtml %}}
-<style>
-        .testimonial-slider { display: flex; overflow-x: auto; gap: 2rem; scroll-snap-type: x mandatory; }
-        .testimonial { flex: 0 0 450px; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); scroll-snap-align: start; }
-
-</style>
-<section class="testimonials">
-    <h2>What Engineers Are Saying</h2>
-    <div class="testimonial-slider">
-        <div class="testimonial">
-            <p>"FizzBee upholds the rigor of TLA+ while making formal verification simpler and more accessible for engineers. By leveraging Python, it reduces the learning curve, with the potential to surpass TLA+ as the go-to tool for engineers."</p>
-            <strong>— Jack Vanlightly, Principal Technologist, Confluent</strong>
+{{< rawhtml >}}
+<div class="fb-home">
+  <section class="fb-hero" aria-labelledby="fb-hero-title">
+    <div class="fb-hero__inner">
+      <div class="fb-hero__copy">
+        <div class="fb-brand-kicker">
+          <img src="/bee-left-to-right-512x512.png" alt="" />
+          <span>FizzBee</span>
         </div>
-        <div class="testimonial">
-            <p>"I discovered FizzBee while designing the manifest for SlateDB, an embedded key-value store. FizzBee’s concepts were easy to grasp in hours, and by the next day, I had a working spec that uncovered a real concurrency bug!"</p>
-            <strong>— Vignesh Chandramohan, Engineering Manager, Doordash</strong>
+        <h1 id="fb-hero-title">Design distributed systems you can test before you build.</h1>
+        <p class="fb-hero__lead">Write a compact, Python-like model. FizzBee explores the behaviors, draws the diagrams, and turns the same design into tests.</p>
+        <div class="fb-actions" aria-label="Primary actions">
+          <a class="fb-button fb-button--primary" href="/design/tutorials/getting-started/">Start modeling</a>
+          <a class="fb-button fb-button--secondary" href="/play">Open playground</a>
         </div>
-        <div class="testimonial">
-            <p>"FizzBee’s Python-like syntax made it easy to learn and use, unlike other formal methods languages. I picked it up over a weekend and successfully modeled our streaming ingestion platform to identify correctness bugs. It's intuitive and incredibly effective!"</p>
-            <strong>— Franklyn D'souza <br> Staff Software Developer, Shopify</strong>
+      </div>
+
+      <div class="fb-workbench" aria-label="FizzBee model checking preview">
+        <div class="fb-workbench__topbar">
+          <span></span><span></span><span></span>
+          <strong>travel_booking.fizz</strong>
         </div>
-        <div class="testimonial">
-            <p>"FizzBee cured my fear of formal methods after struggling with TLA+ years ago. It's surprisingly easy to learn and a refreshing experience—something I never thought I could master. Universities should teach FizzBee!"</p>
-            <strong>— Li Yazhou<br> Tech Lead, Cloud Platform, Databend</strong>
+        <div class="fb-workbench__body">
+          <pre><code>role Coordinator:
+  action Checkout:
+    for p in participants:
+      vote = p.placehold()
+      if vote == "aborted":
+        self.finalize("aborted")
+        return
+    self.finalize("committed")
+
+always assertion Consistent:
+  return not mixed_decisions()</code></pre>
+          <div class="fb-run-result">
+            <div>
+              <span class="fb-status-dot"></span>
+              <strong>Model check passed</strong>
+            </div>
+            <p>1,248 states explored across failures, retries, and interleavings.</p>
+          </div>
         </div>
+      </div>
     </div>
-</section>
-{{% /rawhtml %}}
+  </section>
 
-## Why Model Your System?
+  <section class="fb-section fb-section--compact" aria-labelledby="fb-loop-title">
+    <div class="fb-section__header">
+      <p class="fb-eyebrow">One model, multiple payoffs</p>
+      <h2 id="fb-loop-title">Turn a design sketch into executable evidence.</h2>
+    </div>
+    <div class="fb-loop" aria-label="FizzBee workflow">
+      <div>
+        <span>01</span>
+        <h3>Specify</h3>
+        <p>Model actors, actions, faults, and invariants in readable code.</p>
+      </div>
+      <div>
+        <span>02</span>
+        <h3>Explore</h3>
+        <p>Generate sequence diagrams, state views, counterexamples, and performance signals.</p>
+      </div>
+      <div>
+        <span>03</span>
+        <h3>Test</h3>
+        <p>Map the model to real code and exercise every behavior the design allows.</p>
+      </div>
+    </div>
+  </section>
 
-{{< figure src="https://storage.googleapis.com/fizzbee-public/website/homepage/what_fizzbee_does_graph.png" alt="Why Model Your System" caption="Modeling helps you explore edge cases, eliminate ambiguity, catch bugs early, and iterate with confidence. In addition to validating the design, you can verify the implementation" >}}
+  <section class="fb-section fb-section--split" aria-labelledby="fb-why-title">
+    <div class="fb-section__header">
+      <p class="fb-eyebrow">Why model first</p>
+      <h2 id="fb-why-title">Distributed bugs hide in the schedules people do not write down.</h2>
+      <p>FizzBee makes the schedules explicit. It checks behavioral correctness, exposes edge cases, and gives teams diagrams they can review together.</p>
+      <a class="fb-text-link" href="/design/examples/">Browse examples</a>
+    </div>
+    <div class="fb-trace" aria-label="Example design trace">
+      <div class="fb-trace__row">
+        <span>client</span>
+        <strong>Checkout</strong>
+        <em>request received</em>
+      </div>
+      <div class="fb-trace__row">
+        <span>coordinator</span>
+        <strong>PlaceHold</strong>
+        <em>2 participants</em>
+      </div>
+      <div class="fb-trace__row fb-trace__row--warn">
+        <span>participant</span>
+        <strong>Abort</strong>
+        <em>counterexample avoided</em>
+      </div>
+      <div class="fb-trace__row">
+        <span>test</span>
+        <strong>Replay</strong>
+        <em>implementation verified</em>
+      </div>
+    </div>
+  </section>
 
+  <section class="fb-section fb-section--quotes" aria-labelledby="fb-quotes-title">
+    <div class="fb-section__header">
+      <p class="fb-eyebrow">Used by engineers designing real systems</p>
+      <h2 id="fb-quotes-title">Formal methods without the ceremony.</h2>
+    </div>
+    <div class="fb-quotes">
+      <figure class="fb-quote">
+        <blockquote>FizzBee upholds the rigor of TLA+ while making formal verification simpler and more accessible for engineers.</blockquote>
+        <figcaption>Jack Vanlightly, Principal Technologist, Confluent</figcaption>
+      </figure>
+      <figure class="fb-quote">
+        <blockquote>By the next day, I had a working spec that uncovered a real concurrency bug.</blockquote>
+        <figcaption>Vignesh Chandramohan, Engineering Manager, DoorDash</figcaption>
+      </figure>
+      <figure class="fb-quote">
+        <blockquote>The Python-like syntax made it easy to learn and use, unlike other formal methods languages.</blockquote>
+        <figcaption>Franklyn D'souza, Staff Software Developer, Shopify</figcaption>
+      </figure>
+      <figure class="fb-quote">
+        <blockquote>FizzBee cured my fear of formal methods after struggling with TLA+ years ago.</blockquote>
+        <figcaption>Li Yazhou, Tech Lead, Cloud Platform, Databend</figcaption>
+      </figure>
+    </div>
+  </section>
 
-## Try Fizz
-
-Read the [quick start guide](/design/tutorials/getting-started/) to learn how to write your first FizzBee model
-or comb through the [examples](/design/examples/)
-or tinker with the [FizzBee online playground](/play)
-
-### An example: Travel Booking Service using Two Phase Commit
-
-{{% fizzbee %}}
----
-deadlock_detection: false
----
-"""
-How does a travel booking service ensure that all components in the itinerary are
-booked or nothing is booked? Using Two Phase Commit protocol.
-
-Phase 1: The Coordinator (Booking Service) asks all participants (Airline, Hotel, Car Rental) to place a hold on
-the resource.
-Phase 2:
-    a. If all the participants successfully placed a hold on the resource, 
-        the Coordinator (Booking Service) asks all participants to commit the booking.
-    b. If any of the participants fail to place a hold, 
-        the Coordinator (Booking Service) asks all participants to abort the booking.
-
-The core logic is in the Coordinator.Checkout action 
-"""
-
-role Participant:
-  action Init:
-      self.status = "init"
- 
-  func placehold():
-      vote = any ["accepted", "aborted"]
-      self.status = vote 
-      return self.status
- 
-  func finalize(decision):
-      self.status = decision
-
-
-role Coordinator:
-    action Init:
-        self.status = "init"
- 
-    action Checkout:
-        require(self.status == "init")
-        self.status = "inprogress"
-        for p in participants:
-              vote = p.placehold()
-              if vote == "aborted":
-                  self.finalize("aborted")
-                  return
- 
-        self.finalize("committed")
- 
- 
-    func finalize(decision):
-        self.status = decision
-        for p in participants:
-            p.finalize(decision)
-
- 
-NUM_PARTICIPANTS=2
- 
-action Init:
-    coordinator = Coordinator()
-    participants = []
-    for i in range(NUM_PARTICIPANTS):
-        participants.append(Participant())
-
-always assertion ParticipantsConsistent:
-  for p1 in participants:
-    for p2 in participants:
-      if p1.status == 'committed' and p2.status == 'aborted':
-        return False
-  return True
-
-{{% /fizzbee %}}
-
-
+  <section class="fb-section fb-final" aria-labelledby="fb-final-title">
+    <div>
+      <p class="fb-eyebrow">Try FizzBee</p>
+      <h2 id="fb-final-title">Start with a model small enough to review and strong enough to break assumptions.</h2>
+    </div>
+    <div class="fb-actions">
+      <a class="fb-button fb-button--primary" href="/design/tutorials/getting-started/">Read the quick start</a>
+      <a class="fb-button fb-button--secondary" href="/play">Use the playground</a>
+    </div>
+  </section>
+</div>
+{{< /rawhtml >}}
