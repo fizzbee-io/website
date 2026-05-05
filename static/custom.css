@@ -300,7 +300,7 @@ body {
 .fb-hero {
     position: relative;
     overflow: hidden;
-    min-height: calc(74svh - 68px);
+    min-height: min(calc(74svh - 68px), 600px);
     display: grid;
     align-items: center;
     background: #f7faf6;
