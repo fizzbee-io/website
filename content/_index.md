@@ -101,7 +101,7 @@ always assertion Consistent:
 
   <section class="fb-section fb-section--quotes" aria-labelledby="fb-quotes-title">
     <div class="fb-section__header">
-      <h2 id="fb-quotes-title">Formal methods without the ceremony.</h2>
+      <h2 id="fb-quotes-title">Formal methods made easy</h2>
     </div>
     <div class="fb-quotes">
       <figure class="fb-quote">
