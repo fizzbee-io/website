@@ -604,11 +604,24 @@ body {
 
 .fb-terminal,
 .fb-code-window {
+    position: relative;
     overflow: hidden;
     border: 1px solid rgba(22, 32, 28, 0.16);
     border-radius: 8px;
     background: #101712;
     box-shadow: 0 30px 72px rgba(22, 32, 28, 0.18);
+}
+
+.fb-terminal::after,
+.fb-code-window::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 7rem;
+    background: linear-gradient(to bottom, rgba(16, 23, 18, 0), rgba(16, 23, 18, 0.86) 68%, #101712 100%);
+    pointer-events: none;
 }
 
 .fb-terminal__topbar,
@@ -635,7 +648,7 @@ body {
 .fb-code-window pre {
     max-height: 30rem;
     margin: 0;
-    overflow: auto;
+    overflow: hidden;
     padding: 1.25rem;
     border: 0;
     background: transparent;
@@ -875,6 +888,11 @@ body {
     }
 
     .fb-workbench__body::after {
+        height: 3.4rem;
+    }
+
+    .fb-terminal::after,
+    .fb-code-window::after {
         height: 3.4rem;
     }
 
