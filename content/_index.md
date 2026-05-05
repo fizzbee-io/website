@@ -19,34 +19,41 @@ geekdocBreadcrumb: false
         </div>
       </div>
       <div class="fb-hero__visual" aria-hidden="true">
-        <div class="fb-state-map">
-          <span class="fb-state-edge fb-state-edge--one"></span>
-          <span class="fb-state-edge fb-state-edge--two"></span>
-          <span class="fb-state-edge fb-state-edge--three"></span>
-          <span class="fb-state-edge fb-state-edge--four"></span>
-          <div class="fb-state-node fb-state-node--init">
-            <span>state 00</span>
-            <strong>Init</strong>
-            <small>participants ready</small>
+        <div class="fb-proof-card">
+          <div class="fb-proof-card__topbar">
+            <span>travel_booking.fizz</span>
+            <strong>Model check</strong>
           </div>
-          <div class="fb-state-node fb-state-node--checkout">
-            <span>state 12</span>
-            <strong>Checkout</strong>
-            <small>coordinator in progress</small>
+          <div class="fb-proof-card__body">
+            <div class="fb-proof-code">
+              <span>role Coordinator:</span>
+              <span>  action Checkout:</span>
+              <span>    require(status == "init")</span>
+              <span>    vote = participant.placehold()</span>
+              <span>    finalize(decision)</span>
+            </div>
+            <div class="fb-proof-result">
+              <span class="fb-proof-badge">deadlock found</span>
+              <dl>
+                <div>
+                  <dt>states</dt>
+                  <dd>32</dd>
+                </div>
+                <div>
+                  <dt>queued</dt>
+                  <dd>0</dd>
+                </div>
+                <div>
+                  <dt>elapsed</dt>
+                  <dd>8.5ms</dd>
+                </div>
+              </dl>
+            </div>
           </div>
-          <div class="fb-state-node fb-state-node--crash">
-            <span>state 31</span>
-            <strong>Crash</strong>
-            <small>deadlock found</small>
-          </div>
-          <div class="fb-state-node fb-state-node--safe">
-            <span>assertion</span>
-            <strong>Consistent</strong>
-            <small>committed != aborted</small>
-          </div>
-          <div class="fb-state-trace">
-            <span>$ fizz check travel_booking.fizz</span>
-            <strong>counterexample: Init -> Checkout -> crash</strong>
+          <div class="fb-proof-trace">
+            <span>Init</span>
+            <span>Checkout</span>
+            <span>Crash</span>
           </div>
         </div>
       </div>
