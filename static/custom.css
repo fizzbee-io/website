@@ -8,6 +8,7 @@
     --fb-line: #dce4dd;
     --fb-honey: #f4b23f;
     --fb-honey-dark: #7c4a03;
+    --fb-honey-link: #a96300;
     --fb-honey-hover: #f6c257;
     --fb-rust: #b75a32;
     --header-background: #ffffff;
@@ -17,10 +18,10 @@
     --mark-color: #ffe08a;
     --button-background: var(--fb-honey);
     --button-border-color: var(--fb-honey);
-    --link-color: var(--fb-honey-dark);
-    --link-color-visited: var(--fb-honey-dark);
-    --hint-link-color: var(--fb-honey-dark);
-    --hint-link-color-visited: var(--fb-honey-dark);
+    --link-color: var(--fb-honey-link);
+    --link-color-visited: var(--fb-honey-link);
+    --hint-link-color: var(--fb-honey-link);
+    --hint-link-color-visited: var(--fb-honey-link);
     --accent-color-dark: #dfca9f;
     --accent-color: #ead8b4;
     --accent-color-lite: #fbf4e6;
@@ -50,8 +51,8 @@
         --header-font-color: var(--fb-ink);
         --body-background: #ffffff;
         --body-font-color: var(--fb-ink);
-        --link-color: var(--fb-honey-dark);
-        --link-color-visited: var(--fb-honey-dark);
+        --link-color: var(--fb-honey-link);
+        --link-color-visited: var(--fb-honey-link);
         --accent-color: #ead8b4;
         --accent-color-lite: #fbf4e6;
         --footer-background: #17211d;
@@ -211,7 +212,7 @@ body {
 
 .gdoc-nav__entry:hover,
 .gdoc-nav__entry.is-active {
-    color: var(--fb-honey-dark);
+    color: var(--fb-honey-link);
     text-decoration: none;
 }
 
