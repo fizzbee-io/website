@@ -305,13 +305,13 @@ fn checkout_matches_model() {
   </section>
 
   <section class="fb-section fb-final" aria-labelledby="fb-final-title">
-    <div>
-      <h2 id="fb-final-title">Start with a model small enough to review and strong enough to break assumptions.</h2>
+    <div class="fb-final__copy">
+      <h2 id="fb-final-title">Install FizzBee in three commands.</h2>
+      <p>Tap the Homebrew repo, install the CLI, then add the local skills.</p>
     </div>
-    <div class="fb-actions">
-      <a class="fb-button fb-button--primary" href="/design/tutorials/getting-started/">Read the quick start</a>
-      <a class="fb-button fb-button--secondary" href="/play">Use the playground</a>
-    </div>
+    <pre class="fb-final__commands" aria-label="FizzBee installation commands"><code>brew tap fizzbee-io/fizzbee
+brew install fizzbee
+fizz install-skills</code></pre>
   </section>
 </div>
 {{< /rawhtml >}}

@@ -981,9 +981,9 @@ body {
 }
 
 .fb-final {
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.7fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
     align-items: center;
     width: 100%;
     max-width: none;
@@ -995,38 +995,54 @@ body {
     color: #17211d;
 }
 
+.fb-final__copy {
+    max-width: 560px;
+}
+
 .fb-final h2 {
     color: inherit;
 }
 
 .fb-final h2 {
-    max-width: 760px;
+    max-width: 620px;
     font-size: 2.15rem;
 }
 
-.fb-final .fb-button--secondary {
-    background: rgba(255, 255, 255, 0.18);
-    color: #17211d;
-    border-color: rgba(23, 33, 29, 0.28);
+.fb-final__copy p {
+    max-width: 34rem;
+    margin-top: 0.85rem;
+    color: rgba(23, 33, 29, 0.76);
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
-.fb-final .fb-button--secondary:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(23, 33, 29, 0.42);
-    color: #17211d;
+.gdoc-markdown .fb-final__commands {
+    margin: 0;
+    padding: 1.2rem 1.3rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 0;
+    background:
+        linear-gradient(90deg, rgba(244, 178, 63, 0.08) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(244, 178, 63, 0.06) 1px, transparent 1px),
+        #101712;
+    background-size: 24px 24px;
+    box-shadow: 0 18px 40px rgba(23, 33, 29, 0.18);
+    color: #fff4d6;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    white-space: pre;
 }
 
-.fb-final .fb-button--primary,
-.fb-final .fb-button--primary:visited {
-    background: #17211d;
-    color: #ffffff;
-    border-color: #17211d;
-}
-
-.fb-final .fb-button--primary:hover {
-    background: #0f1713;
-    color: #ffffff;
-    border-color: #0f1713;
+.gdoc-markdown .fb-final__commands code {
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    white-space: pre;
 }
 
 .gdoc-footer {
@@ -1229,6 +1245,10 @@ body {
 
     .fb-final {
         display: block;
+    }
+
+    .gdoc-markdown .fb-final__commands {
+        margin-top: 1.15rem;
     }
 }
 
@@ -1474,6 +1494,7 @@ body {
     }
 
     .fb-final {
+        grid-template-columns: 1fr;
         padding: 1.5rem;
     }
 
