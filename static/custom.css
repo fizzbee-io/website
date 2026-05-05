@@ -751,6 +751,50 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.fb-site-footer {
+    background: #101712;
+    color: rgba(248, 251, 248, 0.78);
+}
+
+.fb-footer-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 5rem;
+    padding: 1.35rem 0;
+}
+
+.fb-footer-brand {
+    color: #ffffff !important;
+    font-weight: 800;
+    text-decoration: none !important;
+}
+
+.fb-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem 1.35rem;
+}
+
+.fb-footer-link,
+.fb-footer-link:visited {
+    color: rgba(248, 251, 248, 0.78);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none !important;
+}
+
+.fb-footer-link:hover,
+.fb-footer-brand:hover {
+    color: #f4c15d !important;
+}
+
+.fb-footer-link--top {
+    color: #f4c15d !important;
+}
+
 @keyframes fb-rise {
     from {
         opacity: 0;
@@ -796,6 +840,15 @@ body {
 
     .fb-section h2 {
         font-size: 2.35rem;
+    }
+
+    .fb-footer-nav {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .fb-footer-links {
+        justify-content: flex-start;
     }
 
     .fb-final {
