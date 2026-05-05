@@ -5,12 +5,18 @@
       <p>Model, verify, visualize, and test distributed systems.</p>
     </div>
     <nav class="fb-footer-nav" aria-label="Footer navigation">
-      <a class="gdoc-footer__link fb-footer-link" href="{{ "/privacy.html" | relURL }}">Privacy policy</a>
-      <a class="gdoc-footer__link fb-footer-link" href="{{ "/design/tutorials/quick-start/" | relURL }}">Quickstart</a>
-      <a class="gdoc-footer__link fb-footer-link" href="{{ "/play" | relURL }}">Playground</a>
-      <a class="gdoc-footer__link fb-footer-link" href="{{ "/design/" | relURL }}">Design verification</a>
-      <a class="gdoc-footer__link fb-footer-link" href="{{ "/testing/" | relURL }}">Model-based testing</a>
-      <a class="gdoc-footer__link fb-footer-link" href="{{ "/posts/" | relURL }}">Blog</a>
+      <div class="fb-footer-link-columns">
+        <div class="fb-footer-link-column">
+          <a class="gdoc-footer__link fb-footer-link" href="{{ "/design/tutorials/quick-start/" | relURL }}">Quickstart</a>
+          <a class="gdoc-footer__link fb-footer-link" href="{{ "/design/" | relURL }}">Design verification</a>
+          <a class="gdoc-footer__link fb-footer-link" href="{{ "/testing/" | relURL }}">Model-based testing</a>
+        </div>
+        <div class="fb-footer-link-column">
+          <a class="gdoc-footer__link fb-footer-link" href="{{ "/play" | relURL }}">Playground</a>
+          <a class="gdoc-footer__link fb-footer-link" href="{{ "/posts/" | relURL }}">Blog</a>
+          <a class="gdoc-footer__link fb-footer-link" href="{{ "/privacy.html" | relURL }}">Privacy policy</a>
+        </div>
+      </div>
       <a class="gdoc-footer__link fb-footer-link fb-footer-link--top" href="#">{{ i18n "nav_top" }}</a>
     </nav>
   </div>
