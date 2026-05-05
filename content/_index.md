@@ -18,8 +18,37 @@ geekdocBreadcrumb: false
           <a class="fb-button fb-button--primary" href="/design/tutorials/getting-started/">Start modeling</a>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="fb-workbench" aria-label="FizzBee model checking preview">
+  <section class="fb-section fb-section--compact" aria-label="FizzBee workflow">
+    <div class="fb-loop" aria-label="FizzBee workflow">
+      <a class="fb-loop__item" href="#model">
+        <h3>Model</h3>
+        <p>Describe actors, actions, state, faults, and invariants in readable code.</p>
+      </a>
+      <a class="fb-loop__item" href="#verify">
+        <h3>Verify</h3>
+        <p>Check every schedule for safety, liveness, deadlocks, and counterexamples.</p>
+      </a>
+      <a class="fb-loop__item" href="#visualize">
+        <h3>Visualize</h3>
+        <p>Generate sequence diagrams, state views, and traces your team can review.</p>
+      </a>
+      <a class="fb-loop__item" href="#test">
+        <h3>Test</h3>
+        <p>Map the model to real code and exercise every behavior the design allows.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="fb-section fb-artifact fb-artifact--model" id="model" aria-labelledby="fb-model-title">
+    <div class="fb-artifact__copy">
+      <h2 id="fb-model-title">Model</h2>
+      <p>Capture the protocol directly: participants vote, the coordinator decides, and the assertion documents the consistency rule.</p>
+    </div>
+    <div class="fb-artifact__media">
+      <div class="fb-workbench fb-workbench--inline" aria-label="travel_booking.fizz model">
         <div class="fb-workbench__topbar">
           <strong>travel_booking.fizz</strong>
           <a class="fb-workbench__play" href="/play">Open playground</a>
@@ -79,53 +108,131 @@ always assertion ParticipantsConsistent:
     </div>
   </section>
 
-  <section class="fb-section fb-section--compact" aria-label="FizzBee workflow">
-    <div class="fb-loop" aria-label="FizzBee workflow">
-      <div>
-        <h3>Model</h3>
-        <p>Describe actors, actions, state, faults, and invariants in readable code.</p>
-      </div>
-      <div>
-        <h3>Verify</h3>
-        <p>Check every schedule for safety, liveness, deadlocks, and counterexamples.</p>
-      </div>
-      <div>
-        <h3>Visualize</h3>
-        <p>Generate sequence diagrams, state views, and traces your team can review.</p>
-      </div>
-      <div>
-        <h3>Test</h3>
-        <p>Map the model to real code and exercise every behavior the design allows.</p>
+  <section class="fb-section fb-artifact fb-artifact--verify" id="verify" aria-labelledby="fb-verify-title">
+    <div class="fb-artifact__copy">
+      <h2 id="fb-verify-title">Verify</h2>
+      <p>Run the model checker and get a concrete result: explored states, generated artifacts, and the failing schedule when the design can deadlock.</p>
+      <a class="fb-text-link" href="/design/tutorials/getting-started/">Read the model checking guide</a>
+    </div>
+    <div class="fb-artifact__media">
+      <div class="fb-terminal" aria-label="FizzBee CLI verification output">
+        <div class="fb-terminal__topbar">
+          <strong>$ fizz --output-dir /tmp/fizzbee-home-run /tmp/travel_booking_home.fizz</strong>
+        </div>
+        <pre><code>DeprecationWarning: 'VAR = any COLLECTION' is deprecated, use 'VAR = oneof COLLECTION' instead
+Model checking /tmp/travel_booking_home.json
+configFileName: /tmp/fizz.yaml
+fizz.yaml not found. Using default options
+StateSpaceOptions: options:{max_actions:100 max_concurrent_actions:2}
+Nodes: 32, queued: 0, elapsed: 8.489375ms
+Time taken for model checking: 8.509541ms
+Writen graph dotfile: /tmp/fizzbee-home-run/graph.dot
+Writen communication diagram dotfile: /tmp/fizzbee-home-run/communication.dot
+DEADLOCK detected
+FAILED: Model checker failed
+------
+Init
+--
+state: {"coordinator":"role Coordinator#0","participants":["role Participant#0","role Participant#1"]}
+Coordinator#0: fields(status = "init")
+Participant#0: fields(status = "init")
+Participant#1: fields(status = "init")
+------
+Coordinator#0.Checkout
+--
+Coordinator#0: fields(status = "inprogress")
+Participant#0: fields(status = "init")
+Participant#1: fields(status = "init")
+------
+crash
+--
+Coordinator#0: fields(status = "inprogress")
+Participant#0: fields(status = "init")
+Participant#1: fields(status = "init")
+------
+Writen graph dotfile: /tmp/fizzbee-home-run/error-graph.dot
+Writen error states as html: /tmp/fizzbee-home-run/error-states.html</code></pre>
       </div>
     </div>
   </section>
 
-  <section class="fb-section fb-section--split" aria-labelledby="fb-why-title">
-    <div class="fb-section__header">
-      <h2 id="fb-why-title">Distributed bugs hide in the schedules people do not write down.</h2>
-      <p>FizzBee makes the schedules explicit. It checks behavioral correctness, exposes edge cases, and gives teams diagrams they can review together.</p>
-      <a class="fb-text-link" href="/design/examples/">Browse examples</a>
+  <section class="fb-section fb-artifact fb-artifact--visualize" id="visualize" aria-labelledby="fb-visualize-title">
+    <div class="fb-artifact__copy">
+      <h2 id="fb-visualize-title">Visualize</h2>
+      <p>The same run emits graph data for the state explorer. The error graph shows the short path from Init to Checkout to the crash state.</p>
+      <a class="fb-text-link" href="/design/tutorials/visualizations/">Explore visualizations</a>
     </div>
-    <div class="fb-trace" aria-label="Example design trace">
-      <div class="fb-trace__row">
-        <span>client</span>
-        <strong>Checkout</strong>
-        <em>request received</em>
-      </div>
-      <div class="fb-trace__row">
-        <span>coordinator</span>
-        <strong>PlaceHold</strong>
-        <em>2 participants</em>
-      </div>
-      <div class="fb-trace__row fb-trace__row--warn">
-        <span>participant</span>
-        <strong>Abort</strong>
-        <em>counterexample avoided</em>
-      </div>
-      <div class="fb-trace__row">
-        <span>test</span>
-        <strong>Replay</strong>
-        <em>implementation verified</em>
+    <div class="fb-artifact__media">
+      <figure class="fb-graph-frame">
+        <img src="/img/fizzbee-travel-booking-state-graph.svg" alt="FizzBee state graph for the travel booking model">
+      </figure>
+    </div>
+  </section>
+
+  <section class="fb-section fb-artifact fb-artifact--test" id="test" aria-labelledby="fb-test-title">
+    <div class="fb-artifact__copy">
+      <h2 id="fb-test-title">Test</h2>
+      <p>Use the verified model as a test harness. The Rust adapter exposes real roles and actions; FizzBee drives the schedules.</p>
+      <a class="fb-text-link" href="/testing/tutorials/quick-start/">Read the testing guide</a>
+    </div>
+    <div class="fb-artifact__media">
+      <div class="fb-code-window fb-code-window--rust" aria-label="Rust FizzBee MBT harness example">
+        <div class="fb-code-window__topbar">
+          <strong>checkout_mbt_test.rs</strong>
+        </div>
+        <pre><code>use async_trait::async_trait;
+use fizzbee_mbt::{
+    run_mbt_test,
+    traits::{DispatchModel, Model},
+    types::{Arg, RoleId},
+    value::Value,
+    TestOptions,
+};
+
+struct BookingHarness {
+    service: TravelBookingService,
+}
+
+#[async_trait]
+impl Model for BookingHarness {
+    async fn init(&amp;mut self) -&gt; Result&lt;(), fizzbee_mbt::error::MbtError&gt; {
+        self.service.reset().await?;
+        Ok(())
+    }
+
+    async fn cleanup(&amp;mut self) -&gt; Result&lt;(), fizzbee_mbt::error::MbtError&gt; {
+        self.service.close().await?;
+        Ok(())
+    }
+}
+
+#[async_trait]
+impl DispatchModel for BookingHarness {
+    async fn execute(
+        &amp;self,
+        role_id: &amp;RoleId,
+        function_name: &amp;str,
+        args: &amp;[Arg],
+    ) -&gt; Result&lt;Value, fizzbee_mbt::error::MbtError&gt; {
+        match (role_id.role_name.as_str(), function_name) {
+            ("Coordinator", "Checkout") =&gt; self.service.checkout(args).await,
+            ("Participant", "placehold") =&gt; self.service.placehold(role_id.index).await,
+            _ =&gt; Ok(Value::None),
+        }
+    }
+
+    fn get_roles(&amp;self) -&gt; Result&lt;Vec&lt;RoleId&gt;, fizzbee_mbt::error::MbtError&gt; {
+        Ok(vec![RoleId { role_name: "Coordinator".into(), index: 0 }])
+    }
+}
+
+#[test]
+fn checkout_matches_model() {
+    run_mbt_test(
+        BookingHarness::new(),
+        TestOptions { max_actions: Some(12), max_parallel_runs: Some(32), ..Default::default() },
+    ).unwrap();
+}</code></pre>
       </div>
     </div>
   </section>
