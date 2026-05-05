@@ -209,6 +209,16 @@ body {
     border-right: 1px solid var(--fb-line);
 }
 
+@media screen and (max-width: 41rem) {
+    .gdoc-nav nav {
+        border-right: 0;
+    }
+
+    #menu-control:checked ~ main .gdoc-nav nav {
+        border-right: 1px solid var(--fb-line);
+    }
+}
+
 .gdoc-nav__entry,
 .gdoc-nav__entry:visited {
     color: #35423c;
