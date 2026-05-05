@@ -215,7 +215,7 @@ Writen error states as html: /tmp/fizzbee-home-run/error-states.html</code></pre
   <section class="fb-section fb-artifact fb-artifact--test" id="test" aria-labelledby="fb-test-title">
     <div class="fb-artifact__copy">
       <h2 id="fb-test-title">Generate Test Harnesses</h2>
-      <p>Use the verified model as a test harness. Go, Java, and Rust adapters expose real roles and actions; FizzBee drives state explorations.</p>
+      <p>Convert your model into a test harness for your production code. FizzBee offers Go, Java, and Rust harness support. Connect the harness and let FizzBee drive state exploration.</p>
       <a class="fb-text-link" href="/testing/tutorials/quick-start/">Read the testing guide</a>
     </div>
     <div class="fb-artifact__media">
