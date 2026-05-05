@@ -49,10 +49,7 @@ always assertion Consistent:
     </div>
   </section>
 
-  <section class="fb-section fb-section--compact" aria-labelledby="fb-loop-title">
-    <div class="fb-section__header">
-      <h2 id="fb-loop-title">Turn a design sketch into executable evidence.</h2>
-    </div>
+  <section class="fb-section fb-section--compact" aria-label="FizzBee workflow">
     <div class="fb-loop" aria-label="FizzBee workflow">
       <div>
         <h3>Specify</h3>
