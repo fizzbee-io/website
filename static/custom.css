@@ -939,7 +939,7 @@ body {
 
 .fb-footer-shell {
     display: grid;
-    grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.6fr);
+    grid-template-columns: minmax(220px, 0.55fr) minmax(0, 2fr);
     align-items: center;
     gap: 2rem;
     padding: 2rem 0;
