@@ -24,14 +24,55 @@ geekdocBreadcrumb: false
             <span class="fb-orbit-ring fb-orbit-ring--outer"></span>
             <span class="fb-orbit-ring fb-orbit-ring--middle"></span>
             <span class="fb-orbit-ring fb-orbit-ring--inner"></span>
-            <div class="fb-orbit-bee">
-              <span class="fb-orbit-bee__wing fb-orbit-bee__wing--rear"></span>
-              <span class="fb-orbit-bee__wing fb-orbit-bee__wing--front"></span>
-              <span class="fb-orbit-bee__body"></span>
-              <span class="fb-orbit-bee__head"></span>
-              <span class="fb-orbit-bee__antenna fb-orbit-bee__antenna--top"></span>
-              <span class="fb-orbit-bee__antenna fb-orbit-bee__antenna--bottom"></span>
-            </div>
+            <svg class="fb-orbit-bee" viewBox="0 0 224 144" xmlns="http://www.w3.org/2000/svg" focusable="false">
+              <defs>
+                <linearGradient id="fb-bee-body-gold" x1="42" y1="34" x2="156" y2="120" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#fff12c"/>
+                  <stop offset="0.45" stop-color="#f4c15d"/>
+                  <stop offset="1" stop-color="#d79613"/>
+                </linearGradient>
+                <radialGradient id="fb-bee-head-gold" cx="0" cy="0" r="1" gradientTransform="matrix(34 25 -25 34 172 65)" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#c59d28"/>
+                  <stop offset="0.6" stop-color="#6f540f"/>
+                  <stop offset="1" stop-color="#15120b"/>
+                </radialGradient>
+                <radialGradient id="fb-bee-eye" cx="0" cy="0" r="1" gradientTransform="matrix(13 17 -11 8 186 61)" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#eef3ee"/>
+                  <stop offset="0.25" stop-color="#1d2420"/>
+                  <stop offset="1" stop-color="#050706"/>
+                </radialGradient>
+                <linearGradient id="fb-bee-wing" x1="45" y1="8" x2="130" y2="68" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#fffdf1" stop-opacity="0.72"/>
+                  <stop offset="1" stop-color="#d7cda9" stop-opacity="0.34"/>
+                </linearGradient>
+                <clipPath id="fb-bee-body-clip">
+                  <path d="M24 77C24 48 48 30 86 30C127 30 159 51 166 80C173 111 146 130 95 128C52 126 25 108 24 77Z"/>
+                </clipPath>
+              </defs>
+              <path class="fb-orbit-bee__leg" d="M66 105C54 116 49 126 45 139"/>
+              <path class="fb-orbit-bee__leg" d="M90 111C81 122 77 131 76 140"/>
+              <path class="fb-orbit-bee__leg" d="M124 109C132 121 139 128 149 133"/>
+              <path class="fb-orbit-bee__leg" d="M146 98C156 109 166 114 178 114"/>
+              <path class="fb-orbit-bee__leg fb-orbit-bee__leg--far" d="M55 97C42 105 34 111 25 122"/>
+              <path class="fb-orbit-bee__leg fb-orbit-bee__leg--far" d="M109 101C112 115 117 124 125 132"/>
+              <path class="fb-orbit-bee__stinger" d="M23 78L5 111L35 96Z"/>
+              <g clip-path="url(#fb-bee-body-clip)">
+                <rect x="14" y="22" width="160" height="116" fill="url(#fb-bee-body-gold)"/>
+                <path d="M43 20C31 57 34 94 50 132H70C54 89 54 54 72 20Z" fill="#17180f"/>
+                <path d="M87 19C78 54 80 94 96 134H119C103 92 102 54 117 19Z" fill="#17180f"/>
+                <path d="M134 30C125 61 127 101 142 130H164C150 96 150 63 164 39Z" fill="#17180f"/>
+              </g>
+              <path class="fb-orbit-bee__body-outline" d="M24 77C24 48 48 30 86 30C127 30 159 51 166 80C173 111 146 130 95 128C52 126 25 108 24 77Z"/>
+              <path class="fb-orbit-bee__wing fb-orbit-bee__wing--rear" d="M76 24C51 2 20 0 12 17C3 36 33 65 83 75C105 79 116 74 115 64C113 50 96 42 76 24Z"/>
+              <path class="fb-orbit-bee__wing fb-orbit-bee__wing--front" d="M107 24C80 -2 41 -3 33 17C25 39 62 72 121 80C146 83 156 77 153 65C150 51 130 45 107 24Z"/>
+              <path class="fb-orbit-bee__wing-vein" d="M50 24C69 32 91 45 119 72"/>
+              <path class="fb-orbit-bee__wing-vein" d="M39 35C59 41 84 51 107 72"/>
+              <ellipse class="fb-orbit-bee__head" cx="172" cy="70" rx="34" ry="37"/>
+              <ellipse class="fb-orbit-bee__eye" cx="185" cy="62" rx="12" ry="18" transform="rotate(5 185 62)"/>
+              <circle class="fb-orbit-bee__eye-shine" cx="181" cy="53" r="4"/>
+              <path class="fb-orbit-bee__antenna" d="M173 36C176 17 186 10 200 10"/>
+              <path class="fb-orbit-bee__antenna" d="M181 38C188 24 201 20 215 23"/>
+            </svg>
             <span class="fb-state-dot fb-state-dot--init"><strong>init</strong></span>
             <span class="fb-state-dot fb-state-dot--vote"><strong>vote</strong></span>
             <span class="fb-state-dot fb-state-dot--hold"><strong>hold</strong></span>

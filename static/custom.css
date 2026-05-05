@@ -436,115 +436,84 @@ body {
     position: absolute;
     top: 48%;
     left: 51%;
-    width: clamp(8.2rem, 18vw, 10.8rem);
-    max-width: 44%;
-    aspect-ratio: 1.72;
+    width: clamp(8.8rem, 18vw, 11.4rem);
+    max-width: 46%;
+    aspect-ratio: 224 / 144;
+    overflow: visible;
     transform: translate(-50%, -50%) rotate(-4deg);
     filter: drop-shadow(0 26px 28px rgba(3, 9, 7, 0.38));
     animation: fb-hover 3.6s ease-in-out infinite;
     z-index: 3;
 }
 
-.fb-orbit-bee span {
-    position: absolute;
-    display: block;
+.fb-orbit-bee__body-outline {
+    fill: none;
+    stroke: rgba(16, 23, 18, 0.5);
+    stroke-width: 2.4;
 }
 
-.fb-orbit-bee__body {
-    top: 34%;
-    left: 12%;
-    width: 68%;
-    height: 42%;
-    border: 1px solid rgba(13, 20, 16, 0.46);
-    border-radius: 999px 72% 72% 999px;
-    background:
-        linear-gradient(
-            90deg,
-            #f4c15d 0 20%,
-            #101712 20% 31%,
-            #f4c15d 31% 48%,
-            #101712 48% 60%,
-            #f4c15d 60% 78%,
-            #101712 78% 90%,
-            #f4c15d 90% 100%
-        );
-    box-shadow:
-        inset 0 12px 18px rgba(255, 255, 255, 0.16),
-        inset 0 -12px 18px rgba(3, 9, 7, 0.18);
-}
-
-.fb-orbit-bee__body::before {
-    content: "";
-    position: absolute;
-    top: 23%;
-    left: -9%;
-    width: 18%;
-    height: 54%;
-    border-radius: 72% 28% 28% 72%;
-    background: #101712;
+.fb-orbit-bee__stinger {
+    fill: #17180f;
+    stroke: rgba(244, 193, 93, 0.42);
+    stroke-width: 2;
+    stroke-linejoin: round;
 }
 
 .fb-orbit-bee__head {
-    top: 31%;
-    right: 5%;
-    width: 26%;
-    height: 48%;
-    border: 1px solid rgba(248, 251, 248, 0.1);
-    border-radius: 50%;
-    background:
-        radial-gradient(circle at 64% 36%, rgba(248, 251, 248, 0.88) 0 7%, transparent 8%),
-        radial-gradient(circle at 62% 36%, #101712 0 18%, transparent 19%),
-        linear-gradient(135deg, #4f3c15, #141d17 72%);
-    box-shadow:
-        inset 0 10px 16px rgba(255, 255, 255, 0.1),
-        inset 0 -10px 18px rgba(3, 9, 7, 0.34);
+    fill: url(#fb-bee-head-gold);
+    stroke: rgba(248, 251, 248, 0.1);
+    stroke-width: 1.4;
+}
+
+.fb-orbit-bee__eye {
+    fill: url(#fb-bee-eye);
+}
+
+.fb-orbit-bee__eye-shine {
+    fill: rgba(248, 251, 248, 0.86);
 }
 
 .fb-orbit-bee__wing {
-    border: 1px solid rgba(248, 251, 248, 0.26);
-    border-radius: 78% 22% 74% 26%;
-    background:
-        radial-gradient(circle at 28% 28%, rgba(255, 255, 255, 0.68), transparent 32%),
-        rgba(248, 251, 248, 0.36);
-    box-shadow: inset 0 0 22px rgba(244, 178, 63, 0.12);
-    transform-origin: 80% 90%;
+    fill: url(#fb-bee-wing);
+    stroke: rgba(248, 251, 248, 0.32);
+    stroke-width: 1.4;
 }
 
 .fb-orbit-bee__wing--rear {
-    top: 9%;
-    left: 30%;
-    width: 36%;
-    height: 48%;
-    opacity: 0.44;
-    transform: rotate(-29deg);
+    opacity: 0.42;
 }
 
 .fb-orbit-bee__wing--front {
-    top: 4%;
-    left: 43%;
-    width: 40%;
-    height: 54%;
-    opacity: 0.62;
-    transform: rotate(-14deg);
+    opacity: 0.68;
+}
+
+.fb-orbit-bee__wing-vein {
+    fill: none;
+    stroke: rgba(248, 251, 248, 0.22);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+}
+
+.fb-orbit-bee__leg,
+.fb-orbit-bee__antenna {
+    fill: none;
+    stroke: #6f540f;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.fb-orbit-bee__leg {
+    stroke: #2b2107;
+}
+
+.fb-orbit-bee__leg--far {
+    opacity: 0.64;
 }
 
 .fb-orbit-bee__antenna {
-    right: 3%;
-    width: 22%;
-    height: 28%;
-    border-top: 2px solid rgba(244, 193, 93, 0.82);
-    border-radius: 999px;
-}
-
-.fb-orbit-bee__antenna--top {
-    top: 16%;
-    transform: rotate(-28deg);
-}
-
-.fb-orbit-bee__antenna--bottom {
-    top: 23%;
-    transform: rotate(-8deg);
-    opacity: 0.58;
+    stroke: rgba(244, 193, 93, 0.78);
+    stroke-width: 5;
 }
 
 .fb-state-dot {
