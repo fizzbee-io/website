@@ -712,16 +712,66 @@ body {
     min-width: 0;
 }
 
-.fb-text-link {
+.fb-text-link,
+.fb-text-link:visited {
     display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 2.8rem;
     margin-top: 1.4rem;
+    padding: 0 0.92rem 0 1rem;
+    border: 1px solid rgba(47, 163, 107, 0.22);
+    border-radius: 7px;
+    background: rgba(47, 163, 107, 0.075);
     color: #0f6f4e;
+    font-size: 0.94rem;
     font-weight: 800;
+    line-height: 1.2;
     text-decoration: none !important;
+    transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 .fb-text-link::after {
-    content: " >";
+    content: "->";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: 6px;
+    background: rgba(244, 193, 93, 0.22);
+    color: #79520f;
+    font-family: var(--code-font-family);
+    font-size: 0.82rem;
+    line-height: 1;
+    transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.fb-text-link:hover,
+.fb-text-link:focus-visible {
+    border-color: rgba(47, 163, 107, 0.42);
+    background: rgba(47, 163, 107, 0.12);
+    color: #0a5d42;
+    text-decoration: none !important;
+    transform: translateY(-1px);
+}
+
+.fb-text-link:hover::after,
+.fb-text-link:focus-visible::after {
+    background: #f4c15d;
+    color: #16201c;
+    transform: translateX(2px);
+}
+
+.gdoc-markdown .fb-text-link,
+.gdoc-markdown .fb-text-link:visited {
+    color: #0f6f4e;
+    text-decoration: none !important;
+}
+
+.gdoc-markdown .fb-text-link:hover,
+.gdoc-markdown .fb-text-link:focus-visible {
+    color: #0a5d42;
 }
 
 .fb-terminal,
@@ -1147,6 +1197,14 @@ body {
         width: auto;
         padding: 0 0.7rem;
         white-space: nowrap;
+    }
+
+    .fb-text-link,
+    .fb-text-link:visited {
+        justify-content: space-between;
+        width: 100%;
+        min-height: 3.1rem;
+        padding-left: 0.9rem;
     }
 
     .fb-state-map {
