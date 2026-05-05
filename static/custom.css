@@ -276,6 +276,31 @@ body {
     font-size: 1.25rem;
 }
 
+.gdoc-markdown .gdoc-page__anchorwrap {
+    align-items: center;
+}
+
+.gdoc-markdown .gdoc-page__anchorwrap > :is(h1, h2, h3) {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.gdoc-markdown .gdoc-page__anchorwrap:has(> h1) {
+    margin: 0 0 1.3rem;
+}
+
+.gdoc-markdown .gdoc-page__anchorwrap:has(> h2) {
+    margin: 2.6rem 0 calc(0.83 * 1.95rem);
+}
+
+.gdoc-markdown .gdoc-page__anchorwrap:has(> h3) {
+    margin: 1.25rem 0;
+}
+
+.gdoc-markdown .gdoc-page__anchor {
+    line-height: 1;
+}
+
 .gdoc-markdown a {
     color: var(--link-color);
     text-decoration-thickness: 1px;
