@@ -186,26 +186,6 @@ body {
     align-items: center;
 }
 
-.fb-header-link a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 2.2rem;
-    padding: 0 0.65rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 700;
-}
-
-.fb-header-link a:hover {
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.fb-header-link--play a {
-    border: 1px solid rgba(244, 193, 93, 0.42);
-    background: rgba(244, 193, 93, 0.1);
-    color: #ffe1a1;
-}
-
 #gdoc-color-theme {
     display: none;
 }
@@ -968,10 +948,6 @@ body {
 }
 
 @media (max-width: 980px) {
-    .fb-header-link {
-        display: none;
-    }
-
     .fb-hero__inner {
         grid-template-columns: 1fr;
         gap: 2.25rem;

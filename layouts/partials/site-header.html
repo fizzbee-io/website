@@ -28,10 +28,6 @@
 
     <div class="gdoc-menu-header">
       <span class="gdoc-menu-header__items">
-        <span class="fb-header-link fb-header-link--play">
-          <a href="{{ "play" | relURL }}" class="gdoc-header__link">Playground</a>
-        </span>
-
         {{ if .Root.Site.Data.menu.extra.header }}
           {{ partial "menu-extra" (dict "current" .Root "source" .Root.Site.Data.menu.extra.header "target" "header") }}
         {{ end }}
