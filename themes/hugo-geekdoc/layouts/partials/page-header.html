@@ -10,6 +10,9 @@
   {{ $parent := .page.Parent }}
   {{ if $parent }}
     {{ $name := (partial "utils/title" $parent) }}
+    {{ if $parent.IsHome }}
+      {{ $name = $parent.Site.Title }}
+    {{ end }}
     {{ $position := (sub .position 1) }}
     {{ $value := (printf "<li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='%s' href='%s'><span itemprop='name'>%s</span></a><meta itemprop='position' content='%d' /></li><li> / </li>%s" $parent.RelPermalink $parent.RelPermalink $name $position .value) }}
     {{ template "breadcrumb" dict "page" $parent "value" $value "position" $position }}
