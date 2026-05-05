@@ -327,6 +327,7 @@ body {
 }
 
 .fb-hero__inner {
+    min-width: 0;
     width: min(1180px, calc(100% - 48px));
     margin: 0 auto;
     padding: 3rem 0 3.25rem;
@@ -403,6 +404,7 @@ body {
     right: max(24px, calc((100vw - 1180px) / 2));
     top: 50%;
     z-index: 2;
+    min-width: 0;
     width: min(590px, 48vw);
     overflow: hidden;
     border: 1px solid rgba(22, 32, 28, 0.14);
@@ -475,12 +477,27 @@ body {
 }
 
 .fb-workbench__body {
+    position: relative;
+    max-height: 26rem;
+    overflow: hidden;
     padding: 1.35rem;
 }
 
+.fb-workbench__body::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 7rem;
+    background: linear-gradient(to bottom, rgba(16, 23, 18, 0), rgba(16, 23, 18, 0.86) 68%, #101712 100%);
+    pointer-events: none;
+}
+
 .fb-workbench pre {
+    max-width: 100%;
     margin: 0;
-    overflow: auto;
+    overflow: hidden;
     color: #dcece2;
     background: transparent;
     border: 0;
@@ -493,37 +510,6 @@ body {
     color: inherit;
     background: transparent;
     font-size: inherit;
-}
-
-.fb-run-result {
-    margin-top: 1.4rem;
-    padding: 1rem;
-    border: 1px solid rgba(47, 163, 107, 0.35);
-    border-radius: 8px;
-    background: rgba(47, 163, 107, 0.1);
-    color: #dff5e8;
-}
-
-.fb-run-result div {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
-}
-
-.fb-run-result p {
-    margin-top: 0.45rem;
-    color: #a8beb2;
-    font-size: 0.92rem;
-    line-height: 1.55;
-}
-
-.fb-status-dot {
-    display: inline-block;
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    background: var(--fb-green);
-    box-shadow: 0 0 0 8px rgba(47, 163, 107, 0.15);
 }
 
 .gdoc-markdown .fb-button,
@@ -902,7 +888,8 @@ body {
 
     .fb-hero__inner,
     .fb-section {
-        width: min(100% - 28px, 1180px);
+        width: calc(100% - 28px);
+        max-width: 1180px;
     }
 
     .fb-section--compact {
@@ -945,20 +932,15 @@ body {
         padding: 0.85rem;
     }
 
+    .fb-workbench__body::after {
+        height: 3.4rem;
+    }
+
     .fb-workbench pre {
         max-height: 4.4rem;
         overflow: hidden;
         font-size: 0.64rem;
         line-height: 1.45;
-    }
-
-    .fb-run-result {
-        margin-top: 0.75rem;
-        padding: 0.7rem;
-    }
-
-    .fb-run-result p {
-        display: none;
     }
 
     .fb-section {

@@ -25,24 +25,55 @@ geekdocBreadcrumb: false
           <a class="fb-workbench__play" href="/play">Open playground</a>
         </div>
         <div class="fb-workbench__body">
-          <pre><code>role Coordinator:
-  action Checkout:
-    for p in participants:
-      vote = p.placehold()
-      if vote == "aborted":
-        self.finalize("aborted")
-        return
-    self.finalize("committed")
+          <pre><code>role Participant:
+  action Init:
+      self.status = "init"
 
-always assertion Consistent:
-  return not mixed_decisions()</code></pre>
-          <div class="fb-run-result">
-            <div>
-              <span class="fb-status-dot"></span>
-              <strong>Model check passed</strong>
-            </div>
-            <p>1,248 states explored across failures, retries, and interleavings.</p>
-          </div>
+  func placehold():
+      vote = any ["accepted", "aborted"]
+      self.status = vote
+      return self.status
+
+  func finalize(decision):
+      self.status = decision
+
+
+role Coordinator:
+    action Init:
+        self.status = "init"
+
+    action Checkout:
+        require(self.status == "init")
+        self.status = "inprogress"
+        for p in participants:
+              vote = p.placehold()
+              if vote == "aborted":
+                  self.finalize("aborted")
+                  return
+
+        self.finalize("committed")
+
+
+    func finalize(decision):
+        self.status = decision
+        for p in participants:
+            p.finalize(decision)
+
+
+NUM_PARTICIPANTS=2
+
+action Init:
+    coordinator = Coordinator()
+    participants = []
+    for i in range(NUM_PARTICIPANTS):
+        participants.append(Participant())
+
+always assertion ParticipantsConsistent:
+  for p1 in participants:
+    for p2 in participants:
+      if p1.status == 'committed' and p2.status == 'aborted':
+        return False
+  return True</code></pre>
         </div>
       </div>
     </div>
