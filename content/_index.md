@@ -88,7 +88,7 @@ geekdocBreadcrumb: false
   <section class="fb-section fb-artifact fb-artifact--model" id="model" aria-labelledby="fb-model-title">
     <div class="fb-artifact__copy">
       <h2 id="fb-model-title">Look Familiar?</h2>
-      <p>FizzBee uses <a href="https://github.com/bazelbuild/starlark">Starlark</a>, a small Pythonic language designed to be read by humans and tools, so specs stay human-friendly and AI-friendly.</p>
+      <p>FizzBee uses <a href="https://github.com/bazelbuild/starlark">Starlark</a>, the same Python dialect as <a href="https://bazel.build/">Bazel</a>. Your models stay both human-readable and AI-friendly.</p>
       <a class="fb-text-link" href="/play">Open in playground</a>
     </div>
     <div class="fb-artifact__media">
