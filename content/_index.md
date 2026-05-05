@@ -87,8 +87,8 @@ geekdocBreadcrumb: false
 
   <section class="fb-section fb-artifact fb-artifact--model" id="model" aria-labelledby="fb-model-title">
     <div class="fb-artifact__copy">
-      <h2 id="fb-model-title">Model</h2>
-      <p>Capture the protocol directly: participants vote, the coordinator decides, and the assertion documents the consistency rule.</p>
+      <h2 id="fb-model-title">Look Familiar?</h2>
+      <p>FizzBee uses <a href="https://github.com/bazelbuild/starlark">Starlark</a>, a small Pythonic language designed to be read by humans and tools, so specs stay human-friendly and AI-friendly.</p>
       <a class="fb-text-link" href="/play">Open in playground</a>
     </div>
     <div class="fb-artifact__media">
