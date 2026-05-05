@@ -383,7 +383,7 @@ body {
 
 .fb-button--secondary {
     background: #ffffff;
-    border: 1px solid var(--fb-line);
+    border: 1px solid #aebfb4;
     color: var(--fb-ink);
 }
 
