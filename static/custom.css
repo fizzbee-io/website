@@ -414,7 +414,7 @@ body {
 
 .fb-workbench__topbar {
     display: grid;
-    grid-template-columns: 10px 10px 10px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.55rem;
     align-items: center;
     padding: 0.85rem 1rem;
@@ -429,21 +429,6 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.fb-workbench__topbar span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #f0644d;
-}
-
-.fb-workbench__topbar span:nth-child(2) {
-    background: var(--fb-honey);
-}
-
-.fb-workbench__topbar span:nth-child(3) {
-    background: var(--fb-green);
 }
 
 .fb-workbench__play,

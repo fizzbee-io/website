@@ -21,7 +21,6 @@ geekdocBreadcrumb: false
 
       <div class="fb-workbench" aria-label="FizzBee model checking preview">
         <div class="fb-workbench__topbar">
-          <span></span><span></span><span></span>
           <strong>travel_booking.fizz</strong>
           <a class="fb-workbench__play" href="/play">Open playground</a>
         </div>
