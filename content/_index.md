@@ -13,7 +13,7 @@ geekdocBreadcrumb: false
     <div class="fb-hero__inner">
       <div class="fb-hero__copy">
         <h1 id="fb-hero-title">Design reliable, scalable distributed systems</h1>
-        <p class="fb-hero__lead">Describe your design in a small Python-like model. FizzBee explores the state space, verifies the design, and turns the model into a test harness for your code.</p>
+        <p class="fb-hero__lead">Describe your design in an AI-friendly Python-like modeling language. FizzBee explores the state space, verifies the design, and turns the model into a test harness for your code.</p>
         <div class="fb-actions" aria-label="Primary actions">
           <a class="fb-button fb-button--primary" href="/design/tutorials/getting-started/">Start modeling</a>
         </div>
