@@ -197,6 +197,10 @@ body {
     max-width: 1180px;
 }
 
+.wrapper > main.container:has(.fb-home-article) {
+    padding-bottom: 0;
+}
+
 .gdoc-nav {
     padding-top: 1.5rem;
 }
@@ -222,6 +226,14 @@ body {
 
 .gdoc-page {
     padding: 2.5rem 0 4rem;
+}
+
+.gdoc-page:has(.fb-home-article) {
+    padding-bottom: 0;
+}
+
+.gdoc-page:has(.fb-home-article) .gdoc-page__footer {
+    display: none;
 }
 
 @media (min-width: 41.001rem) {
@@ -752,6 +764,12 @@ body {
     padding: 6rem 0;
 }
 
+.fb-section.fb-final {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
 .fb-section__header {
     max-width: 720px;
 }
@@ -967,12 +985,14 @@ body {
     justify-content: space-between;
     gap: 2rem;
     align-items: center;
-    margin-bottom: 4rem;
-    padding: 3rem;
-    border: 1px solid var(--fb-line);
-    border-radius: 8px;
-    background: #17211d;
-    color: #f8fbf8;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 3.25rem max(1.25rem, calc((100vw - var(--fb-home-max-width)) / 2));
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(135deg, #f7bd45 0%, #e9851a 100%);
+    color: #17211d;
 }
 
 .fb-final h2 {
@@ -985,15 +1005,28 @@ body {
 }
 
 .fb-final .fb-button--secondary {
-    background: transparent;
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.26);
+    background: rgba(255, 255, 255, 0.18);
+    color: #17211d;
+    border-color: rgba(23, 33, 29, 0.28);
 }
 
 .fb-final .fb-button--secondary:hover {
-    background: rgba(244, 178, 63, 0.08);
-    border-color: rgba(244, 178, 63, 0.42);
-    color: var(--fb-honey);
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(23, 33, 29, 0.42);
+    color: #17211d;
+}
+
+.fb-final .fb-button--primary,
+.fb-final .fb-button--primary:visited {
+    background: #17211d;
+    color: #ffffff;
+    border-color: #17211d;
+}
+
+.fb-final .fb-button--primary:hover {
+    background: #0f1713;
+    color: #ffffff;
+    border-color: #0f1713;
 }
 
 .gdoc-footer {
@@ -1442,7 +1475,6 @@ body {
 
     .fb-final {
         padding: 1.5rem;
-        margin-bottom: 2rem;
     }
 
     .fb-final h2 {
