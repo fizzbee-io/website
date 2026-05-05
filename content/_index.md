@@ -87,7 +87,7 @@ geekdocBreadcrumb: false
 
   <section class="fb-section fb-artifact fb-artifact--model" id="model" aria-labelledby="fb-model-title">
     <div class="fb-artifact__copy">
-      <h2 id="fb-model-title">Look Familiar?</h2>
+      <h2 id="fb-model-title">Look familiar?</h2>
       <p>FizzBee uses <a href="https://github.com/bazelbuild/starlark">Starlark</a>, the same Python dialect as <a href="https://bazel.build/">Bazel</a>. Your models stay both human-readable and AI-friendly.</p>
       <a class="fb-text-link" href="/play">Open in playground</a>
     </div>
@@ -153,7 +153,7 @@ always assertion ParticipantsConsistent:
 
   <section class="fb-section fb-artifact fb-artifact--verify" id="verify" aria-labelledby="fb-verify-title">
     <div class="fb-artifact__copy">
-      <h2 id="fb-verify-title">Verify Your Designs</h2>
+      <h2 id="fb-verify-title">Verify your designs</h2>
       <p>Run the model checker and get a concrete result: explored states, generated artifacts, failed assumptions, and deadlock scenarios.</p>
       <a class="fb-text-link" href="/design/tutorials/getting-started/">Read the model checking guide</a>
     </div>
@@ -201,7 +201,7 @@ Writen error states as html: /tmp/fizzbee-home-run/error-states.html</code></pre
 
   <section class="fb-section fb-artifact fb-artifact--visualize" id="visualize" aria-labelledby="fb-visualize-title">
     <div class="fb-artifact__copy">
-      <h2 id="fb-visualize-title">Visualize Complexity</h2>
+      <h2 id="fb-visualize-title">Visualize design complexity</h2>
       <p>The same run emits graph data for the state explorer. The error graph shows the short path from Init to Checkout to the crash state.</p>
       <a class="fb-text-link" href="/design/tutorials/visualizations/">Explore visualizations</a>
     </div>
@@ -214,7 +214,7 @@ Writen error states as html: /tmp/fizzbee-home-run/error-states.html</code></pre
 
   <section class="fb-section fb-artifact fb-artifact--test" id="test" aria-labelledby="fb-test-title">
     <div class="fb-artifact__copy">
-      <h2 id="fb-test-title">Convert Models to Test Harnesses</h2>
+      <h2 id="fb-test-title">Generate Test Harnesses</h2>
       <p>Use the verified model as a test harness. Go, Java, and Rust adapters expose real roles and actions; FizzBee drives state explorations.</p>
       <a class="fb-text-link" href="/testing/tutorials/quick-start/">Read the testing guide</a>
     </div>
