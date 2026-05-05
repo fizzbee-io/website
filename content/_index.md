@@ -306,7 +306,7 @@ fn checkout_matches_model() {
 
   <section class="fb-section fb-final" aria-labelledby="fb-final-title">
     <div class="fb-final__copy">
-      <h2 id="fb-final-title">Hello, Fizzbee</h2>
+      <h2 id="fb-final-title">Install FizzBee today</h2>
       <p>Tap the Homebrew repo, install the CLI, and add AI agent skills.</p>
     </div>
     <pre class="fb-final__commands" aria-label="FizzBee installation commands"><code>brew tap fizzbee-io/fizzbee
