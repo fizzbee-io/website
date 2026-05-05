@@ -231,6 +231,12 @@ body {
     padding: 2.5rem 0 4rem;
 }
 
+@media (min-width: 41.001rem) {
+    .wrapper > main.container > .gdoc-nav + .gdoc-page {
+        margin-left: clamp(2rem, 3vw, 3rem);
+    }
+}
+
 .gdoc-markdown {
     color: var(--fb-ink);
     font-size: 1.04rem;
