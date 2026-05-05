@@ -154,7 +154,7 @@ always assertion ParticipantsConsistent:
   <section class="fb-section fb-artifact fb-artifact--verify" id="verify" aria-labelledby="fb-verify-title">
     <div class="fb-artifact__copy">
       <h2 id="fb-verify-title">Verify</h2>
-      <p>Run the model checker and get a concrete result: explored states, generated artifacts, and the failing schedule when the design can deadlock.</p>
+      <p>Run the model checker and get a concrete result: explored states, generated artifacts, failed assumptions, and deadlock scenarios.</p>
       <a class="fb-text-link" href="/design/tutorials/getting-started/">Read the model checking guide</a>
     </div>
     <div class="fb-artifact__media">
