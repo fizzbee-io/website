@@ -570,11 +570,6 @@ body {
     border-top: 1px solid rgba(22, 32, 28, 0.08);
 }
 
-.fb-artifact--verify,
-.fb-artifact--test {
-    grid-template-columns: minmax(280px, 0.72fr) minmax(440px, 1.28fr);
-}
-
 .fb-artifact__copy {
     max-width: 520px;
 }
@@ -790,9 +785,7 @@ body {
         padding-bottom: 3rem;
     }
 
-    .fb-artifact,
-    .fb-artifact--verify,
-    .fb-artifact--test {
+    .fb-artifact {
         grid-template-columns: 1fr;
         gap: 2rem;
     }
