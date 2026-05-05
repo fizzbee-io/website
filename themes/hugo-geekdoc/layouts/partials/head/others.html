@@ -1,7 +1,7 @@
 {{- if default true .Site.Params.geekdocDarkModeToggle }}
   <script src="{{ index (index .Site.Data.assets "colortheme.js") "src" | relURL }}"></script>
 {{- end }}
-<script src="{{ index (index .Site.Data.assets "main.js") "src" | relURL }}"></script>
+<script defer src="{{ index (index .Site.Data.assets "main.js") "src" | relURL }}"></script>
 
 <link
   rel="preload"

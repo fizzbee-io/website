@@ -207,7 +207,7 @@ Writen error states as html: /tmp/fizzbee-home-run/error-states.html</code></pre
     </div>
     <div class="fb-artifact__media">
       <figure class="fb-graph-frame">
-        <img src="/img/fizzbee-travel-booking-state-graph.svg" alt="FizzBee state graph for the travel booking model">
+        <img src="/img/fizzbee-travel-booking-state-graph.svg" width="960" height="540" decoding="async" alt="FizzBee state graph for the travel booking model">
       </figure>
     </div>
   </section>

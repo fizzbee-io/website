@@ -19,6 +19,9 @@
           <img
             class="gdoc-brand__img"
             src="{{ (default "brand.svg" .Root.Site.Params.geekdocLogo) | relURL }}"
+            width="42"
+            height="42"
+            decoding="async"
             alt=""
           />
           <span class="gdoc-brand__title">{{ .Root.Site.Title }}</span>
