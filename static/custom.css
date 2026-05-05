@@ -1132,7 +1132,7 @@ body {
 }
 
 .fb-footer-link--top::after {
-    content: "^";
+    content: "\2191";
     margin-left: 0.45rem;
     font-size: 0.85rem;
     line-height: 1;
