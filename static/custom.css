@@ -336,9 +336,9 @@ body {
     letter-spacing: 0;
 }
 
-.fb-hero__lead {
+.fb-home .fb-hero__lead {
     max-width: 520px;
-    margin-top: 1.25rem;
+    margin-top: 1.65rem;
     color: var(--fb-muted);
     font-size: 1.08rem;
     line-height: 1.6;
@@ -913,8 +913,8 @@ body {
         line-height: 1.04;
     }
 
-    .fb-hero__lead {
-        margin-top: 0.9rem;
+    .fb-home .fb-hero__lead {
+        margin-top: 1.15rem;
         font-size: 0.96rem;
         line-height: 1.55;
     }
