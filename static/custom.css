@@ -1208,6 +1208,11 @@ body {
         min-height: 60px;
     }
 
+    .gdoc-header .gdoc-menu-header__home svg.gdoc-icon.gdoc_home {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+
     .fb-site-footer {
         background-size: 34px 34px;
     }
