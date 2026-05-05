@@ -1,0 +1,3 @@
+- Commit after each change.
+- Use conventional commit syntax. Include a pargraph in the commit message dsecribing in detail what you did.
+- Always use Playwright to check your changes.
