@@ -93,7 +93,7 @@
             'security_storage': consent.necessary ? 'granted' : 'denied',
             'personalization_storage': consent.preferences ? 'granted' : 'denied',
         };
-        // gtag('consent', 'update', consentMode);
+        gtag('consent', 'update', consentMode);
         localStorage.setItem('consentMode', JSON.stringify(consentMode));
     }
 
