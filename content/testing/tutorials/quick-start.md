@@ -6,7 +6,7 @@ weight: -20
 ---
 
 This is a quick start guide to get you up and running with FizzBee's Model Based Testing for Go.
-Quick start guide for Java and Rust are coming soon.`
+Quick start guide for Java and Rust are coming soon.
 We'll cover additional details and more complex examples in later documents.
 
 In this guide, we'll cover:
@@ -80,21 +80,13 @@ role Counter:
         self.value = 0
 
     atomic action Inc:
-        if self.value < MAX:
-            self.value += 1
-        else:
-            # with explicit pass, Inc becomes a NoOp after it reaches MAX
-            # without the pass, Inc will be considered disabled after it reaches MAX
-            pass
+        self.value = min(self.value + 1, MAX)
 
     atomic action Get:
         return self.value
 
     atomic action Dec:
-        if self.value > 0:
-            self.value -= 1
-        else:
-            pass
+        self.value = max(self.value - 1, 0)
 
 action Init:
     counter = Counter()
@@ -949,7 +941,6 @@ package simplecounter
 import (
     "context"
     "database/sql"
-    "errors"
     "fmt"
 )
 
@@ -976,38 +967,15 @@ func NewPGCounter(ctx context.Context, db *sql.DB, name string, max int) (*PGCou
 
 // update performs the delta update (+1 or -1) safely with max checks.
 func (c *PGCounter) update(ctx context.Context, delta int) error {
-    tx, err := c.db.BeginTx(ctx, nil)
-    if err != nil {
-        return err
-    }
-    defer tx.Rollback() // Safe to call even after commit.
-
-    var value, max int
-    err = tx.QueryRowContext(ctx, `
-        SELECT value, max
-        FROM counters
-        WHERE name = $1
-        FOR UPDATE
-    `, c.name).Scan(&value, &max)
-    if err != nil {
-        return fmt.Errorf("fetch counter state: %w", err)
-    }
-
-    newValue := value + delta
-    if newValue < 0 || newValue > max {
-        return errors.New("counter update out of bounds")
-    }
-
-    _, err = tx.ExecContext(ctx, `
+    _, err := c.db.ExecContext(ctx, `
         UPDATE counters
-        SET value = $1
+        SET value = value + $1
         WHERE name = $2
-    `, newValue, c.name)
-    if err != nil {
-        return fmt.Errorf("update counter: %w", err)
-    }
+          AND value + $1 >= 0
+          AND value + $1 <= max
+    `, delta, c.name)
 
-    return tx.Commit()
+    return err
 }
 
 func (c *PGCounter) Inc(ctx context.Context) error {
@@ -1091,6 +1059,150 @@ func (m *CounterModelAdapter) Cleanup() error {
 ```
 
 {{% /expand %}}
+
+## Refactor: Make MemCounter and PGCounter use same interface
+At present, MemCounter and PGCounter have slightly different method signatures. Let's fix it.
+
+file: `counter.go`
+```go
+package simplecounter
+
+import (
+	"context"
+)
+
+// Counter is a simple counter interface with Inc, Dec, and Get methods.
+type Counter interface {
+	Inc(ctx context.Context) error
+	Dec(ctx context.Context) error
+	Get(ctx context.Context) (int, error)
+}
+```
+PGCounter already implements this interface. But we can add explicit check in pg_counter.go
+```go
+var _ Counter = (*PGCounter)(nil)
+```
+MemCounter needs to be modified a bit.
+Add this line.
+```go
+var _ Counter = (*MemCounter)(nil)
+
+// Fixing the method signatures and adding error return values are left as an exercise.
+```
+{{% expand "Solution: Fixing MemCounter method signatures" %}}
+Change Inc, Dec and Get functions to accept context and return error.
+```udiff
+@@ -18,25 +18,27 @@
+ 	return &MemCounter{limit: limit}
+ }
+ 
+-func (c *MemCounter) Inc() {
++func (c *MemCounter) Inc(_ context.Context) error {
+ 	c.mu.Lock()
+ 	defer c.mu.Unlock()
+ 	if c.value < c.limit {
+ 		c.value++
+ 	}
++	return nil
+ }
+ 
+-func (c *MemCounter) Dec() {
++func (c *MemCounter) Dec(_ context.Context) error {
+ 	c.mu.Lock()
+ 	defer c.mu.Unlock()
+ 	if c.value > 0 {
+ 		c.value--
+ 	}
++	return nil
+ }
+-func (c *MemCounter) Get() int {
++func (c *MemCounter) Get(_ context.Context) (int, error) {
+ 	c.mu.Lock()
+ 	defer c.mu.Unlock()
+-	return c.value
++	return c.value, nil
+ }
+ 
+ var _ Counter = (*MemCounter)(nil)
+```
+{{% /expand %}}
+
+### Testing both MemCounter and PGCounter
+You can test both MemCounter and PGCounter conform to the model.
+
+file: **counter_adapters.go**
+```go {hl_lines=[2]}
+type CounterRoleAdapter struct {
+	counter simplecounter.Counter
+}
+```
+
+Define a flag to choose the implementation.
+```go {hl_lines=[2]}
+var useMemCounter bool
+
+func init() {
+    // define a flag to choose whether MemCounter or PGCounter is used
+    flag.BoolVar(&useMemCounter, "use-mem-counter", false, "Use in-memory counter instead of PostgreSQL")
+}
+```
+Then, modify the Init method to use the flag.
+```go {hl_lines=[2,3,4,5,6,15]}
+func (m *CounterModelAdapter) Init() error {
+	var counter simplecounter.Counter
+	if useMemCounter {
+		counter = simplecounter.NewMemCounter(3)
+	} else {
+		ctx := context.Background()
+		db, err := sql.Open("postgres", "postgres://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable")
+		if err != nil {
+			return err
+		}
+		counter, err = simplecounter.NewPGCounter(ctx, db, "counter-"+uuid.New().String(), 3)
+		if err != nil {
+			return err
+		}
+	}
+	m.counterRole = &CounterRoleAdapter{
+		counter: counter,
+	}
+	return nil
+}
+```
+Finally, the cleanup method.
+```go {hl_lines=[2]}
+func (m *CounterModelAdapter) Cleanup() error {
+	if m.counterRole != nil && !useMemCounter {
+		pgCounter := m.counterRole.counter.(*simplecounter.PGCounter)
+		pgCounter.DeleteCounter()
+		pgCounter.Close()
+	}
+	return nil
+}
+```
+
+You can now run the tests with the flag --use-mem-counter to test the MemCounter.
+```bash
+go test -race -v ./fizztests --use-mem-counter
+=== RUN   TestCounter
+Sequential tests succeeded! Number of sequential runs: 1000
+Parallel tests succeeded! Number of parallel runs: 1000
+2025/10/06 16:39:13 Test executor shut down gracefully.
+--- PASS: TestCounter (4.87s)
+PASS
+ok  	fizzbee-mbt-quickstart/fizztests	6.151s
+```
+Without the flag, it uses the PGCounter.
+```bash
+go test -race -v ./fizztests
+=== RUN   TestCounter
+Sequential tests succeeded! Number of sequential runs: 1000
+Parallel tests succeeded! Number of parallel runs: 1000
+2025/10/06 16:40:24 Test executor shut down gracefully.
+--- PASS: TestCounter (54.77s)
+PASS
+ok  	fizzbee-mbt-quickstart/fizztests	56.005s
+```
 
 ## Checking Code Coverage
 You can check the code coverage of your tests by passing `-coverprofile` flag to `go test`.
