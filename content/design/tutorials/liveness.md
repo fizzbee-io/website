@@ -172,9 +172,9 @@ nondeterministic model checker.
 #### Action fairness
 Fairness is typically specified at the action level. 
 
-#### Choice (any or oneof) fairness
+#### Choice (oneof) fairness
 In some cases, we might want to specify fairness in choosing between the non-deterministic choices.
-At present, it can only be specified with `any` keyword. Soon, oneof would also be supported.
+It is specified by adding `fair` to the `oneof` keyword.
 
 This is useful to specify that when choosing between multiple elements, each one of the them would
 be chosen fairly, and we would be choosing the same element infinitely.
@@ -187,7 +187,7 @@ action Init:
 
 
 atomic fair<strong> action Set:
-    client = fair any range(len(values))
+    client = fair oneof range(len(values))
     values[client] = True
     
 
@@ -218,7 +218,7 @@ NUM_RECEIVERS = 2
 role Sender:
 
     atomic fair<strong> action Send:
-        id =  fair any range(len(receivers))
+        id =  fair oneof range(len(receivers))
         r = receivers[id]
         r.Process(self.ID)
 
@@ -249,7 +249,7 @@ always eventually assertion AllTrue:
 
 Here, the `Send` action is fair and since it is part of the role, this ensures that each sender will eventually send a message.
 
-To ensure each receiver will eventually receive a message from each sender, we need to specify `fair` to the `any` keyword
+To ensure each receiver will eventually receive a message from each sender, we need to specify `fair` to the `oneof` keyword
 that chooses the receiver to send to.
 
 ## Non Deterministic Model Checker
@@ -271,8 +271,8 @@ action Init:
 
 
 atomic fair<strong> action Set:
-    client = fair any range(len(values))
-    value = fair any [False, True]
+    client = fair oneof range(len(values))
+    value = fair oneof [False, True]
     values[client] = value
     
 
@@ -343,7 +343,7 @@ action Init:
 
 
 atomic fair<strong> action Set:
-    cv = fair any [ 
+    cv = fair oneof [ 
         (c,v) 
             for c in range(len(values))
             for v in [False, True]
@@ -423,8 +423,8 @@ action Init:
 
 
 atomic fair<strong> action Set:
-    client = fair any range(len(values))
-    value = fair any [False, True]
+    client = fair oneof range(len(values))
+    value = fair oneof [False, True]
     values[client] = value
     
 

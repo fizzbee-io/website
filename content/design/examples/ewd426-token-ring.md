@@ -85,21 +85,21 @@ The only critical state is the counters. We represent them just as an array of i
 
 Iterate over each server / array, set the value to be any value
 between 0 and M-1. 
-This is a good example to show the `for` and `any` keywords.
+This is a good example to show the `for` and `oneof` keywords.
 The `for` is exactly to python's `for`, and equivalent to \A TLA+ operator.  
-The `any` is the equivalent of \E TLA+ operator. Basic idea is, it is a multiverse.
+The `oneof` is the equivalent of \E TLA+ operator. Basic idea is, it is a multiverse.
 Every non-deterministic choice creates a parallel universe.
 
 
 ```python
     for i in NODES:
-        any j in range(0, M):
+        oneof j in range(0, M):
             counters[i] = j
 ```
 
 This code will create 3 possible paths, one for each of the values 0, 1, 2.
 ```python
-    any j in [0, 1, 2]:
+    oneof j in [0, 1, 2]:
       value = j
 ```
 
@@ -119,7 +119,7 @@ atomic action Init:
     # state variables are declared with the global action Init
     counters = [0] * N
     for i in NODES:
-        any j in range(0, M):
+        oneof j in range(0, M):
             counters[i] = j
 {{% /fizzbee %}}
 
@@ -180,11 +180,11 @@ atomic  action PassToken:
 The tokens are not passed in a lock step. So, each server can pass the token to the next server
 independently as long as the server has the token. 
 
-Any server can take the next action is modeled with the `any` keyword, obviously.
+Any server can take the next action is modeled with the `oneof` keyword, obviously.
 
 {{% highlight python "hl_lines=2 3 5"%}}
 atomic  action PassToken:
-  any i in NODES:
+  oneof i in NODES:
     if i == 0:
       # Handle 0th node special case
     else:
@@ -194,7 +194,7 @@ atomic  action PassToken:
 Since the token is passed only if the server has the token, we need to add the guard condition.
 {{% highlight python "hl_lines=4 7"%}}
 atomic  action PassToken:
-  any i in NODES:
+  oneof i in NODES:
     if i == 0:
       if counters[0] == counters[N-1]:
         # pass the token
@@ -206,7 +206,7 @@ atomic  action PassToken:
 Finally, passing the token is simply copying the value of the left side neighbor, or incrementing the value for the 0th node.
 {{% highlight python "hl_lines=5 8"%}}
 atomic action PassToken:
-  any i in NODES:
+  oneof i in NODES:
     if i == 0:
       if counters[0] == counters[N-1]:
         counters[0] = (counters[N-1] + 1) % M
@@ -229,11 +229,11 @@ NODES = range(0, N)
 atomic action Init:
     counters = [0] * N
     for i in NODES:
-        any j in range(0, M):
+        oneof j in range(0, M):
             counters[i] = j
 
 atomic action PassToken:
-  any i in NODES:
+  oneof i in NODES:
     if i == 0:
       if counters[0] == counters[N-1]:
         counters[0] = (counters[N-1] + 1) % M
@@ -292,7 +292,7 @@ Add fairness to the actions. We just need weak fairness.
 
 -atomic action PassToken:
 +atomic fair action PassToken:
-     any i in NODES:
+     oneof i in NODES:
 {{% /highlight %}}
 
 Run the code again. This time, the liveness check will pass.
@@ -316,11 +316,11 @@ NODES = range(0, N)
 atomic action Init:
     counters = [0] * N
     for i in NODES:
-        any j in range(0, M):
+        oneof j in range(0, M):
             counters[i] = j
 
 atomic fair action PassToken:
-    i = any NODES
+    i = oneof NODES
     if i == 0:
       if counters[0] == counters[N-1]:
         counters[0] = (counters[N-1] + 1) % M
@@ -355,7 +355,7 @@ NODES = range(0, N)
 
 role Node:
     action Init:
-        i = any range(M) # can't assign to self.counter directly
+        i = oneof range(M) # can't assign to self.counter directly
         self.counter = i
 
     atomic fair action PassToken:

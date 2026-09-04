@@ -108,7 +108,7 @@ action Init:
   input = ""
 
 atomic action Next:
-  any c in CHARSET:
+  oneof c in CHARSET:
     input += str(c)
 ```
 
@@ -135,7 +135,7 @@ atomic action Next:
   # To limit the max depth
   if len(input) > MAX_LENGTH:
     return
-  any c in CHARSET:
+  oneof c in CHARSET:
     input += str(c)
 
 action NoOp:
@@ -161,7 +161,7 @@ action Init:
 atomic action Next:
   if len(input) > MAX_LENGTH:
     return
-  any c in CHARSET:
+  oneof c in CHARSET:
     input += str(c)
 
 action NoOp:

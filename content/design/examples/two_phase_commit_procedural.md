@@ -347,7 +347,7 @@ because once committed or aborted a transaction, they continued to allow writing
 For example:
 ```python
 atomic action RMRcvCommitMsg:
-  any rm in rmState:
+  oneof rm in rmState:
     if ('Commit') in msgs:
         rmState[rm] = 'committed'
 ```

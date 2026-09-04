@@ -98,7 +98,7 @@ role Participant:
       self.status = "init"
  
   func placehold():
-      vote = any ["accepted", "aborted"]
+      vote = oneof ["accepted", "aborted"]
       self.status = vote 
       return self.status
  

@@ -463,7 +463,7 @@ action Init:
   
 
 atomic action On:
-  any k in KEYS:
+  oneof k in KEYS:
     switches[k] = 'ON'
 
 {{% /fizzbee %}}

@@ -33,7 +33,7 @@ action Next:
     color = Color.RED
 {{% /fizzbee %}}
 
-To choose iterate over the enum values in `for` or `any`, you can simply use `dir()` builtin.
+To choose iterate over the enum values in `for` or `oneof`, you can simply use `dir()` builtin.
 
 {{% fizzbee %}}
 Color = enum('RED', 'YELLOW', 'GREEN')
@@ -42,7 +42,7 @@ action Init:
   color = Color.RED
 
 action Next:
-  any c in dir(Color):
+  oneof c in dir(Color):
     color = c
 {{% /fizzbee %}}
 

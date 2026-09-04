@@ -48,7 +48,7 @@ action Init:
     balances = {'Alice': 3, 'Bob': 2}
 
 action FundTransfer:
-    any amount in range(0,100):
+    oneof amount in range(0,100):
         if balances['Alice'] &gt;= amount:
             balances['Alice'] -= amount
             balances['Bob'] += amount
@@ -68,7 +68,7 @@ The variables defined in the `Init` action become the system’s state variables
 
 When testing an implementation, we often test with a single value. However, with FizzBee, you specify the possible values, and the model checker explores all combinations.
 
-In this example, you select an amount to transfer from the range 0 to 100. `any` is one of two keywords used to specify non-determinism. Syntactically, this is equivalent to a Python `for` statement, allowing you to rerun the same test with different amounts.
+In this example, you select an amount to transfer from the range 0 to 100. `oneof` is the keyword used to specify non-determinism. Syntactically, this is equivalent to a Python `for` statement, allowing you to rerun the same test with different amounts.
 
 The remaining code is straightforward: if Alice has the funds to transfer, the amount is deducted from her account and added to Bob’s.
 
@@ -107,7 +107,7 @@ Fix: Put these two steps in a transaction.
 Using `atomic` ensures that both intermediate steps happen together or not at all, shielding them from the rest of the system. During development, this translates to a transaction or lock. By default, the behavior is serial, but you can explicitly specify otherwise.
 ```
 atomic action FundTransfer:
-    any amount in range(0,100):
+    oneof amount in range(0,100):
         if balances['Alice'] >= amount:
             balances['Alice'] -= amount
             balances['Bob'] += amount
@@ -158,13 +158,13 @@ action Init:
   wire_requests = []
 
 atomic action Wire:
-  any amount in range(1,10):
+  oneof amount in range(1,10):
     if balances[‘Alice’] >= amount:
       balances[‘Alice’] -= amount
       wire_requests.append((‘Alice’, ‘Bob’, amount))
 
 atomic fair action DepositWireTransfer:
-  any req in wire_requests:
+  oneof req in wire_requests:
     balances[req[1]] += req[2]
     wire_requests.remove(req)
 ```

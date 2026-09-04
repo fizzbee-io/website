@@ -92,7 +92,7 @@ Specifically,
 - star_expressions (my_list.append(1) etc)
 - pass
 - del (at present Python's `del` stmt is not supported, but will be added soon)
-Other statements like `if-elif-else`, `for`, `any`, `while`, `return`, `continue` etc are not `simple_python_stmt`.
+Other statements like `if-elif-else`, `for`, `oneof`, `while`, `return`, `continue` etc are not `simple_python_stmt`.
 
 There is one exception for the method calls. If the method call is to builtin functions or functions in
 the standard library, it is treated as `simple_python_stmt`. 
@@ -217,7 +217,7 @@ In this case, when the switch is already ON, when it executes the first statemen
 the action will be tentatively enabled, but the `require` statement will disable it.
 And since it aborts the action, the action remains disabled.
 
-This equally applies to `for`, `any`, `while`, function calls etc. If within a `for` loop, 
+This equally applies to `for`, `oneof`, `while`, function calls etc. If within a `for` loop, 
 if there is at least one `simple_python_stmt` executed, the action will be enabled.
 
 If the code calls a fizz function, and within that function there is a `simple_python_stmt` executed,

@@ -253,10 +253,10 @@ The `Participant` exposes two RPCs:
 ##### Prepare Phase
 On `Prepare`, a participant can either **prepare to commit** or **abort** the transaction. While real-world implementations have specific reasons for aborting, **our model only needs to capture whether the decision is `aborted` or `prepared`**, not why.
 
-To express this, we use **non-determinism** with the `any` keyword:
+To express this, we use **non-determinism** with the `oneof` keyword:
 
 ```python
-vote = any ["prepared", "aborted"]
+vote = oneof ["prepared", "aborted"]
 ```
 This means the vote can be either `"prepared"` or `"aborted"`, and the model checker will explore both cases to ensure correctness.
 
@@ -273,7 +273,7 @@ role Participant:
         self.status = "init"
 
     func Prepare():
-        vote = any ["prepared", "aborted"]
+        vote = oneof ["prepared", "aborted"]
         self.status = vote
         return vote
 
@@ -386,7 +386,7 @@ role Participant:
         self.status = "init"
 
     func Prepare():
-        vote = any ["prepared", "aborted"]
+        vote = oneof ["prepared", "aborted"]
         self.status = vote
         return vote
 
@@ -568,7 +568,7 @@ role Participant:
         self.status = "init"
 
     func Prepare():
-        vote = any ["prepared", "aborted"]
+        vote = oneof ["prepared", "aborted"]
         self.status = vote
         return vote
 
@@ -742,7 +742,7 @@ role Participant:
         self.status = "init"
 
     func Prepare():
-        vote = any ["prepared", "aborted"]
+        vote = oneof ["prepared", "aborted"]
         self.status = vote
         return vote
 

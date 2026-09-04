@@ -287,12 +287,12 @@ The GossipTimer will trigger the `gossip` method in an arbitrarily selected serv
 ```python
 
     action GossipTimer:
-        i = any range(NUM_SERVERS)
+        i = oneof range(NUM_SERVERS)
         server = servers[i]
         server.gossip(self.cache)
 ```
 
-The `any` keyword here indicates that we are selecting one element of the collection arbitrarily.
+The `oneof` keyword here indicates that we are selecting one element of the collection arbitrarily.
 The model checker will check for all possible values of `i` and `server`.
 
 {{% fizzbee %}}
@@ -305,7 +305,7 @@ role Server:
         self.cache = [0] * NUM_SERVERS
 
     action GossipTimer:
-        i = any range(NUM_SERVERS)
+        i = oneof range(NUM_SERVERS)
         server = servers[i]
         server.gossip(self.cache)
 
@@ -358,13 +358,13 @@ When, creating a server, we can pass the ID as a parameter when creating the new
 
 The ID parameter can be accessed with `self.ID` automatically.
 
-At the `any` statement, include the `if` condition.
+At the `oneof` statement, include the `if` condition.
 
 ```diff
 @@ -9,3 +9,3 @@
      action GossipTimer:
--        i = any range(NUM_SERVERS) 
-+        i = any range(NUM_SERVERS) if i != self.ID
+-        i = oneof range(NUM_SERVERS) 
++        i = oneof range(NUM_SERVERS) if i != self.ID
          server = servers[i]
 ```
 
@@ -380,7 +380,7 @@ role Server:
         self.cache = [0] * NUM_SERVERS
 
     action GossipTimer:
-        i = any range(NUM_SERVERS) if i != self.ID
+        i = oneof range(NUM_SERVERS) if i != self.ID
         server = servers[i]
         server.gossip(self.cache)
 
@@ -459,7 +459,7 @@ role Server:
         self.cache = [0] * NUM_SERVERS
 
     action GossipTimer:
-        i = any range(NUM_SERVERS) if i != self.ID
+        i = oneof range(NUM_SERVERS) if i != self.ID
         server = servers[i]
         self.cache[self.ID] = self.version
         received_cache = server.gossip(self.cache)
@@ -639,7 +639,7 @@ role Server:
         self.version += 1
 
     action GossipTimer:
-        i = any range(NUM_SERVERS) if i != self.ID
+        i = oneof range(NUM_SERVERS) if i != self.ID
         server = servers[i]
         self.cache[self.ID] = self.version
         received_cache = server.gossip(self.cache)
@@ -793,7 +793,7 @@ role Server:
         self.version += 1
 
     action GossipTimer:
-        i = any range(NUM_SERVERS) if i != self.ID
+        i = oneof range(NUM_SERVERS) if i != self.ID
         server = servers[i]
         self.cache[self.ID] = self.version
         received_cache = server.gossip(self.cache)
@@ -1040,7 +1040,7 @@ role Server:
         self.version += 1
 
     action GossipTimer:
-        i = any range(NUM_SERVERS) if i != self.ID
+        i = oneof range(NUM_SERVERS) if i != self.ID
         server = servers[i]
         self.cache[self.ID] = self.version
         received_cache = server.gossip(self.cache)
@@ -1149,7 +1149,7 @@ role Server:
     # Marking this `atomic` is wrong as it implies it can load and update the cache and invoke the remove rpc in a single atomic step.
     # We do it anyway to temporarily
     atomic fair action GossipTimer:
-        i = any range(NUM_SERVERS) if i != self.ID
+        i = oneof range(NUM_SERVERS) if i != self.ID
         server = servers[i]
         self.cache[self.ID] = self.version
         received_cache = server.gossip(self.cache)
@@ -1181,7 +1181,7 @@ This is because, even though all servers are gossiping as we marked them fair, w
 how they should select the server to communicate with. Specifically this line.
 
 ```python
-        i = any range(NUM_SERVERS) if i != self.ID
+        i = oneof range(NUM_SERVERS) if i != self.ID
 ```
 That line says select any server other than itself. There is no mention of how to select the server to gossip with.
 
@@ -1208,9 +1208,9 @@ That is, we will make a fair selection of the server to gossip with.
 
 ```diff
 22c22
-<         i = any range(NUM_SERVERS) if i != self.ID
+<         i = oneof range(NUM_SERVERS) if i != self.ID
 ---
->         i = fair any range(NUM_SERVERS) if i != self.ID
+>         i = fair oneof range(NUM_SERVERS) if i != self.ID
 ```
 Now, when you run, the liveness check will succeed.
 

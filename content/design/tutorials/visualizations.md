@@ -622,7 +622,7 @@ action Init:
 
 action Produce:
     require len(elements) < 4
-    x = any range(4)
+    x = oneof range(4)
     elements.append(x)
 
 action Consume:
@@ -663,7 +663,7 @@ label="elements";
 {{% /graphviz %}}
 
 Try Produce multiple times to fill to capacity, then you will see Produce action is not enabled anymore.
-This should explain how `require` and `any` keywords work 
+This should explain how `require` and `oneof` keywords work 
 
 ## Array index
 We saw how to display the datastructure. Many times, we would want to see
