@@ -58,11 +58,11 @@ Actions can be defined **within a role** (e.g., a database write operation) or a
 
 ### Non-deterministic Choices
 Real-world systems often behave differently depending on inputs, timing, or concurrent events. 
-FizzBee models the non-deterministic inputs with **non-deterministic choices**, expressed using the `any` keyword.
+FizzBee models the non-deterministic inputs with **non-deterministic choices**, expressed using the `oneof` keyword.
 
 For example:
 ```fizzbee
-key = any SET_OF_AVAILABLE_KEYS
+key = oneof SET_OF_AVAILABLE_KEYS
 ```
 This means the model will try every possible key from the given set, helping tests explore a wide range of scenarios.
 

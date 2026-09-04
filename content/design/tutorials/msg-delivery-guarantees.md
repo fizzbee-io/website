@@ -56,7 +56,7 @@ atomic action Send:
     msgs.add(record(score=5, message='Hello'))
 
 atomic fair action Receive:
-    any msg in msgs:
+    oneof msg in msgs:
         process(msg)
         msgs.remove(msg)
         
@@ -77,11 +77,11 @@ atomic action Send:
     msgs.add(record(score=5, message='Hello'))
 
 atomic action Drop:
-    any msg in msgs:
+    oneof msg in msgs:
         msgs.remove(msg)
 
 atomic fair action Receive:
-    any msg in msgs:
+    oneof msg in msgs:
         process(msg)
         msgs.remove(msg)
         
@@ -102,7 +102,7 @@ atomic action Send:
     msgs.add(record(score=5, message='Hello'))
 
 atomic fair action Receive:
-    any msg in msgs:
+    oneof msg in msgs:
         process(msg)
         
 atomic func process(msg):
@@ -130,7 +130,7 @@ atomic action Send:
     msgs.add(record(score=5, message='Hello'))
 
 atomic fair action Receive:
-    any msg in msgs:
+    oneof msg in msgs:
         process(msg)
         msgs.remove(msg)
         

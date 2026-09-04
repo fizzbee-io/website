@@ -124,7 +124,7 @@ always assertion ResMgrsConsistent:
 
 ```python
 atomic action RMPrepare:
-  any rm in rmState:
+  oneof rm in rmState:
     if rmState[rm] == 'working':
       rmState[rm] = 'prepared'
       msgs.add(('Prepared', rm))
@@ -146,7 +146,7 @@ action Init:
   msgs = set([])
 
 atomic action RMPrepare:
-  any rm in rmState:
+  oneof rm in rmState:
     if rmState[rm] == 'working':
       rmState[rm] = 'prepared'
       msgs.add(('Prepared', rm))
@@ -164,7 +164,7 @@ the network to fail in such a way that the coordinator does not receive the mess
 
 ```python
 atomic action RMChooseToAbort:
-  any rm in rmState:
+  oneof rm in rmState:
     if rmState[rm] == 'working':
         rmState[rm] = 'aborted'
 ```
@@ -174,7 +174,7 @@ Check the msgs set if a participant sent a prepared message.
 
 ```python
 atomic action TMRcvPrepared:
-  any rm in rmState:
+  oneof rm in rmState:
     if tmState == 'init' and ('Prepared', rm) in msgs:
       tmPrepared.add(rm)
 ```
@@ -211,7 +211,7 @@ atomic action TMCommit:
 
 ```python
 atomic action RMRcvCommitMsg:
-  any rm in rmState:
+  oneof rm in rmState:
     if ('Commit') in msgs:
         rmState[rm] = 'committed'
 ```
@@ -220,7 +220,7 @@ atomic action RMRcvCommitMsg:
 
 ```python
 atomic action RMRcvAbortMsg:
-  any rm in rmState:
+  oneof rm in rmState:
     if ('Abort') in msgs:
         rmState[rm] = 'aborted'
 ```
@@ -245,7 +245,7 @@ action Init:
 
 
 atomic action TMRcvPrepared:
-  any rm in rmState:
+  oneof rm in rmState:
     if tmState == 'init' and ('Prepared', rm) in msgs:
       tmPrepared.add(rm)
 
@@ -263,26 +263,26 @@ atomic action TMAbort:
 
 
 atomic action RMPrepare:
-  any rm in rmState:
+  oneof rm in rmState:
     if rmState[rm] == 'working':
       rmState[rm] = 'prepared'
       msgs.add(('Prepared', rm))
 
 
 atomic action RMChooseToAbort:
-  any rm in rmState:
+  oneof rm in rmState:
     if rmState[rm] == 'working':
         rmState[rm] = 'aborted'
 
 
 atomic action RMRcvCommitMsg:
-  any rm in rmState:
+  oneof rm in rmState:
     if ('Commit') in msgs:
         rmState[rm] = 'committed'
 
 
 atomic action RMRcvAbortMsg:
-  any rm in rmState:
+  oneof rm in rmState:
     if ('Abort') in msgs:
         rmState[rm] = 'aborted'
 

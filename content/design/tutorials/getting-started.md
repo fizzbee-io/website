@@ -185,17 +185,19 @@ State: {\"value\":\"6\"}
 }
 {{% /graphviz %}}
 
-## Any 
-The `any` keyword is similar in structure to the `for` loop. The only difference is that,
-any indicates any one of the values in the list can be chosen. 
+## Oneof
+The `oneof` keyword is similar in structure to the `for` loop. The only difference is that,
+oneof indicates any one of the values in the list can be chosen. 
 
 The model checker will then explore the possibilities of choosing each of these values.
 Similar to `\E` in TLA+
 
+Note: `any` is a deprecated alias for `oneof`, and will be removed in a future version.
+
 {{% fizzbee %}}
 action Init:
   value = 0
-  any x in [1, 2, 3]:
+  oneof x in [1, 2, 3]:
     value += x
 
 {{% /fizzbee %}}
@@ -229,9 +231,9 @@ State: {\"value\":\"3\"}
 {{% /graphviz %}}
 
 
-With a for loop, the value will be 6, but with any, the value can be any of 1, 2 or 3 at the end of the Init action.
+With a for loop, the value will be 6, but with oneof, the value can be any of 1, 2 or 3 at the end of the Init action.
 
-### Any syntactic sugar
+### Oneof syntactic sugar
 In many cases, if there is no step to be taken if nothing matched in the list of values,
 you can use this simplified form.
 
@@ -242,21 +244,21 @@ action Init:
 
 action Next:
   require value == 0
-  x = any [1, 2, 3]
+  x = oneof [1, 2, 3]
   value += x
 
 {{% /fizzbee %}}
 
 For more information on `require`, see the section on [guard clauses](/tutorials/guard-clause).
 
-### Any with condition
-A condition can be specified when using the any keyword. 
+### Oneof with condition
+A condition can be specified when using the oneof keyword. 
 This is useful when you want to choose a value
 {{% fizzbee %}}
 
 action Init:
-  x = any [1, 2, 3]
-  y = any [1, 2, 3] : x != y
+  x = oneof [1, 2, 3]
+  y = oneof [1, 2, 3] : x != y
 
 {{% /fizzbee %}}
 The colon (:) here is 'such that'
@@ -375,7 +377,7 @@ But the starting value can be in `range(-2, 2)` that is oneof [-2, -1, 0, 1] .
 {{% fizzbee %}}
 action Init:
   value = 0
-  any x in range(-2, 2):
+  oneof x in range(-2, 2):
     value = x
 
 atomic action Add:
@@ -447,7 +449,7 @@ always assertion AlwaysLessThan3:
 
 action Init:
   value = 0
-  any x in range(-2, 2):
+  oneof x in range(-2, 2):
     value = x
 
 atomic action Add:
@@ -614,7 +616,7 @@ always eventually assertion BecomeZero:
 
 action Init:
   value = 0
-  any x in range(-2, 2):
+  oneof x in range(-2, 2):
     value = x
 
 atomic action Add:

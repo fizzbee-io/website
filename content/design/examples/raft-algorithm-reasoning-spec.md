@@ -285,7 +285,7 @@ role Node:
     
     atomic action AppendEntries:
         # Find the possible log entries to be copied
-        # arbitrarily select one of those (any keyword)
+        # arbitrarily select one of those (oneof keyword)
         # Update the currentTerm to the term of the leader from which it is copied
         # append the log entry to the log.
 ```
@@ -297,15 +297,15 @@ term_leaders = { t:id for t,id in enumerate(leaders) if t >= self.currentTerm an
 ```
 
 
-Now, to explore the terms, we can use `any` keyword to select one of the terms.
+Now, to explore the terms, we can use `oneof` keyword to select one of the terms.
 ```python
-term_leader = any term_leaders.items()
+term_leader = oneof term_leaders.items()
 term = term_leader[0]
 leader = resolve_role(term_leader[1])
 ```
 We could've simply used, 
 ```python
-term = any term_leaders
+term = oneof term_leaders
 leader = resolve_role(leaders[term])
 ```
 When using the explorer UI, the first option would show both the term and the leader id, whereas the second option would only show the term.
@@ -373,7 +373,7 @@ role Node:
         # Find the term and the leader to copy the data from.       
         term_leaders = { t:id for t,id in enumerate(leaders) if t >= self.currentTerm and id and id != self.__id__}
 
-        term_leader = any term_leaders.items()
+        term_leader = oneof term_leaders.items()
         term = term_leader[0]
         leader = resolve_role(term_leader[1]) # Resolve the role from the given id
 
@@ -512,7 +512,7 @@ role Node:
         # Find the term and the leader to copy the data from.       
         term_leaders = { t:id for t,id in enumerate(leaders) if t >= self.currentTerm and id and id != self.__id__}
 
-        term_leader = any term_leaders.items()
+        term_leader = oneof term_leaders.items()
         term = term_leader[0]
         leader = resolve_role(term_leader[1]) # Resolve the role from the given id
 
@@ -771,7 +771,7 @@ So, the final BecomeLeader action looks like this:
 
         eligible_votes = [n.__id__ for n in nodes if n != self]
         voting_set = all_combinations(eligible_votes, NUM_NODES//2, NUM_NODES)
-        voters = any voting_set
+        voters = oneof voting_set
         
         self.currentTerm = len(leaders)
         for n in nodes:
@@ -941,7 +941,7 @@ role Node:
 
         eligible_votes = [n.__id__ for n in nodes if n != self and self.is_eligible_voter(n)]
         voting_set = all_combinations(eligible_votes, NUM_NODES//2, NUM_NODES)
-        voters = any voting_set
+        voters = oneof voting_set
         
         self.currentTerm = len(leaders)
         for n in nodes:
@@ -967,7 +967,7 @@ role Node:
         # Find the term and the leader to copy the data from.       
         term_leaders = { t:id for t,id in enumerate(leaders) if t >= self.currentTerm and id and id != self.__id__}
 
-        term_leader = any term_leaders.items()
+        term_leader = oneof term_leaders.items()
         term = term_leader[0]
         leader = resolve_role(term_leader[1]) # Resolve the role from the given id
         # Disable leaders that have already turned into followers
@@ -1188,7 +1188,7 @@ symmetric role Node:
 
         eligible_votes = [n.__id__ for n in nodes if n != self and self.is_eligible_voter(n)]
         voting_set = all_combinations(eligible_votes, NUM_NODES//2, NUM_NODES)
-        voters = any voting_set
+        voters = oneof voting_set
         
         self.currentTerm = len(leaders)
         for n in nodes:
@@ -1214,7 +1214,7 @@ symmetric role Node:
         # Find the term and the leader to copy the data from.       
         term_leaders = { t:id for t,id in enumerate(leaders) if t >= self.currentTerm and id and id != self.__id__}
 
-        term_leader = any term_leaders.items()
+        term_leader = oneof term_leaders.items()
         term = term_leader[0]
         leader = resolve_role(term_leader[1]) # Resolve the role from the given id
         # Disable leaders that have already turned into followers

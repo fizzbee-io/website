@@ -64,17 +64,17 @@ action Init:
   # A dict from node to its successor.
   # Example: {1: 2, 2: 3, 3: None}
   successor = {}
-  current = any POSSIBLE_NODES
+  current = oneof POSSIBLE_NODES
   has_cycle = False
   while (current and not has_cycle):
-    next = any list(POSSIBLE_NODES) + [None]
+    next = oneof list(POSSIBLE_NODES) + [None]
     successor[current] = next  
       
     has_cycle = next in successor
     current = next  
 
   nodes = successor.keys()
-  start = any nodes
+  start = oneof nodes
 
 action NoOp:
   pass
@@ -203,17 +203,17 @@ action Init:
   # A dict from node to its successor.
   # Example: {1: 2, 2: 3, 3: None}
   successor = {}
-  current = any POSSIBLE_NODES
+  current = oneof POSSIBLE_NODES
   has_cycle = False
   while (current and not has_cycle):
-    next = any POSSIBLE_NODES + [None]
+    next = oneof POSSIBLE_NODES + [None]
     successor[current] = next  
       
     has_cycle = next in successor
     current = next  
 
   nodes = successor.keys()
-  start = any nodes
+  start = oneof nodes
   print(successor)
 
 atomic func find_cycle_by_keeping_visited_set():
