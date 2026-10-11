@@ -18,6 +18,12 @@ enableRobotsTXT = true
 # history at build time: a shallow clone gives every page the same date.
 enableGitInfo = true
 
+# Generated reference pages set `lastmod` from the fizzbee repo's history;
+# let that win over this repo's git date. Hand-written pages have no
+# `lastmod` and keep using git.
+[frontmatter]
+  lastmod = ["lastmod", ":git", "date", "publishDate"]
+
 [params]
   # Fallback meta/og description for pages with no description or summary of
   # their own (e.g. taxonomy pages).
