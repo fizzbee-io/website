@@ -1,5 +1,6 @@
 ---
 title: Die Hard
+description: "Can you measure exactly 4 litres with a 3-litre and a 5-litre jug? Explore every possible state and see the sequence of pours that solves the Die Hard puzzle."
 weight: 10
 aliases:
   - "/examples/die-hard/"

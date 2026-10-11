@@ -1,5 +1,6 @@
 ---
 title: Config and Front Matter
+description: "Configure the FizzBee model checker with fizz.yaml or spec front matter: action options, invariant handling, exploration limits, and more."
 weight: -18
 aliases:
   - "/tutorials/frontmatter/"

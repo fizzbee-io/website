@@ -1,5 +1,6 @@
 ---
 title: EWD426 Token Ring
+description: "Can a token ring recover from any state? Dijkstra's EWD426 self-stabilizing algorithm explained, including why it needs fairness and when it is guaranteed to stabilize."
 weight: 10
 aliases:
   - "/examples/ewd426-token-ring/"

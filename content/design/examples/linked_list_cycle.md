@@ -1,5 +1,6 @@
 ---
 title: Cycle Detection in Linked List
+description: "Floyd's tortoise-and-hare and a visited-set approach to linked-list cycle detection, written as runnable pseudocode and checked exhaustively on small lists."
 weight: 10
 aliases:
   - "/examples/linked_list_cycle/"

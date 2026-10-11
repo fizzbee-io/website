@@ -1,5 +1,6 @@
 ---
 title: Publish algorithms with testable code
+description: "Publish algorithms as precise pseudocode you can actually run and test: a Python-like alternative to TLA+ and PlusCal for specifying and model checking."
 type: posts
 date: 2024-04-12
 tags:
