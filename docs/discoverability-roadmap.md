@@ -4,7 +4,7 @@
 
 **Scope:** fizzbee.io (docs + playground), the `fizzbee-io/fizzbee` repo (examples, reference), fizzbee.ai (SaaS), blog.fizzbee.ai.
 
-**Status:** In progress. Phase 0 and Phase 1.1 complete (Oct 11, 2026); next: Phase 1.2–1.6. Originally drafted Oct 10, 2026. Based on an audit of the `fizzbee-io/website` and `fizzbee-io/fizzbee` repos and the live sites, plus two rounds of review by ChatGPT (accepted changes: stricter live-site acceptance tests, prototype-first generator, expanded validation, per-example overrides, D4 migration criterion, per-page Markdown). The `fizzbee-io/frontend` repo (private) was **not** reviewed, so anything about deployment is inferred from the website README.
+**Status:** In progress. Phase 0 and Phase 1 complete (Oct 11, 2026); next: Phase 2. Originally drafted Oct 10, 2026. Based on an audit of the `fizzbee-io/website` and `fizzbee-io/fizzbee` repos and the live sites, plus two rounds of review by ChatGPT (accepted changes: stricter live-site acceptance tests, prototype-first generator, expanded validation, per-example overrides, D4 migration criterion, per-page Markdown). The `fizzbee-io/frontend` repo (private) was **not** reviewed, so anything about deployment is inferred from the website README.
 
 ### How to use this document
 
@@ -181,24 +181,29 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
   - Smoke test (by hand, ~1 minute): `/play` loads, and one "Run in playground" link from a docs page opens the playground with the code filled in. This only checks that the deploy didn't delete or overwrite playground files; it doesn't run any specs.
 
 **1.2 Canonical tags** (`website`)
+- [x] **Done (Oct 11, 2026).** The audit was wrong here: the theme already emits a self-referencing canonical via its output-format link, so the tag added in PR #83 made two per page. The duplicate was removed in the Phase 1.4–1.6 PR; every page now has exactly one.
 - Add `<link rel="canonical" href="{{ .Permalink }}">` in `layouts/partials/head/custom.html`.
 - **Accept when:** every page's HTML has exactly one canonical tag pointing to itself.
 
 **1.3 Meta descriptions** (`website`)
+- [x] **Done (Oct 11, 2026)** in PR #84. A build check shows every page has a non-empty meta description.
 - Add `description:` front matter to the 15 pages in Appendix A. Start with the homepage and the three high-impression pages from Section 2.5 (Knuth-Yao, EWD426 token ring, linked list cycle). 120–160 characters, written to match what people search for.
 - Optionally add a fallback in the head partial that uses `.Summary` when `description` is empty, so future pages are never blank.
 - **Accept when:** a build-time check (simple script or `hugo` + grep over `public/`) shows every page has a non-empty meta description.
 
 **1.4 Sitemap cleanup** (`website`)
+- [x] **Done (Oct 11, 2026).** `enableGitInfo`, `layouts/_default/sitemap.xml`, and a shallow-clone guard in `deploy.sh`. Build check: 37 URLs, all with `lastmod`, no `/tags/`, no redirect stubs.
 - `enableGitInfo = true` in `hugo.toml` so `lastmod` comes from git. (Requires full git history at build time; note that shallow clones break this.)
 - Custom `layouts/sitemap.xml` (or `_default/sitemap.xml`) that excludes taxonomy/term pages (`/tags/...`) and any page with `sitemap_exclude: true`.
 - **Accept when:** sitemap has no `/tags/`, no `_index_bak`, and every URL has a `lastmod`.
 
 **1.5 robots.txt** (`website`)
+- [x] **Done (Oct 11, 2026).** `layouts/robots.txt` names the search and AI crawlers in the same group as `*`, so they all keep `Disallow: /tags/` (a crawler with its own group ignores the `*` rules). Live check and Search Console robots.txt report pending deploy.
 - Override the theme's `robots.txt` in `layouts/robots.txt`. Keep `Disallow: /tags/`, add explicit allows for AI crawlers (copy the fizzbee.ai list), keep the `Sitemap:` line.
 - **Accept when:** live robots.txt matches; Search Console robots tester shows no errors.
 
 **1.6 Open Graph / social metadata check** (`website`)
+- [x] **Done (Oct 11, 2026).** The theme emitted no `og:image` anywhere and no `og:title` on the homepage. Added a default 1200×630 `static/social-card.png` (via `params.images`) and a homepage `og:title`. Build check: every page has exactly one `og:title`, `og:description`, `og:image` and `twitter:card`.
 - Verify the theme emits `og:title`, `og:description`, `og:image`, `twitter:card`. Add a default `og:image` if missing.
 
 ### Phase 2: Publish the reference corpus (2–3 Claude Code sessions in `website`)
