@@ -14,10 +14,16 @@ disablePathToLower = true
 # Required if you want to render robots.txt template
 enableRobotsTXT = true
 
+# Sitemap <lastmod> comes from each file's last git commit. Needs full git
+# history at build time: a shallow clone gives every page the same date.
+enableGitInfo = true
+
 [params]
   geekdocLogo = "bee-left-to-right-512x512.png"
   geekdocPrivacyPolicy = "/privacy.html"
   geekdocTagsToMenu = false
+  # Default og:image / twitter:image for pages without their own featured image.
+  images = ["social-card.png"]
 
 # Needed for mermaid shortcodes
 [markup]

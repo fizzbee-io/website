@@ -1,4 +1,7 @@
-<link rel="canonical" href="{{ .Permalink }}">
+{{- /* The theme omits og:title on the homepage; every other page gets one from the theme. */}}
+{{- if .IsHome }}
+<meta property="og:title" content="{{ .Title }}">
+{{- end }}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
 

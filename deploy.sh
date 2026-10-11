@@ -14,6 +14,9 @@ REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
 [[ -x "$FRONTEND/build-hosting.sh" ]] \
   || { echo "ERROR: $FRONTEND/build-hosting.sh not found or not executable — pull latest main in the frontend checkout" >&2; exit 1; }
 
+[[ "$(git -C "$REPO_ROOT" rev-parse --is-shallow-repository)" == "false" ]] \
+  || { echo "ERROR: shallow clone; sitemap lastmod needs full git history (run: git fetch --unshallow)" >&2; exit 1; }
+
 BUILD_ROOT="$(mktemp -d)"
 trap 'rm -rf "$BUILD_ROOT"' EXIT
 
