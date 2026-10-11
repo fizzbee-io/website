@@ -3,6 +3,8 @@ title: Time oblivious Sampling Algorithm for Random Variate Generation
 weight: 30
 aliases:
   - "/examples/time-oblivious-sampling-algorithm/"
+  - "/examples/time-oblivious-sampling/"
+  - "/design/examples/time-oblivious-sampling/"
 ---
 
 Given a fair random bit generator, how do you generate random numbers with arbitrary probabilities?
