@@ -1,8 +1,7 @@
 ---
 Title: FizzBee – Design Reliable, Scalable Distributed Systems
-Description: Designing a distributed system? FizzBee makes it easy to model, visualize, and
-  validate your design—catching flaws before you code. The easiest-ever formal methods,
-  built for developers.
+# Keep in sync with params.description in hugo.toml (the site-wide fallback).
+description: "The easiest formal specification language and model checker for the full development cycle: requirements analysis, design verification, and model-based testing."
 #geekdocNav: false
 geekdocAlign: center
 geekdocAnchor: false

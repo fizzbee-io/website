@@ -1,6 +1,6 @@
 ---
 title: Quick Start
-description: Learn how to use FizzBee's Model Based Testing to test your Go code.
+description: "TDD without writing tests: model a Go counter in FizzBee, implement the adapter, and let the test runner drive single-threaded, concurrent, and database tests."
 weight: -20
 
 ---

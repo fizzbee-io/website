@@ -1,7 +1,7 @@
 ---
 title: "Raft Consensus Protocol - FizzBee Specification for Reasoning"
 date: 2025-07-01
-description: "FizzBee specification of Raft consensus algorithm for formal reasoning."
+description: "Derive Raft from first principles: start with a whiteboard-level model and let the model checker's counterexamples show why each rule is needed."
 tags: ["raft", "consensus", "distributed systems", "fizzbee", "tutorial"]
 weight: 12
 geekdocHidden: false

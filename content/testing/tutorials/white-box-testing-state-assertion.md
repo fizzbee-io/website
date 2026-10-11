@@ -1,7 +1,6 @@
 ---
 title: White box testing - State assertion
-description: State assertion is a white-box testing technique that involves verifying the internal state of a system to ensure it behaves as expected.
-    State assertions can find bugs quicker and make debugging easier and sometimes that black-box testing cannot even find.
+description: "White-box model-based testing: state assertions find bugs faster and flag the exact step where internal state goes wrong. Fix bugs instead of hunting for them."
 weight: 0
 
 ---

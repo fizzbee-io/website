@@ -1,6 +1,6 @@
 ---
 title: "Model-Based Testing"
-description: "Autonomous, concurrency-aware testing for complex systems. Test incrementally, keep your source clean, and catch concurrency bugs early."
+description: "Test that your code matches your intent, not just hope AI-written tests cover enough. Model-based testing for business logic, APIs, databases, and web UIs."
 
 weight: -10
 ---

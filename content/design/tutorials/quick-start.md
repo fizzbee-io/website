@@ -1,6 +1,6 @@
 ---
 title: "Quick Start: Modeling and Validating Distributed Systems in FizzBee"
-description: "Model and validate a distributed system using FizzBee by building a simple gossip protocol. This tutorial walks through defining system behavior, identifying design flaws, and visualizing interactions, providing an approachable introduction to formal methods and hands-on experience with formal modeling."
+description: "Model a gossip protocol and watch the model checker find design flaws for you. A hands-on introduction to formal methods for distributed systems."
 weight: -25
 aliases:
   - "/tutorials/quick-start/"
