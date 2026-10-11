@@ -4,7 +4,7 @@
 
 **Scope:** fizzbee.io (docs + playground), the `fizzbee-io/fizzbee` repo (examples, reference), fizzbee.ai (SaaS), blog.fizzbee.ai.
 
-**Status:** Draft for review, Oct 10, 2026. Based on an audit of the `fizzbee-io/website` and `fizzbee-io/fizzbee` repos and the live sites, plus two rounds of review by ChatGPT (accepted changes: stricter live-site acceptance tests, prototype-first generator, expanded validation, per-example overrides, D4 migration criterion, per-page Markdown). The `fizzbee-io/frontend` repo (private) was **not** reviewed, so anything about deployment is inferred from the website README.
+**Status:** In progress. Phase 0 and Phase 1.1 complete (Oct 11, 2026); next: Phase 1.2–1.6. Originally drafted Oct 10, 2026. Based on an audit of the `fizzbee-io/website` and `fizzbee-io/fizzbee` repos and the live sites, plus two rounds of review by ChatGPT (accepted changes: stricter live-site acceptance tests, prototype-first generator, expanded validation, per-example overrides, D4 migration criterion, per-page Markdown). The `fizzbee-io/frontend` repo (private) was **not** reviewed, so anything about deployment is inferred from the website README.
 
 ### How to use this document
 
@@ -84,6 +84,28 @@ Ghost. Correct sitemap index and robots.txt. One post so far. No issues beyond l
 
 Note: fizzbee.io also has `/posts/` (two posts from 2024). Two blogs split attention; see Decision D5.
 
+### 2.5 Search Console baseline for fizzbee.io (exported Oct 11, 2026)
+
+**Indexing:** 39 indexed, 42 not indexed (as of Oct 3). Not-indexed reasons:
+
+| Reason | Pages | Likely cause / action |
+|---|---|---|
+| Page with redirect | 22 | Unknown: probably URL variants (no trailing slash, `http://`, `index.html`). Export the list; harmless if they're variants of real pages. |
+| Discovered – currently not indexed | 14 | Google knows but hasn't crawled. Export the list; if real pages are here, request indexing after Phase 1. |
+| Crawled – currently not indexed | 2 | Export; often thin pages (e.g. section index pages). |
+| Blocked by robots.txt | 2 | Tag pages; expected. Removing tags from the sitemap (1.4) stops Google trying. |
+| Not found (404) | 1 | Export to see which. |
+| Duplicate without user-selected canonical | 1 | Likely a stale backup page; canonical tags (1.2) address this class. |
+
+**Traffic (last 3 months):** 665 clicks, ~87k impressions. Impressions are growing fast: ~13k (Jul) → ~31k (Aug) → ~40k (Sep).
+
+- **Brand dominates clicks:** "fizzbee" and misspellings drive ~338 of the ~372 clicks attributed to queries. The homepage gets 429 clicks.
+- **Many impressions look machine-generated.** About 150 queries have 6+ words (e.g. "knuth yao algorithm dice expected rolls optimal prefix", 5,444 impressions, position 2.7) and together account for ~16k impressions with **zero** clicks. US desktop has 0.33% CTR vs 2–4% elsewhere. This pattern is consistent with AI assistants and AI search features issuing long queries and reading results without clicking, which would mean fizzbee.io pages are already being retrieved by AI systems. Treat as a strong hint, not proven.
+- **High-impression pages with no meta description:** Knuth-Yao (32.8k impressions, 0.14% CTR), EWD426 token ring (15.6k, 0.03%), linked list cycle (6.3k, 0.1%). All three are in Appendix A. Prioritize these in Phase 1.3.
+- **Non-brand rankings:** "symmetry reduction" (position 1.8, 17% CTR — the tutorial owns this; supports D3), "knuth yao" (2.4), "tla+ alternatives" (position 1, small volume), conversational queries like "what are modern alternatives to tla+…" (position 1).
+- **Opportunities ranking poorly:** "model based testing" (928 impressions, position 19) plus variants ("model-based testing", "…tools", "what is…", positions 19–41). Also raft protocol/consensus (position ~9), linked list cycle detection (~10–13), "python formal verification" (~8).
+- **`/_index_bak1/` appears in search results** (84 impressions, position 2.4), so unlike `/_index_bak/` it is known to Google. Request removal in Phase 4.
+
 ---
 
 ## 3. Claude vs ChatGPT: where the recommendations agree and differ
@@ -141,14 +163,15 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 
 ### Phase 0: Prerequisites and baseline (you, ~30 min)
 
-- [ ] Confirm whether fizzbee.io is verified in Google Search Console and Bing Webmaster Tools. If not, verify (DNS TXT is simplest; works for all subdomains). Do the same for fizzbee.ai.
-- [ ] In Search Console, export the current Pages report (indexed / not indexed counts) as the baseline.
-- [ ] Note the actual deploy steps from the frontend repo (how `public/` gets into the Docker image, what Firebase does). Phase 1.1 depends on this.
-- [ ] Answer the decisions in Section 6.
+- [x] Confirm whether fizzbee.io is verified in Google Search Console and Bing Webmaster Tools. If not, verify (DNS TXT is simplest; works for all subdomains). Do the same for fizzbee.ai.
+- [x] In Search Console, export the current Pages report (indexed / not indexed counts) as the baseline.
+- [x] Note the actual deploy steps from the frontend repo (how `public/` gets into the Docker image, what Firebase does). Phase 1.1 depends on this.
+- [x] Answer the decisions in Section 6. (D1 deferred to 1.5; D5 open; others per recommendation, confirmed as each phase reaches them.)
 
 ### Phase 1: Fix technical issues on fizzbee.io (1 Claude Code session in `website`, 1 in `frontend`)
 
 **1.1 Stop stale pages from accumulating** (`frontend` + `website` repos)
+- [x] **Done (Oct 11, 2026).** Production turned out to serve all docs from Firebase Hosting (Cloud Run only serves `/play`, `/play/run`, `/chat`, `/chat/api`), so the fix was: frontend `build-hosting.sh` assembles the hosting dir from scratch (Hugo output + the six git-tracked playground assets; frontend PRs #39/#40), website `deploy.sh` builds into a fresh temp dir and hands off (PR #81). Verified on a preview channel, then in production: all 73 stale files gone (66 × 404, 7 old-path 301s), all 50 sitemap URLs 200, playground smoke test passed. Bonus: fixed a live broken redirect via aliases (PR #80).
 - Make the Hugo output a separate directory that is replaced wholesale on each deploy, rather than merged into `frontend/public` alongside playground assets. Exact approach depends on the frontend layout.
 - One-time cleanup: delete `_index_bak/`, `_index_bak1/`, `posts/where-is-the-beef/` and any other HTML in the deployed folder that a fresh `hugo` build does not produce. Have Claude Code diff a clean build against the current deployed folder to find them all.
 - Add a script (`deploy.sh` or Makefile target) in the website repo that builds and hands off the Hugo output. Note: `hugo --cleanDestinationDir` only cleans Hugo's own `public/`; the stale files come from *merging* into the frontend folder, so the hand-off itself must replace the docs files wholesale without touching playground assets.
@@ -162,7 +185,7 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 - **Accept when:** every page's HTML has exactly one canonical tag pointing to itself.
 
 **1.3 Meta descriptions** (`website`)
-- Add `description:` front matter to the 15 pages in Appendix A. Homepage first. 120–160 characters, written to match what people search for.
+- Add `description:` front matter to the 15 pages in Appendix A. Start with the homepage and the three high-impression pages from Section 2.5 (Knuth-Yao, EWD426 token ring, linked list cycle). 120–160 characters, written to match what people search for.
 - Optionally add a fallback in the head partial that uses `.Summary` when `description` is empty, so future pages are never blank.
 - **Accept when:** a build-time check (simple script or `hugo` + grep over `public/`) shows every page has a non-empty meta description.
 
@@ -232,6 +255,7 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 ### Phase 4: Search engine submission and change notification (you + 1 short session)
 
 - Submit `https://fizzbee.io/sitemap.xml` in Search Console and Bing Webmaster Tools.
+- **Removals → New request** for `https://fizzbee.io/_index_bak1/` (it appears in search results; see 2.5). Not needed for `/_index_bak/`, which Google has never seen.
 - URL Inspection → Request indexing for the homepage, reference landing, language reference index, examples index, and the top ~10 pattern pages.
 - **IndexNow**: add the key file to `static/`, and a post-deploy script that POSTs changed URLs (diff of sitemap before/after deploy) to `api.indexnow.org`.
 - **Accept when:** Search Console shows the sitemap processed with the new URL count; IndexNow returns 200/202 on deploy.
@@ -282,6 +306,7 @@ Approach: **three tiers.**
 - **Distributed lock with leases and fencing tokens.** Heavily searched (the Redlock debate); a model checker finding the lease-expiry bug is an ideal demonstration.
 - **Saga pattern.** What microservice developers actually build — fizzbee.io's core audience.
 - **Idempotency / exactly-once delivery.** Connects to the existing message-delivery-guarantees tutorial.
+- **Model-based testing.** "model based testing" gets ~930 impressions per quarter, with more from variants, but fizzbee.io ranks around position 19–41. FizzBee has a model-based testing product (`/testing/`), so a strong explainer ("What is model-based testing?" with a concrete FizzBee + Go walkthrough) targets a real, non-brand audience. This came from the Search Console baseline, not the original audit.
 - **"FizzBee for TLA+ users."** Write fresh (the old `docs/` version is outdated). "TLA+ alternative" is among the highest-value searches for FizzBee; showing the same spec in both languages side by side would also attract links from the TLA+ community.
 
 **Test the walkthrough code.** Code blocks in markdown silently go stale when the language changes. For each walkthrough (existing and new), put the complete spec and the key intermediate steps (e.g. two-phase-commit timeout attempts 1–5) into the repo as `.fizz` files with `baseline.txt`, the same mechanism `examples/references/` already uses. A language change then shows up as a failing test rather than a broken page. Ideally the page pulls the code from those files (Hugo `readFile` or a shortcode) so there is one copy.
