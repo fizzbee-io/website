@@ -1,5 +1,6 @@
 ---
 title: Two Phase Commit (Procedural)
+description: "Two-phase commit written as plain procedural code, with yield points, parallel steps and message passing, and every interleaving checked for atomicity."
 weight: 10
 aliases:
   - "/examples/two_phase_commit_procedural/"

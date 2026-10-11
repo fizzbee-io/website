@@ -1,5 +1,6 @@
 ---
 title: 'Introducing FizzBee: Simplifying Formal Methods for All'
+description: "A wire transfer that debits Alice but never credits Bob: how a model checker finds this concurrency bug, and why formal methods are worth learning."
 type: posts
 date: 2024-05-31
 tags:

@@ -1,5 +1,6 @@
 ---
 title: Time oblivious Sampling Algorithm for Random Variate Generation
+description: "A sampling algorithm whose running time reveals nothing about its output: generate random variates resistant to timing attacks, and compare its cost with Knuth–Yao."
 weight: 30
 aliases:
   - "/examples/time-oblivious-sampling-algorithm/"

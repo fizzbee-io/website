@@ -1,5 +1,6 @@
 ---
 title: Two Phase Commit
+description: "Two-phase commit explained step by step: how participants vote and the coordinator decides, why failures make it hard, and the invariants that keep transactions atomic."
 weight: 10
 aliases:
   - "/examples/two_phase_commit/"

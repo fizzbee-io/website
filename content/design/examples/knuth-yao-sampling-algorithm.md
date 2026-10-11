@@ -1,5 +1,6 @@
 ---
 title: Knuth-Yao Sampling Algorithm for Random Variate Generation
+description: "The Knuth–Yao algorithm explained: generate any distribution from fair coin flips optimally — two dice take 4.39 flips on average instead of 7.33."
 weight: 30
 aliases:
   - "/examples/knuth-yao-sampling-algorithm/"

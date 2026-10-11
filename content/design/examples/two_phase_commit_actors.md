@@ -1,5 +1,6 @@
 ---
 title: Two Phase Commit (Actor model/Object oriented)
+description: "Build two-phase commit from scratch with roles and RPCs, then add timeouts and watch plausible fixes fail one by one until one works, with sequence diagrams."
 weight: 11
 aliases:
   - "/examples/two_phase_commit_actors/"

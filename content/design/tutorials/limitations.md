@@ -1,5 +1,6 @@
 ---
 title: Current Limitations
+description: "Current limitations of the FizzBee language and model checker — know what to expect from this fast-improving formal methods tool."
 weight: 1000
 aliases:
   - "/tutorials/limitations/"
