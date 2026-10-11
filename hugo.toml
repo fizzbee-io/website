@@ -19,6 +19,9 @@ enableRobotsTXT = true
 enableGitInfo = true
 
 [params]
+  # Fallback meta/og description for pages with no description or summary of
+  # their own (e.g. taxonomy pages).
+  description = "The easiest formal specification language and model checker for the full development cycle: requirements analysis, design verification, and model-based testing."
   geekdocLogo = "bee-left-to-right-512x512.png"
   geekdocPrivacyPolicy = "/privacy.html"
   geekdocTagsToMenu = false
