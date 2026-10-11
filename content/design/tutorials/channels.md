@@ -99,7 +99,7 @@ Follow the graph, there will be 3 terminal states - from left to right.
 ### Custom Channels
 
 ```python
-NonBlockingFifo = Channel(ordering='ordered', delivery='atleast_once', blocking='fire_and_forget')
+NonBlockingFifo = Channel(ordering='unordered', delivery='exactly_once', blocking='fire_and_forget')
 
 role Sender:
   action Init:
@@ -117,20 +117,20 @@ role Receiver:
     self.state = 'done'
 
 action Init:
-  r = NonBlockingFifo(Receiver())
+  r = NonBlockingFifo.stub(Receiver())
   s = Sender()
 
 action NoOp:
   pass
 ```
 
-When you run this spec, since the call is fireandforget, the sender will not wait for the receiver to
-receiver or process the response. But it is guaranteed that the receiver will receive the message at least once.
+When you run this spec, since the call is `fire_and_forget`, the sender will not wait for the receiver to
+receiver or process the response. But it is guaranteed that the receiver will receive the message `exactly_once`.
 
 That is, you'll see the following states in the graph.
 
 1. (Terminal) Sender in 'done' and receiver in 'done'. Implies, the call was successful.
 2. (Terminal) Receiver in 'done' but receiver in 'calling'.
 3. (Transient) Sender in 'done' but receiver is not done. Eventually, the receiver will process,
-   but temporarily, the sender can be done before the receiver processes because of `fireandforget`.
+   but temporarily, the sender can be done before the receiver processes because of `fire_and_forget`.
 
