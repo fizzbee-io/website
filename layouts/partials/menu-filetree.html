@@ -1,6 +1,6 @@
-{{- /* Copy of the theme partial: menu entries use .LinkTitle (falls back to
-       .Title), so a page can set a short `linkTitle` for the menu while
-       keeping its full title as the H1 and <title>. */ -}}
+{{- /* Copy of the theme partial: menu entries use a page's `linkTitle` when set and
+       otherwise the theme's utils/title (title, then file name), so a page
+       can have a short menu label and keep its full title as the H1. */ -}}
 {{ $current := . }}
 {{ template "tree-nav" dict "sect" .Site.Home.Sections "current" $current }}
 
@@ -74,11 +74,11 @@
                       {{- printf " is-active" }}
                     {{- end }}"
                   >
-                    {{ .LinkTitle }}
+                    {{ or .Params.linkTitle (partial "utils/title" .) }}
                   </a>
                 </span>
               {{ else }}
-                <span class="flex">{{ .LinkTitle }}</span>
+                <span class="flex">{{ or .Params.linkTitle (partial "utils/title" .) }}</span>
               {{ end }}
               {{ if $doCollapse }}
                 <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">

@@ -52,7 +52,7 @@ generated files: the next run overwrites them.
 | Page or pattern meta descriptions | `PAGE_DESCRIPTIONS`, `PATTERN_DESCRIPTIONS` |
 | Patterns that link to an existing page instead of getting one | `OVERRIDES` (`placement: link`) |
 | Pattern index categories | `PATTERN_CATEGORIES` |
-| Menu label of the pattern library | `linkTitle` in the index front matter (the menu uses `linkTitle`, falling back to `title`; see `layouts/partials/menu-filetree.html`) |
+| Menu label of the pattern library | `linkTitle` in the index front matter (the menu uses `linkTitle` when set, otherwise the theme's usual title; see `layouts/partials/menu-filetree.html`) |
 | When the playground button is hidden | `PLAYGROUND_MAX_SECONDS`, `PLAYGROUND_MAX_NODES` |
 | Chapters that are not published | `SKIP_CHAPTERS` |
 
