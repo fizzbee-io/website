@@ -1,7 +1,7 @@
 ---
 title: "Raft Consensus Protocol"
 date: 2025-04-21
-description: "A step-by-step guide to modeling the Raft consensus algorithm using FizzBee's actor-based approach."
+description: "Model the Raft consensus protocol step by step: leader election, log replication, RPCs and timeouts, then model-check election safety and log matching."
 tags: ["raft", "consensus", "distributed systems", "fizzbee", "tutorial"]
 weight: 12
 geekdocHidden: false

@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: Learn how to use FizzBee's Model Based Testing to test your Go code.
+description: "How FizzBee model-based testing works: write a model of your system's behavior, connect it to your code with an adapter, and run autonomous, reproducible tests."
 weight: -20
 geekdocHidden: true
 ---
