@@ -18,13 +18,13 @@ source: "https://github.com/fizzbee-io/fizzbee/blob/main/examples/references/LAN
 **Python features not supported**:
 - `del` statement
 - `import` statement — there is no user-level import; a curated set of
-  modules is pre-imported globally. See [Standard Library](/design/reference/standard-library/).
+  modules is pre-imported globally. See [Standard Library](/reference/language/standard-library/).
 - `is` / `is not` operators (use `==` / `!=` instead)
 - Tuple unpacking in `for` loops (`for k, v in dict.items()` fails; use `for k in dict` + `dict[k]`)
 
 **Cross-role function return to `self.*`**: `self.x = otherRole.fn()` crashes. Use a local variable: `result = otherRole.fn()` then `self.x = result`.
 
-For a complete list of gotchas and workarounds, see **[Gotchas and Common Issues](/design/reference/gotchas/)**.
+For a complete list of gotchas and workarounds, see **[Gotchas and Common Issues](/reference/language/gotchas/)**.
 
 ## Workarounds
 
@@ -46,3 +46,7 @@ always assertion ServerValuePositive:
 **For complex expressions with fizz functions**: Extract to variables first (see Function Call Syntax Limitations)
 
 **For generic collections in state**: Use regular collections with hashable types, or restructure to keep generic collections in local scope
+## See also
+
+- [Gotchas and Common Issues](/reference/language/gotchas/)
+- [Limitations](/design/tutorials/limitations/)

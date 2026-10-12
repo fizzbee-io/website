@@ -22,5 +22,5 @@ FizzBee uses Starlark as its expression and statement engine:
 - Python-compatible syntax for expressions
 - Deterministic execution
 - No `import` statement and no arbitrary Python imports — a curated set of
-  modules is auto-imported globally (see [Standard Library](/design/reference/standard-library/))
+  modules is auto-imported globally (see [Standard Library](/reference/language/standard-library/))
 - Built-in support for common data structures

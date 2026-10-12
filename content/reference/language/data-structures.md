@@ -126,4 +126,4 @@ config = struct(timeout=30, retries=3)
 ```
 ## Patterns that use this
 
-- [Saga Pattern](/design/examples/saga-pattern/)
+- [Saga Pattern](/design/patterns/saga-pattern/)

@@ -106,4 +106,4 @@ result = value + 10
 **Note**: Standard Python/Starlark functions (built-ins like `len()`, `str()`, etc.) have no restrictions.
 ## Patterns that use this
 
-- [Distributed Lock Pattern](/design/examples/distributed-lock/)
+- [Distributed Lock Pattern](/design/patterns/distributed-lock/)

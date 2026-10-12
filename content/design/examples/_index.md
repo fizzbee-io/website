@@ -7,4 +7,6 @@ aliases:
   - "/examples/"
 ---
 
+For shorter, runnable models of common patterns (locks, sagas, queues, caches), see the [Distributed Systems Patterns](/design/patterns/) library.
+
 {{< toc-tree >}}    

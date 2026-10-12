@@ -137,5 +137,5 @@ action Example:
 ```
 ## Patterns that use this
 
-- [Distributed Lock Pattern](/design/examples/distributed-lock/)
-- [Saga Pattern](/design/examples/saga-pattern/)
+- [Distributed Lock Pattern](/design/patterns/distributed-lock/)
+- [Saga Pattern](/design/patterns/saga-pattern/)

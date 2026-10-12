@@ -111,7 +111,7 @@ Tighten the bounds before increasing N.
 ## `symmetry` module
 
 Domain factories for state-space reduction. See
-[Symmetry Module API](/design/reference/symmetry-reduction/#symmetry-module-api-advanced) for full semantics:
+[Symmetry Module API](/reference/language/symmetry-reduction/#symmetry-module-api-advanced) for full semantics:
 
 ```python
 symmetry.nominal(name, limit, materialize=False)

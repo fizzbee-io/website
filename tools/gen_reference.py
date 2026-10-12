@@ -3,11 +3,13 @@
 
 Reads a checkout of fizzbee-io/fizzbee and writes Hugo content:
 
-  content/design/reference/_index.md          landing page (from references/README.md)
-  content/design/reference/<chapter>.md       one page per LANGUAGE_REFERENCE.md chapter,
+  content/reference/_index.md                 landing page (from references/README.md)
+  content/reference/language/<chapter>.md     one page per LANGUAGE_REFERENCE.md chapter,
                                               with the matching examples embedded
-  content/design/reference/{gotchas,verification,performance}.md
-  content/design/examples/<pattern>.md        one page per Section 13 pattern
+  content/reference/language/gotchas.md
+  content/reference/{verification,performance}.md
+  content/design/patterns/_index.md           pattern library index, by category
+  content/design/patterns/<pattern>.md        one page per Section 13 pattern
 
 Usage:
   python3 tools/gen_reference.py <path-to-fizzbee-checkout> [--sample]
@@ -15,10 +17,8 @@ Usage:
 --sample embeds only the prototype sample set (SAMPLE below) so the output can
 be reviewed before generating the full corpus.
 
-Everything under content/design/reference/ is owned by this script and is
-rewritten on every run. Pattern pages in content/design/examples/ carry a
-GENERATED_MARKER line so stale ones can be removed without touching the
-hand-written pages next to them.
+content/reference/ and content/design/patterns/ are owned by this script and
+are rewritten on every run.
 
 Per-example overrides: an optional `page.yaml` next to an example's .fizz file
 (or an entry in OVERRIDES below) can set title, description, demonstrates,
@@ -35,8 +35,11 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-REF_OUT = REPO_ROOT / "content/design/reference"
-EXAMPLES_OUT = REPO_ROOT / "content/design/examples"
+REF_OUT = REPO_ROOT / "content/reference"
+LANG_OUT = REF_OUT / "language"
+PATTERNS_OUT = REPO_ROOT / "content/design/patterns"
+LANG_URL = "/reference/language/"
+PATTERNS_URL = "/design/patterns/"
 GITHUB_BLOB = "https://github.com/fizzbee-io/fizzbee/blob/main/"
 GITHUB_TREE = "https://github.com/fizzbee-io/fizzbee/tree/main/"
 REFS_REL = "examples/references"
@@ -89,11 +92,34 @@ OVERRIDES = {
     },
 }
 
+# (source file, URL, title). Gotchas is about the language, so it sits beside
+# the chapters; the other two are about running the model checker.
 GUIDES = [
-    ("GOTCHAS.md", "gotchas", "Gotchas and Common Issues"),
-    ("VERIFICATION_GUIDE.md", "verification", "Verification Guide"),
-    ("PERFORMANCE_GUIDE.md", "performance", "Performance Guide"),
+    ("GOTCHAS.md", "/reference/language/gotchas/", "Gotchas and Common Issues"),
+    ("VERIFICATION_GUIDE.md", "/reference/verification/", "Verification Guide"),
+    ("PERFORMANCE_GUIDE.md", "/reference/performance/", "Performance Guide"),
 ]
+
+# Pattern library categories, by Section 13 subsection.
+PATTERN_CATEGORIES = {
+    "01": "Locking",
+    "02": "Transactions",
+    "03": "Consensus",
+    "04": "Messaging",
+    "05": "Consistency",
+    "06": "Resilience",
+    "07": "Logging",
+}
+
+# Hand-written meta descriptions for pattern pages. The header comment's
+# second line is only a seed; descriptions should lead with the topic and what
+# the page shows (roadmap 1.3 description principle).
+PATTERN_DESCRIPTIONS = {
+    "13-01-03-distributed-lock": "Distributed lock with lease expiration and fencing tokens: a runnable "
+                                 "model of clients competing for a lock, checked for mutual exclusion.",
+    "13-02-02-saga-pattern": "The saga pattern as a runnable model: a long-running transaction with "
+                             "compensating steps and rollback, checked by a model checker.",
+}
 
 # Prototype sample (roadmap 2.1): one chapter with all its examples (Fairness),
 # a tiny example, a pattern, an example without header comments, a duplicate
@@ -293,7 +319,7 @@ class Example:
         self.anchor = None  # set once the chapter page's headings are known
         self.url = self.overrides.get("url")
         if self.placement == "standalone" and not self.url:
-            self.url = f"/design/examples/{self.slug}/"
+            self.url = f"{PATTERNS_URL}{self.slug}/"
         self.source = self.files[0].read_text() if self.files else ""
 
     def _parse_header(self):
@@ -478,9 +504,9 @@ def strip_trailing_rule(lines):
 
 def rewrite_links(text, anchor_map, examples, page_url):
     """Point internal links at the generated pages."""
-    guide_urls = {src: f"/design/reference/{slug}/" for src, slug, _ in GUIDES}
-    guide_urls["README.md"] = "/design/reference/"
-    guide_urls["LANGUAGE_REFERENCE.md"] = "/design/reference/"
+    guide_urls = {src: url for src, url, _ in GUIDES}
+    guide_urls["README.md"] = "/reference/"
+    guide_urls["LANGUAGE_REFERENCE.md"] = LANG_URL
 
     def repl(m):
         label, target = m.group(1), m.group(2)
@@ -489,7 +515,7 @@ def rewrite_links(text, anchor_map, examples, page_url):
             if chapter is None:
                 WARNINGS.append(f"{page_url}: unresolved anchor {target}")
                 return m.group(0)
-            url = f"/design/reference/{chapter}/"
+            url = f"{LANG_URL}{chapter}/"
             if target[1:] == chapter:
                 return f"[{label}]({url})"
             return f"[{label}]({target if url == page_url else url + target})"
@@ -513,7 +539,7 @@ def rewrite_links(text, anchor_map, examples, page_url):
 
 def example_url(ex):
     if ex.placement == "embed" and ex.anchor:
-        return f"/design/reference/{ex.chapter}/#{ex.anchor}"
+        return f"{LANG_URL}{ex.chapter}/#{ex.anchor}"
     if ex.placement in ("standalone", "link"):
         return ex.url
     return f"{GITHUB_TREE}{ex.rel}"
@@ -581,39 +607,53 @@ def main():
     chapter_titles = {c["slug"]: c["title"] for c in chapters}
     ref_lastmod = git_lastmod(checkout, f"{REFS_REL}/LANGUAGE_REFERENCE.md")
 
-    if REF_OUT.exists():
-        shutil.rmtree(REF_OUT)
-    REF_OUT.mkdir(parents=True)
-    for f in EXAMPLES_OUT.glob("*.md"):
-        if GENERATED_MARKER in f.read_text():
-            f.unlink()
+    for d in (REF_OUT, PATTERNS_OUT):
+        if d.exists():
+            shutil.rmtree(d)
+    LANG_OUT.mkdir(parents=True)
+    PATTERNS_OUT.mkdir(parents=True)
+
+    def first_paragraph(text):
+        return next((p for p in text.split("\n\n")
+                     if p.strip() and not p.lstrip().startswith(("#", "```", "-", "|", ">"))), "")
 
     # Landing page.
     intro = readme.split("\n\n")[1].strip()
+    chapter_list = [f"- [{c['title']}]({LANG_URL}{c['slug']}/)" for c in chapters]
     lines = [
         intro.replace("reference examples", "language reference and examples", 1), "",
-        "## Chapters", "",
+        "## Language", "",
+        *chapter_list,
+        f"- [{GUIDES[0][2]}]({GUIDES[0][1]})", "",
+        "## Model checker guides", "",
+        *[f"- [{t}]({u})" for _, u, t in GUIDES[1:]], "",
+        "## Patterns", "",
+        f"Runnable specifications of common distributed-systems patterns are in the "
+        f"[pattern library]({PATTERNS_URL}).", "",
     ]
-    lines += [f"- [{c['title']}](/design/reference/{c['slug']}/)" for c in chapters]
-    lines += ["", "## Guides", ""]
-    lines += [f"- [{t}](/design/reference/{s}/)" for _, s, t in GUIDES]
-    lines += ["", "## Patterns", "",
-              "Runnable specifications of common distributed-systems patterns are in the "
-              "[examples catalog](/design/examples/).", ""]
     (REF_OUT / "_index.md").write_text(front_matter({
-        "title": "Language Reference",
+        "title": "Reference",
         "description": "FizzBee language reference: actions, functions, roles, flow modifiers, fairness, "
                        "assertions, fault injection and symmetry, each with runnable examples.",
-        "weight": -15,
+        "weight": 0,
         "geekdocCollapseSection": True,
         "lastmod": ref_lastmod,
         "source": f"{GITHUB_TREE}{REFS_REL}",
         "source_commit": commit,
     }) + "\n" + "\n".join(lines))
+    (LANG_OUT / "_index.md").write_text(front_matter({
+        "title": "Language Reference",
+        "description": "The FizzBee specification language chapter by chapter: syntax and semantics "
+                       "of every construct, each with runnable examples and expected results.",
+        "weight": 1,
+        "geekdocCollapseSection": True,
+        "lastmod": ref_lastmod,
+        "source": f"{GITHUB_BLOB}{REFS_REL}/LANGUAGE_REFERENCE.md",
+    }) + "\n" + "\n".join(chapter_list + [f"- [{GUIDES[0][2]}]({GUIDES[0][1]})", ""]))
 
     # Chapter pages.
     for weight, c in enumerate(chapters, start=1):
-        url = f"/design/reference/{c['slug']}/"
+        url = f"{LANG_URL}{c['slug']}/"
         body = rewrite_links("\n".join(c["body"]), anchor_map, examples, url)
         embedded = sorted((e for e in active.values() if e.placement == "embed" and e.chapter == c["slug"]),
                           key=lambda e: e.name)
@@ -625,49 +665,81 @@ def main():
         if users:
             body += "\n## Patterns that use this\n\n"
             body += "\n".join(f"- [{e.title}]({e.url})" for e in users) + "\n"
-        first_para = next((p for p in "\n".join(c["body"]).split("\n\n")
-                           if p.strip() and not p.lstrip().startswith(("#", "```", "-", "|", ">"))), "")
+        if c["slug"] == "known-issues-and-limitations":
+            body += (f"\n## See also\n\n- [{GUIDES[0][2]}]({GUIDES[0][1]})\n"
+                     "- [Limitations](/design/tutorials/limitations/)\n")
         lastmods = [m for m in [ref_lastmod] + [e.lastmod for e in embedded] if m]
-        (REF_OUT / f"{c['slug']}.md").write_text(front_matter({
+        (LANG_OUT / f"{c['slug']}.md").write_text(front_matter({
             "title": c["title"],
-            "description": meta_description(first_para, f"FizzBee language reference: {c['title'].lower()}, with runnable examples."),
+            "description": meta_description(first_paragraph("\n".join(c["body"])),
+                                            f"FizzBee language reference: {c['title'].lower()}, with runnable examples."),
             "weight": weight,
             "lastmod": max(lastmods) if lastmods else None,
             "source": f"{GITHUB_BLOB}{REFS_REL}/LANGUAGE_REFERENCE.md#{c['slug']}",
         }) + "\n" + body.rstrip() + "\n")
 
     # Guides.
-    for weight, (src, slug, title) in enumerate(GUIDES, start=100):
+    for weight, (src, url, title) in enumerate(GUIDES, start=100):
         text = (refs / src).read_text()
         text = re.sub(r"\A#\s[^\n]*\n", "", text).strip()
-        url = f"/design/reference/{slug}/"
         text = rewrite_links(text, anchor_map, examples, url)
-        first_para = next((p for p in text.split("\n\n") if p.strip() and not p.lstrip().startswith(("#", "```", "-", "|", ">"))), "")
-        (REF_OUT / f"{slug}.md").write_text(front_matter({
+        if src == "GOTCHAS.md":
+            text += (f"\n\n## See also\n\n- [Known Issues and Limitations]({LANG_URL}known-issues-and-limitations/)\n"
+                     "- [Limitations](/design/tutorials/limitations/)")
+        out = REPO_ROOT / "content" / url.strip("/")
+        out = out.with_suffix(".md")
+        (out.parent).mkdir(parents=True, exist_ok=True)
+        out.write_text(front_matter({
             "title": title,
-            "description": meta_description(first_para, f"FizzBee {title.lower()}."),
+            "description": meta_description(first_paragraph(text), f"FizzBee {title.lower()}."),
             "weight": weight,
             "lastmod": git_lastmod(checkout, f"{REFS_REL}/{src}"),
             "source": f"{GITHUB_BLOB}{REFS_REL}/{src}",
         }) + "\n" + text + "\n")
 
     # Pattern pages.
-    for weight, ex in enumerate(sorted(active.values(), key=lambda e: e.name), start=100):
+    patterns = sorted((e for e in active.values() if e.section == "13"), key=lambda e: e.name)
+    for weight, ex in enumerate(patterns, start=1):
         if ex.placement != "standalone":
             continue
-        related = [f"[{chapter_titles[s]}](/design/reference/{s}/)" for s in pattern_constructs.get(ex.name, [])]
+        related = [f"[{chapter_titles[s]}]({LANG_URL}{s}/)" for s in pattern_constructs.get(ex.name, [])]
         body = render_example(ex, 0, None)
         if related:
             body += "\n## Language features used\n\n" + ", ".join(related) + "\n"
-        desc = ex.description or ex.title
-        (EXAMPLES_OUT / f"{ex.slug}.md").write_text(front_matter({
+        desc = PATTERN_DESCRIPTIONS.get(ex.name) or meta_description(
+            f"{ex.title}: {ex.description or ''}", "A runnable formal model with the model checker's expected results.")
+        (PATTERNS_OUT / f"{ex.slug}.md").write_text(front_matter({
             "title": ex.title,
-            "description": meta_description(f"{ex.title} modeled in FizzBee: {desc}",
-                                            "Runnable formal specification with model-checker results."),
+            "description": desc,
             "weight": weight,
             "lastmod": ex.lastmod,
             "source": f"{GITHUB_TREE}{ex.rel}",
         }) + "\n" + body.rstrip() + "\n")
+
+    # Pattern library index, by category. Duplicates link to the existing walkthroughs.
+    lines = ["Common distributed-systems patterns as small, runnable formal specifications. "
+             "Each page shows the spec, what the model checker verifies, and the expected result. "
+             f"For in-depth, step-by-step walkthroughs, see the [examples](/design/examples/).", ""]
+    for key, category in PATTERN_CATEGORIES.items():
+        entries = [e for e in patterns if e.name[3:5] == key and e.placement in ("standalone", "link")]
+        if not entries:
+            continue
+        lines += [f"## {category}", ""]
+        for e in entries:
+            note = f" (walkthrough)" if e.placement == "link" else ""
+            desc = (e.description or "").rstrip(".")
+            lines.append(f"- [{e.title}]({e.url}){note}: {escape_html(desc)}." if desc else f"- [{e.title}]({e.url}){note}")
+        lines.append("")
+    pattern_lastmods = [e.lastmod for e in patterns if e.lastmod]
+    (PATTERNS_OUT / "_index.md").write_text(front_matter({
+        "title": "Distributed Systems Patterns",
+        "description": "Locking, sagas, consensus, message queues, caching and circuit breakers as small "
+                       "runnable formal models, each with the invariants checked and the expected result.",
+        "weight": -5,
+        "geekdocCollapseSection": True,
+        "lastmod": max(pattern_lastmods) if pattern_lastmods else None,
+        "source": f"{GITHUB_TREE}{REFS_REL}",
+    }) + "\n" + "\n".join(lines))
 
     # Report.
     print(f"fizzbee commit {commit}{' (sample)' if args.sample else ''}")

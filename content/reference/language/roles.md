@@ -130,4 +130,4 @@ role Server:
 **Automatic fault injection**: Message can be lost (see Fault Injection section)
 ## Patterns that use this
 
-- [Distributed Lock Pattern](/design/examples/distributed-lock/)
+- [Distributed Lock Pattern](/design/patterns/distributed-lock/)
