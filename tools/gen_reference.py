@@ -18,12 +18,17 @@ Usage:
 be reviewed before generating the full corpus.
 
 content/reference/ and content/design/patterns/ are owned by this script and
-are rewritten on every run.
+are rewritten on every run. Pages are generated into a temporary directory and
+only replace the existing output once every page has been written; any input
+error (an example with no .fizz file, an unknown chapter, a bad override)
+stops the run before anything is touched.
 
 Per-example overrides: an optional `page.yaml` next to an example's .fizz file
 (or an entry in OVERRIDES below) can set title, description, demonstrates,
 placement (embed / standalone / exclude / link), chapter, url, reason and
-playground (true / false).
+playground (true / false). A page.yaml needs PyYAML.
+
+Tests: python3 -m unittest discover -s tools
 """
 
 import argparse
@@ -32,11 +37,11 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 REF_OUT = REPO_ROOT / "content/reference"
-LANG_OUT = REF_OUT / "language"
 PATTERNS_OUT = REPO_ROOT / "content/design/patterns"
 LANG_URL = "/reference/language/"
 PATTERNS_URL = "/design/patterns/"
@@ -115,10 +120,92 @@ PATTERN_CATEGORIES = {
 # second line is only a seed; descriptions should lead with the topic and what
 # the page shows (roadmap 1.3 description principle).
 PATTERN_DESCRIPTIONS = {
+    "13-01-01-mutex": "The mutex pattern as a runnable model: threads lock and unlock around a critical "
+                      "section, and a model checker verifies mutual exclusion in every interleaving.",
+    "13-01-02-read-write-lock": "A read-write lock as a runnable model: many concurrent readers or one "
+                                "exclusive writer, checked so no reader ever overlaps a writer and at most one writer holds the lock.",
     "13-01-03-distributed-lock": "Distributed lock with lease expiration and fencing tokens: a runnable "
-                                 "model of clients competing for a lock, checked for mutual exclusion.",
-    "13-02-02-saga-pattern": "The saga pattern as a runnable model: a long-running transaction with "
-                             "compensating steps and rollback, checked by a model checker.",
+                                 "model of clients competing for a lock, checked so at most one client holds a valid lease and tokens only increase.",
+    "13-01-04-optimistic-locking": "Optimistic locking with version numbers: a runnable model of "
+                                   "concurrent read-modify-write updates using compare-and-set, checked for lost updates.",
+    "13-02-02-saga-pattern": "The saga pattern as a runnable model: a long-running transaction that runs "
+                             "compensating steps to roll back on failure, checked so a completed saga committed every step and a rolled-back one undid its work.",
+    "13-02-03-snapshot-isolation": "Snapshot isolation as a runnable model: transactions read from a "
+                                   "snapshot and commit only if their write sets do not conflict, checked for lost updates.",
+    "13-03-02-leader-election": "Leader election with term-based voting, a simplified Raft: nodes request "
+                                "votes over RPC and a model checker verifies at most one leader per term.",
+    "13-03-03-compare-and-swap": "Compare-and-swap for lock-free updates: a runnable model of concurrent "
+                                 "CAS retries on a shared value, checked so the value stays valid under every interleaving.",
+    "13-04-01-producer-consumer": "The producer-consumer problem with a bounded buffer: a runnable model "
+                                  "checked so the buffer never overflows and consumers only take items that were produced.",
+    "13-04-02-message-queue": "A message queue with multiple producers and consumers: a runnable model "
+                              "that checks FIFO order, no duplicate deliveries, and that every message is eventually consumed.",
+    "13-04-03-cache-coherence": "Cache coherence with a write-through cache and invalidation: a runnable "
+                                "model checked so a cached value never disagrees with the backing store.",
+    "13-05-01-eventual-consistency": "Eventual consistency with asynchronous primary-replica replication: "
+                                     "a runnable model checking that replicas never get ahead of the primary and eventually converge.",
+    "13-05-02-idempotent-operations": "Idempotent operations with request IDs: a runnable model of retried "
+                                      "requests and deduplication, checked so a retried request is never applied twice.",
+    "13-06-01-circuit-breaker": "The circuit breaker pattern as a runnable model: closed, open and "
+                                "half-open states, checked so the circuit is never closed once failures reach the threshold.",
+    "13-06-02-rate-limiting": "A token bucket rate limiter as a runnable model: tokens refill and requests "
+                              "spend them, checked so the bucket stays within capacity and only funded requests are processed.",
+    "13-07-01-write-ahead-log": "A write-ahead log as a runnable model: changes are logged before they are "
+                                "applied, checked so the data always matches the last applied log entry.",
+    "13-07-02-event-sourcing": "Event sourcing as a runnable model: state is derived from an append-only "
+                               "event stream, checked so replaying the events always rebuilds the same state.",
+}
+
+# Hand-written meta descriptions for chapter and guide pages, keyed by chapter
+# slug or guide URL. A chapter without one gets a description from its first
+# paragraph, and a warning so it can be written.
+PAGE_DESCRIPTIONS = {
+    "introduction": "What FizzBee is: a Python-like formal specification language built on Starlark, "
+                    "with explicit model checking, implicit fault injection and role-based modeling.",
+    "file-structure": "How a FizzBee spec file is laid out: optional YAML frontmatter for model-checker "
+                      "options, followed by the specification itself.",
+    "keywords-and-reserved-words": "Every FizzBee keyword in one place: flow modifiers, fairness and "
+                                   "assertion modifiers, control flow, state and scope, and built-in types.",
+    "actions": "FizzBee actions: how the model checker invokes them, the Init action, enabling conditions "
+               "with require, and the pass statement, with runnable examples.",
+    "functions": "FizzBee functions: atomic vs serial functions, where they can be called from, and the "
+                 "limits on call syntax, with runnable examples.",
+    "roles": "FizzBee roles model actors and processes: role state, Init, durable vs ephemeral state, and "
+             "how roles call each other, with runnable examples.",
+    "flow-modifiers": "Atomic, serial, parallel and oneof blocks in FizzBee: how each controls execution "
+                      "and where yield points let other actions interleave.",
+    "fairness": "Unfair, weakly fair and strongly fair actions in FizzBee, and why liveness properties need "
+                "fairness, with runnable examples of each.",
+    "assertions": "FizzBee assertions: always (safety), exists, transition, eventually always and always "
+                  "eventually (liveness), plus next_states() lookahead, with examples.",
+    "data-structures": "FizzBee data structures: lists, sets, dicts, bags, enums, records and structs, and "
+                       "the generic collections for unhashable values, with runnable examples.",
+    "control-flow": "if/elif/else, for and while loops, break and continue, and checkpoints in FizzBee, "
+                    "including how loops behave under atomic, serial and parallel modifiers.",
+    "nondeterminism": "Nondeterministic choice in FizzBee: the any statement, oneof blocks, fairness on "
+                      "choices, and the concise vs block forms, with runnable examples.",
+    "state-management": "How FizzBee state works: global variables from Init, top-level constants, local "
+                        "variables, and per-role state, with runnable examples.",
+    "fault-injection": "Implicit fault injection in FizzBee: crashes at yield points, message loss in RPC, "
+                       "and how ephemeral vs durable state behaves after a crash.",
+    "configuration": "Configuring the FizzBee model checker: options in YAML frontmatter or fizz.yaml, "
+                     "per-action options, and which setting takes precedence.",
+    "symmetry-reduction": "Symmetry reduction in FizzBee: symmetric values and roles, why lists break "
+                          "symmetry, measuring the state-space savings, and the symmetry module API.",
+    "best-practices": "Writing FizzBee specs that check fast and mean what you think: bounding state, "
+                      "guard clauses, atomic vs serial, role design, assertions and fairness.",
+    "quick-reference": "A FizzBee cheat sheet: common spec patterns such as mutexes and retries, plus "
+                       "debugging tips for failing or slow model checks.",
+    "standard-library": "The modules and builtins every FizzBee spec can use without imports: top-level "
+                        "builtins, math, itertools and symmetry, and the method-call form.",
+    "known-issues-and-limitations": "Current FizzBee limitations and known issues, such as error line "
+                                    "numbers and unsupported Python features, with workarounds for each.",
+    "/reference/language/gotchas/": "FizzBee gotchas: language quirks that trip people up, such as "
+                                    "tuple unpacking, require vs assertions and the any keyword, with fixes.",
+    "/reference/verification/": "How to check that a FizzBee spec is right, not just passing: "
+                                "simulation, guided traces, and sanity checks beyond PASSED and state counts.",
+    "/reference/performance/": "Make FizzBee model checking faster: practical ways to shrink the state "
+                               "space and runtime, each ranked by typical impact.",
 }
 
 # Prototype sample (roadmap 2.1): one chapter with all its examples (Fairness),
@@ -257,15 +344,37 @@ def front_matter(fields):
     return "\n".join(lines) + "\n"
 
 
+def no_dashes(text):
+    """Site copy style: no em or en dashes."""
+    return re.sub(r"\s*[\u2014\u2013]\s*|\s+--\s+", ", ", text)
+
+
+MAX_DESCRIPTION = 220
+
+
 def meta_description(text, suffix):
-    """First sentence(s) of text, padded with suffix, kept under ~160 chars."""
-    text = re.sub(r"\s+", " ", re.sub(r"[`*_]", "", text)).strip()
+    """Meta description from a paragraph: whole sentences only, never cut
+    mid-thought (search engines truncate long ones themselves), padded with
+    suffix when short."""
+    text = no_dashes(re.sub(r"\s+", " ", re.sub(r"[`*_]", "", text)).strip())
+    if len(text) > MAX_DESCRIPTION:
+        kept = ""
+        for sentence in re.split(r"(?<=[.!?])\s+", text):
+            if kept and len(kept) + len(sentence) + 1 > MAX_DESCRIPTION:
+                break
+            kept = f"{kept} {sentence}".strip()
+        text = kept
+    text = re.sub(r"[:;,]$", ".", text)
     if len(text) < 90:
         text = f"{text.rstrip('.')}. {suffix}" if text else suffix
-    if len(text) > 160:
-        cut = text[:157]
-        text = cut[: cut.rfind(" ")].rstrip(",;:") + "..."
     return text
+
+
+def page_description(key, paragraph, suffix):
+    if key in PAGE_DESCRIPTIONS:
+        return PAGE_DESCRIPTIONS[key]
+    WARNINGS.append(f"{key}: no hand-written description in PAGE_DESCRIPTIONS; derived one from its first paragraph")
+    return meta_description(paragraph, suffix)
 
 
 def iter_lines_outside_fences(lines):
@@ -295,6 +404,8 @@ class Example:
         self.slug = re.sub(r"^(\d\d-)+", "", self.name)
         self.rel = f"{REFS_REL}/{self.name}"
         self.files = sorted(d.glob("*.fizz"))
+        if not self.files:
+            ERRORS.append(f"{self.name}: no .fizz file")
         self.readme = (d / "README.md").read_text() if (d / "README.md").exists() else None
         self.baseline = (d / "baseline.txt").read_text() if (d / "baseline.txt").exists() else None
         self.fizz_yaml = (d / "fizz.yaml").read_text() if (d / "fizz.yaml").exists() else None
@@ -305,8 +416,13 @@ class Example:
         self._parse_header()
         self.overrides = dict(OVERRIDES.get(self.name, {}))
         if (d / "page.yaml").exists():
-            import yaml  # only needed when a sidecar exists
-            self.overrides.update(yaml.safe_load((d / "page.yaml").read_text()) or {})
+            try:
+                import yaml  # only needed when a sidecar exists
+            except ImportError:
+                ERRORS.append(f"{self.name}: page.yaml needs PyYAML (python3 -m pip install pyyaml)")
+            else:
+                self.overrides.update(yaml.safe_load((d / "page.yaml").read_text()) or {})
+        self._validate_overrides()
         for k in ("title", "description", "demonstrates"):
             if self.overrides.get(k):
                 setattr(self, k, self.overrides[k])
@@ -321,6 +437,20 @@ class Example:
         if self.placement == "standalone" and not self.url:
             self.url = f"{PATTERNS_URL}{self.slug}/"
         self.source = self.files[0].read_text() if self.files else ""
+
+    def _validate_overrides(self):
+        o = self.overrides
+        unknown = set(o) - OVERRIDE_KEYS
+        if unknown:
+            ERRORS.append(f"{self.name}: unknown override keys {sorted(unknown)}")
+        if o.get("placement", "embed") not in PLACEMENTS:
+            ERRORS.append(f"{self.name}: placement must be one of {sorted(PLACEMENTS)}")
+        if o.get("placement") == "link" and not o.get("url"):
+            ERRORS.append(f"{self.name}: placement 'link' needs a url")
+        if o.get("placement") == "exclude" and not o.get("reason"):
+            ERRORS.append(f"{self.name}: placement 'exclude' needs a reason")
+        if "playground" in o and not isinstance(o["playground"], bool):
+            ERRORS.append(f"{self.name}: playground must be true or false, not {o['playground']!r}")
 
     def _parse_header(self):
         if self.files:
@@ -359,8 +489,10 @@ class Example:
     def playground(self):
         """(allowed, note)"""
         forced = self.overrides.get("playground")
-        if forced is not None:
-            return bool(forced), None
+        if forced is True:
+            return True, None
+        if forced is False:
+            return False, "Run locally with `fizz`."
         if self.flags:
             return False, f"Needs command-line flags (`{' '.join(self.flags)}`); run locally with `fizz`."
         if self.fizz_yaml:
@@ -421,9 +553,9 @@ def render_example(ex, level, link_chapter):
     if level:
         out.append(f"{h} {escape_html(ex.title)} {{#{ex.anchor}}}\n")
     if ex.description:
-        out.append(f"{escape_html(ex.description)}\n")
+        out.append(f"{escape_html(no_dashes(ex.description))}\n")
     if ex.demonstrates:
-        out.append(f"**Demonstrates:** {escape_html(ex.demonstrates)}\n")
+        out.append(f"**Demonstrates:** {escape_html(no_dashes(ex.demonstrates))}\n")
     if ex.readme and len(ex.files) > 1:
         body = re.sub(r"^#[^\n]*\n", "", ex.readme.strip(), count=1).strip()
         body = re.sub(r"^(#+)", lambda m: "#" * min(6, len(m.group(1)) + max(level, 1)), body, flags=re.M)
@@ -437,7 +569,8 @@ def render_example(ex, level, link_chapter):
         if allowed:
             out.append("{{% fizzbee %}}\n" + src + "\n{{% /fizzbee %}}\n")
         else:
-            out.append(f"> {note}\n")
+            if note:
+                out.append(f"> {note}\n")
             out.append("```python\n" + src + "\n```\n")
     if ex.fizz_yaml:
         out.append("`fizz.yaml`:\n")
@@ -502,8 +635,40 @@ def strip_trailing_rule(lines):
     return lines
 
 
+def build_anchor_map(text, chapter_slugs):
+    """Source heading id -> (chapter slug, id on the chapter page or None).
+
+    Source ids are deduplicated across the whole LANGUAGE_REFERENCE.md, as
+    GitHub renders it ("foo", "foo-1", ...); page ids are deduplicated per
+    chapter page, as Hugo renders it after the split. Headings in skipped
+    chapters are left out, so links to them are reported as unresolved."""
+    amap, doc_seen, page_seen, chapter = {}, {}, {}, None
+    for line, in_fence in iter_lines_outside_fences(text.splitlines()):
+        m = None if in_fence else re.match(r"^(#{1,6}) (.+?)\s*$", line)
+        if not m:
+            continue
+        level, base = len(m.group(1)), slugify(m.group(2))
+        n = doc_seen.get(base, -1) + 1
+        doc_seen[base] = n
+        doc_id = base if n == 0 else f"{base}-{n}"
+        if level == 2:
+            chapter = base if base in chapter_slugs else None
+            page_seen = {}
+            if chapter:
+                amap[doc_id] = (chapter, None)
+        elif level > 2 and chapter:
+            k = page_seen.get(base, -1) + 1
+            page_seen[base] = k
+            amap[doc_id] = (chapter, base if k == 0 else f"{base}-{k}")
+    return amap
+
+
+LINK_RE = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)\s]+)\)")
+
+
 def rewrite_links(text, anchor_map, examples, page_url):
-    """Point internal links at the generated pages."""
+    """Point internal links at the generated pages. Code blocks and inline
+    code are left untouched."""
     guide_urls = {src: url for src, url, _ in GUIDES}
     guide_urls["README.md"] = "/reference/"
     guide_urls["LANGUAGE_REFERENCE.md"] = LANG_URL
@@ -511,22 +676,20 @@ def rewrite_links(text, anchor_map, examples, page_url):
     def repl(m):
         label, target = m.group(1), m.group(2)
         if target.startswith("#"):
-            chapter = anchor_map.get(target[1:])
-            if chapter is None:
+            if target[1:] not in anchor_map:
                 WARNINGS.append(f"{page_url}: unresolved anchor {target}")
                 return m.group(0)
+            chapter, local = anchor_map[target[1:]]
             url = f"{LANG_URL}{chapter}/"
-            if target[1:] == chapter:
+            if local is None:
                 return f"[{label}]({url})"
-            return f"[{label}]({target if url == page_url else url + target})"
+            return f"[{label}]({'#' + local if url == page_url else url + '#' + local})"
         if target in guide_urls:
             return f"[{label}]({guide_urls[target]})"
         name = target.rstrip("/")
         if name in examples:
             ex = examples[name]
             url = example_url(ex)
-            if url is None:
-                return m.group(0)
             if label == name:
                 label = ex.title
             if url.startswith(page_url + "#"):
@@ -534,7 +697,12 @@ def rewrite_links(text, anchor_map, examples, page_url):
             return f"[{label}]({url})"
         return m.group(0)
 
-    return re.sub(r"(?<!!)\[([^\]]+)\]\(([^)\s]+)\)", repl, text)
+    def outside_code_spans(line):
+        parts = re.split(r"(`[^`]*`)", line)
+        return "".join(p if p.startswith("`") else LINK_RE.sub(repl, p) for p in parts)
+
+    return "\n".join(line if in_fence else outside_code_spans(line)
+                     for line, in_fence in iter_lines_outside_fences(text.split("\n")))
 
 
 def example_url(ex):
@@ -546,6 +714,64 @@ def example_url(ex):
 
 
 WARNINGS = []
+ERRORS = []
+OVERRIDE_KEYS = {"title", "description", "demonstrates", "placement", "chapter", "url", "reason", "playground"}
+PLACEMENTS = {"embed", "standalone", "exclude", "link"}
+
+
+def readme_intro(readme):
+    """The README's opening paragraph: the first prose paragraph after the H1."""
+    body = re.split(r"^# .*$", readme, maxsplit=1, flags=re.M)[-1]
+    body = re.split(r"^#{2,} ", body, maxsplit=1, flags=re.M)[0]
+    for para in body.split("\n\n"):
+        para = para.strip()
+        if para and para[0].isalpha() and "FizzBee" in para:
+            return para
+    WARNINGS.append("references/README.md: no intro paragraph found before the first section; "
+                    "using a fallback for the /reference/ landing page")
+    return "Reference documentation for the FizzBee specification language, with runnable examples."
+
+
+def page_fields(path):
+    """title and description from a page's front matter (YAML or quoted JSON)."""
+    fields = {}
+    text = path.read_text()
+    if not text.startswith("---"):
+        return fields
+    for line in text.split("---", 2)[1].splitlines():
+        m = re.match(r"^(title|description):\s*(.+)$", line)
+        if m:
+            v = m.group(2).strip()
+            try:
+                v = json.loads(v) if v.startswith('"') else v.strip("'")
+            except ValueError:
+                pass
+            fields[m.group(1)] = v
+    return fields
+
+
+def url_for(path, root):
+    rel = path.relative_to(root).with_suffix("")
+    parts = list(rel.parts)
+    if parts[-1] == "_index":
+        parts.pop()
+    return "/" + "/".join(parts) + ("/" if parts else "")
+
+
+def check_unique(generated_root, content_root, owned):
+    """Warn about titles or descriptions shared by two pages, generated or hand-written."""
+    pages = [(url_for(f, generated_root), f) for f in sorted(generated_root.rglob("*.md"))]
+    pages += [(url_for(f, content_root), f) for f in sorted(content_root.rglob("*.md"))
+              if not any(o in f.parents for o in owned)]
+    for field in ("title", "description"):
+        seen = {}
+        for url, f in pages:
+            v = page_fields(f).get(field)
+            if v:
+                seen.setdefault(v, []).append(url)
+        for v, urls in sorted(seen.items()):
+            if len(urls) > 1:
+                WARNINGS.append(f"duplicate {field} {v!r}: {', '.join(urls)}")
 
 
 def main():
@@ -578,11 +804,10 @@ def main():
 
     for ex in examples.values():
         if ex.placement == "embed" and ex.chapter not in chapter_slugs:
-            WARNINGS.append(f"{ex.name}: chapter '{ex.chapter}' not found; excluded")
-            ex.placement = "exclude"
+            ERRORS.append(f"{ex.name}: chapter '{ex.chapter}' not found in LANGUAGE_REFERENCE.md")
 
     # Anchor ids: prose headings first, then one per embedded example.
-    anchor_map = {c["slug"]: c["slug"] for c in chapters}
+    anchor_map = build_anchor_map((refs / "LANGUAGE_REFERENCE.md").read_text(), chapter_slugs)
     for c in chapters:
         ids = heading_ids(c["body"])
         used = set(ids) | {"examples"}
@@ -593,8 +818,6 @@ def main():
                     a = f"example-{ex.slug}"
                 ex.anchor = a
                 used.add(a)
-        for hid in ids:
-            anchor_map.setdefault(hid, c["slug"])
 
     # Reverse links: chapter -> patterns using its constructs.
     pattern_constructs = {}
@@ -607,18 +830,25 @@ def main():
     chapter_titles = {c["slug"]: c["title"] for c in chapters}
     ref_lastmod = git_lastmod(checkout, f"{REFS_REL}/LANGUAGE_REFERENCE.md")
 
-    for d in (REF_OUT, PATTERNS_OUT):
-        if d.exists():
-            shutil.rmtree(d)
-    LANG_OUT.mkdir(parents=True)
-    PATTERNS_OUT.mkdir(parents=True)
+    if ERRORS:
+        for e in ERRORS:
+            print(f"error: {e}", file=sys.stderr)
+        sys.exit(f"{len(ERRORS)} errors; nothing written")
+
+    # Write into a staging tree; the real output is replaced only at the end.
+    stage = Path(tempfile.mkdtemp(prefix="gen_reference_"))
+    ref_dir = stage / "reference"
+    lang_dir = ref_dir / "language"
+    pat_dir = stage / "design" / "patterns"
+    lang_dir.mkdir(parents=True)
+    pat_dir.mkdir(parents=True)
 
     def first_paragraph(text):
         return next((p for p in text.split("\n\n")
                      if p.strip() and not p.lstrip().startswith(("#", "```", "-", "|", ">"))), "")
 
     # Landing page.
-    intro = readme.split("\n\n")[1].strip()
+    intro = readme_intro(readme)
     chapter_list = [f"- [{c['title']}]({LANG_URL}{c['slug']}/)" for c in chapters]
     lines = [
         intro.replace("reference examples", "language reference and examples", 1), "",
@@ -631,7 +861,7 @@ def main():
         f"Runnable specifications of common distributed-systems patterns are in the "
         f"[pattern library]({PATTERNS_URL}).", "",
     ]
-    (REF_OUT / "_index.md").write_text(front_matter({
+    (ref_dir / "_index.md").write_text(front_matter({
         "title": "Reference",
         "description": "FizzBee language reference: actions, functions, roles, flow modifiers, fairness, "
                        "assertions, fault injection and symmetry, each with runnable examples.",
@@ -641,7 +871,7 @@ def main():
         "source": f"{GITHUB_TREE}{REFS_REL}",
         "source_commit": commit,
     }) + "\n" + "\n".join(lines))
-    (LANG_OUT / "_index.md").write_text(front_matter({
+    (lang_dir / "_index.md").write_text(front_matter({
         "title": "Language Reference",
         "description": "The FizzBee specification language chapter by chapter: syntax and semantics "
                        "of every construct, each with runnable examples and expected results.",
@@ -669,9 +899,9 @@ def main():
             body += (f"\n## See also\n\n- [{GUIDES[0][2]}]({GUIDES[0][1]})\n"
                      "- [Limitations](/design/tutorials/limitations/)\n")
         lastmods = [m for m in [ref_lastmod] + [e.lastmod for e in embedded] if m]
-        (LANG_OUT / f"{c['slug']}.md").write_text(front_matter({
+        (lang_dir / f"{c['slug']}.md").write_text(front_matter({
             "title": c["title"],
-            "description": meta_description(first_paragraph("\n".join(c["body"])),
+            "description": page_description(c["slug"], first_paragraph("\n".join(c["body"])),
                                             f"FizzBee language reference: {c['title'].lower()}, with runnable examples."),
             "weight": weight,
             "lastmod": max(lastmods) if lastmods else None,
@@ -686,12 +916,12 @@ def main():
         if src == "GOTCHAS.md":
             text += (f"\n\n## See also\n\n- [Known Issues and Limitations]({LANG_URL}known-issues-and-limitations/)\n"
                      "- [Limitations](/design/tutorials/limitations/)")
-        out = REPO_ROOT / "content" / url.strip("/")
+        out = stage / url.strip("/")
         out = out.with_suffix(".md")
         (out.parent).mkdir(parents=True, exist_ok=True)
         out.write_text(front_matter({
             "title": title,
-            "description": meta_description(first_paragraph(text), f"FizzBee {title.lower()}."),
+            "description": page_description(url, first_paragraph(text), f"FizzBee {title.lower()}."),
             "weight": weight,
             "lastmod": git_lastmod(checkout, f"{REFS_REL}/{src}"),
             "source": f"{GITHUB_BLOB}{REFS_REL}/{src}",
@@ -708,7 +938,7 @@ def main():
             body += "\n## Language features used\n\n" + ", ".join(related) + "\n"
         desc = PATTERN_DESCRIPTIONS.get(ex.name) or meta_description(
             f"{ex.title}: {ex.description or ''}", "A runnable formal model with the model checker's expected results.")
-        (PATTERNS_OUT / f"{ex.slug}.md").write_text(front_matter({
+        (pat_dir / f"{ex.slug}.md").write_text(front_matter({
             "title": ex.title,
             "description": desc,
             "weight": weight,
@@ -728,10 +958,11 @@ def main():
         for e in entries:
             note = f" (walkthrough)" if e.placement == "link" else ""
             desc = (e.description or "").rstrip(".")
+            desc = no_dashes(desc)
             lines.append(f"- [{e.title}]({e.url}){note}: {escape_html(desc)}." if desc else f"- [{e.title}]({e.url}){note}")
         lines.append("")
     pattern_lastmods = [e.lastmod for e in patterns if e.lastmod]
-    (PATTERNS_OUT / "_index.md").write_text(front_matter({
+    (pat_dir / "_index.md").write_text(front_matter({
         "title": "Distributed Systems Patterns",
         "description": "Locking, sagas, consensus, message queues, caching and circuit breakers as small "
                        "runnable formal models, each with the invariants checked and the expected result.",
@@ -740,6 +971,13 @@ def main():
         "lastmod": max(pattern_lastmods) if pattern_lastmods else None,
         "source": f"{GITHUB_TREE}{REFS_REL}",
     }) + "\n" + "\n".join(lines))
+
+    check_unique(stage, REPO_ROOT / "content", (REF_OUT, PATTERNS_OUT))
+    for src, dst in ((ref_dir, REF_OUT), (pat_dir, PATTERNS_OUT)):
+        if dst.exists():
+            shutil.rmtree(dst)
+        shutil.move(str(src), str(dst))
+    shutil.rmtree(stage)
 
     # Report.
     print(f"fizzbee commit {commit}{' (sample)' if args.sample else ''}")
