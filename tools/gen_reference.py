@@ -40,6 +40,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from datetime import datetime
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -334,6 +335,26 @@ def git_lastmod(checkout, *paths):
         capture_output=True, text=True, check=True,
     ).stdout.strip()
     return out or None
+
+
+# The generated pages first went live on this date. Their sources are often
+# months older, but a page's lastmod should never predate its publication, so
+# this is a fixed lower bound (never the build time: that would bump every
+# page on every deploy and teach crawlers to distrust the sitemap).
+# Bump it when a generator change materially alters the published pages
+# without touching the fizzbee sources; otherwise lastmod stays stale.
+REFERENCE_LAUNCH_DATE = "2026-10-12T00:00:00-07:00"
+
+
+def page_lastmod(*dates):
+    """Latest of the given ISO-8601 dates and REFERENCE_LAUNCH_DATE.
+
+    Compared as datetimes, not strings: string comparison misorders dates
+    with mixed UTC offsets.
+    """
+    cands = [d for d in dates if d]
+    cands.append(REFERENCE_LAUNCH_DATE)
+    return max(cands, key=datetime.fromisoformat)
 
 
 def front_matter(fields):
@@ -869,7 +890,7 @@ def main():
                        "assertions, fault injection and symmetry, each with runnable examples.",
         "weight": 0,
         "geekdocCollapseSection": True,
-        "lastmod": ref_lastmod,
+        "lastmod": page_lastmod(ref_lastmod),
         "source": f"{GITHUB_TREE}{REFS_REL}",
         "source_commit": commit,
     }) + "\n" + "\n".join(lines))
@@ -879,7 +900,7 @@ def main():
                        "of every construct, each with runnable examples and expected results.",
         "weight": 1,
         "geekdocCollapseSection": True,
-        "lastmod": ref_lastmod,
+        "lastmod": page_lastmod(ref_lastmod),
         "source": f"{GITHUB_BLOB}{REFS_REL}/LANGUAGE_REFERENCE.md",
     }) + "\n" + "\n".join(chapter_list + [f"- [{GUIDES[0][2]}]({GUIDES[0][1]})", ""]))
 
@@ -900,13 +921,12 @@ def main():
         if c["slug"] == "known-issues-and-limitations":
             body += (f"\n## See also\n\n- [{GUIDES[0][2]}]({GUIDES[0][1]})\n"
                      "- [Limitations](/design/tutorials/limitations/)\n")
-        lastmods = [m for m in [ref_lastmod] + [e.lastmod for e in embedded] if m]
         (lang_dir / f"{c['slug']}.md").write_text(front_matter({
             "title": c["title"],
             "description": page_description(c["slug"], first_paragraph("\n".join(c["body"])),
                                             f"FizzBee language reference: {c['title'].lower()}, with runnable examples."),
             "weight": weight,
-            "lastmod": max(lastmods) if lastmods else None,
+            "lastmod": page_lastmod(ref_lastmod, *(e.lastmod for e in embedded)),
             "source": f"{GITHUB_BLOB}{REFS_REL}/LANGUAGE_REFERENCE.md#{c['slug']}",
         }) + "\n" + body.rstrip() + "\n")
 
@@ -925,7 +945,7 @@ def main():
             "title": title,
             "description": page_description(url, first_paragraph(text), f"FizzBee {title.lower()}."),
             "weight": weight,
-            "lastmod": git_lastmod(checkout, f"{REFS_REL}/{src}"),
+            "lastmod": page_lastmod(git_lastmod(checkout, f"{REFS_REL}/{src}")),
             "source": f"{GITHUB_BLOB}{REFS_REL}/{src}",
         }) + "\n" + text + "\n")
 
@@ -944,7 +964,7 @@ def main():
             "title": ex.title,
             "description": desc,
             "weight": weight,
-            "lastmod": ex.lastmod,
+            "lastmod": page_lastmod(ex.lastmod),
             "source": f"{GITHUB_TREE}{ex.rel}",
         }) + "\n" + body.rstrip() + "\n")
 
@@ -963,7 +983,6 @@ def main():
             desc = no_dashes(desc)
             lines.append(f"- [{e.title}]({e.url}){note}: {escape_html(desc)}." if desc else f"- [{e.title}]({e.url}){note}")
         lines.append("")
-    pattern_lastmods = [e.lastmod for e in patterns if e.lastmod]
     (pat_dir / "_index.md").write_text(front_matter({
         "title": "Distributed Systems Patterns",
         "linkTitle": "Patterns",  # short menu label; see layouts/partials/menu-filetree.html
@@ -971,7 +990,7 @@ def main():
                        "runnable formal models, each with the invariants checked and the expected result.",
         "weight": -5,
         "geekdocCollapseSection": True,
-        "lastmod": max(pattern_lastmods) if pattern_lastmods else None,
+        "lastmod": page_lastmod(*(e.lastmod for e in patterns)),
         "source": f"{GITHUB_TREE}{REFS_REL}",
     }) + "\n" + "\n".join(lines))
 
