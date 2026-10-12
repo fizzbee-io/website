@@ -966,6 +966,7 @@ def main():
     pattern_lastmods = [e.lastmod for e in patterns if e.lastmod]
     (pat_dir / "_index.md").write_text(front_matter({
         "title": "Distributed Systems Patterns",
+        "linkTitle": "Patterns",  # short menu label; see layouts/partials/menu-filetree.html
         "description": "Locking, sagas, consensus, message queues, caching and circuit breakers as small "
                        "runnable formal models, each with the invariants checked and the expected result.",
         "weight": -5,
