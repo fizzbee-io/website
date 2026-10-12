@@ -15,6 +15,8 @@ python3 tools/gen_reference.py <path-to-fizzbee-checkout>
 
 Page descriptions, placements and other overrides live in
 `tools/gen_reference.py`; edit them there, not in the generated files.
+See [docs/reference-generator.md](docs/reference-generator.md) for what comes
+from where and how to change it.
 Tests: `python3 -m unittest discover -s tools`.
 
 ## To run locally
@@ -37,6 +39,11 @@ checkout (the frontend repo's README documents the checkout location):
 ```
 ./deploy.sh <path-to-frontend-checkout> <path-to-fizzbee-checkout>
 ```
+
+The fizzbee checkout is published as the official reference: uncommitted
+changes under `examples/references/` stop the deploy (pass `--allow-dirty`
+first to override), and a checkout not on up-to-date `main` or a release tag
+prints a warning.
 
 Then deploy from that checkout:
 

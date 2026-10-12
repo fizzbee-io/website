@@ -30,6 +30,7 @@ placement (embed / standalone / exclude / link), chapter, url, reason and
 playground (true / false). A page.yaml needs PyYAML.
 
 Tests: python3 -m unittest discover -s tools
+Docs: docs/reference-generator.md
 """
 
 import argparse

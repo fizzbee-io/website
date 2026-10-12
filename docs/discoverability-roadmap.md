@@ -116,7 +116,7 @@ Note: fizzbee.io also has `/posts/` (two posts from 2024). Two blogs split atten
 |---|---|---|---|
 | Example metadata | Add a YAML metadata file next to each example. | The `.fizz` header comments already contain title, description and topics for 98/110. | Use the headers. Add an optional sidecar file only for overrides (related links, longer prose). |
 | Training crawlers | Example robots.txt allows OAI-SearchBot but **disallows GPTBot**. | For a new language, you *want* models trained on FizzBee syntax. Allow training crawlers. | Allow all (matches current fizzbee.io behavior and fizzbee.ai's explicit policy). Decision D1. |
-| URL structure | Proposes `/docs/`, `/examples/`, `/concepts/` (with caveat to preserve existing URLs). | Keep existing `/design/...` paths; add new sections under them. | Keep existing URLs. New content under `/design/reference/`. Decision D2. |
+| URL structure | Proposes `/docs/`, `/examples/`, `/concepts/` (with caveat to preserve existing URLs). | Keep existing `/design/...` paths; add new sections under them. | Keep existing URLs. New content under a top-level `/reference/` (the language) and `/design/patterns/`. Decision D2. |
 | Validation | Build-time manifest check that every example has a page. | Agree. | Adopt. |
 | Diagnostics | "Not discovered / discovered not indexed / indexed not ranking" framework. | Agree. | Adopt for Phase 6. |
 | Specific defects | Not found (didn't inspect repos). | Stale-file deploy bug, missing canonicals, missing descriptions, tag/sitemap conflict, fizzbee.ai soft 404s. | Fix first (Phase 1). |
@@ -130,21 +130,31 @@ Existing URLs stay unchanged. The principle is **one primary page per search int
 
 | URL | Content | Source | Est. pages |
 |---|---|---|---|
-| `/design/reference/` | Reference landing page (from `references/README.md` intro + chapter list) | README.md | 1 |
-| `/design/reference/<chapter>/` | One page per language-reference chapter (actions, roles, fairness, …): the chapter's prose, then an **Examples** section embedding the matching reference examples | LANGUAGE_REFERENCE.md + `examples/references/01–12, 14–16, 99` | ~20 |
-| `/design/reference/gotchas/`, `/verification/`, `/performance/` | Guides | the three guide files | 3 |
-| `/design/examples/` (existing) | Catalog regrouped into "In-depth walkthroughs" (existing 10 pages) and "Pattern library" | existing + generated | 1 (updated) |
-| `/design/examples/<pattern-slug>/` | One page per Section 13 pattern (saga, mutex, distributed lock, …) | `examples/references/13-*` | ~18 |
+| `/reference/` | Reference landing page (from `references/README.md` intro + chapter list) | README.md | 1 |
+| `/reference/language/<chapter>/` | One page per language-reference chapter (actions, roles, fairness, …): the chapter's prose, then an **Examples** section embedding the matching reference examples | LANGUAGE_REFERENCE.md + `examples/references/01–12, 14–16, 99` | ~20 |
+| `/reference/language/gotchas/` | Language pitfalls, as a peer of the chapters. Absorbs the reference's "Known Issues and Limitations" chapter (or links to it) so there is one page on pitfalls; the website's `/design/tutorials/limitations/` links here. | GOTCHAS.md | 1 |
+| `/reference/verification/`, `/reference/performance/` | Model-checker guides (sanity-checking specs with simulation and traces; reducing state space and runtime), as peers of `/language/` | the two guide files | 2 |
+| `/design/patterns/` | Pattern library index, grouped by category (locking, transactions, consensus, messaging, consistency, resilience, logging) | generated | 1 |
+| `/design/patterns/<pattern-slug>/` | One page per Section 13 pattern (saga, mutex, distributed lock, …) | `examples/references/13-*` | ~18 |
+| `/design/examples/` (existing) | **Unchanged**: stays a curated set of in-depth walkthroughs; gets one link to the pattern library | existing | 0 |
+
+### Why the reference is top-level
+
+The language reference describes the FizzBee language itself, which is shared by design verification (`/design/`), model-based testing (`/testing/`, already top-level) and requirements verification (fizzbee.ai). Putting it under `/design/` would imply it only applies to one of them. Gotchas sits inside `/language/` because nearly all of it is about the language (tuple unpacking, `require` semantics, keyword collisions, Starlark differences). The verification and performance guides are about running the model checker, so they sit beside `/language/`, not inside it. `/reference/language/` also leaves room for other references later (for example, the model-based testing adapter API at `/reference/mbt/`). Before building, confirm the frontend server doesn't already route `/reference` (the `fizzbee-io/frontend` repo wasn't reviewed).
+
+### Why patterns are separate from the curated examples
+
+`/design/examples/` holds hand-written, in-depth walkthroughs (Raft, two-phase commit, Die Hard). Mixing in ~18 shorter generated pages would dilute that showcase for readers. The URL folder has little SEO effect either way; what matters is one page per topic, which this keeps. Patterns stay under `/design/` because they're about designing distributed systems, not about the language. When a pattern is promoted to a full walkthrough (Phase 8, tier 3), the walkthrough goes in `/design/examples/` and the pattern page either links to it prominently or redirects to it (Hugo `aliases`).
 
 ### Why embed construct examples in the reference chapters
 
-Example sections 01–16 map almost one-to-one onto `LANGUAGE_REFERENCE.md` chapters (Appendix C has the mapping). The larger construct topics, like symmetry and fault injection, already have their own website tutorials (`symmetry_reduction`, `fault-injection`). A standalone page for their examples would make a third page competing for the same searches, next to the tutorial and the reference chapter. Separate "Fairness" reference and "Fairness examples" pages would compete for the same searches (keyword cannibalization), and Google often ranks neither well. Embedding gives one strong page per construct, keeps explanation and runnable example together for readers, and avoids thin pages for tiny examples like `01-01-noop`. Each embedded example gets a heading anchor (e.g. `/design/reference/fairness/#strong-fair-action`) so it can be linked directly.
+Example sections 01–16 map almost one-to-one onto `LANGUAGE_REFERENCE.md` chapters (Appendix C has the mapping). The larger construct topics, like symmetry and fault injection, already have their own website tutorials (`symmetry_reduction`, `fault-injection`). A standalone page for their examples would make a third page competing for the same searches, next to the tutorial and the reference chapter. Separate "Fairness" reference and "Fairness examples" pages would compete for the same searches (keyword cannibalization), and Google often ranks neither well. Embedding gives one strong page per construct, keeps explanation and runnable example together for readers, and avoids thin pages for tiny examples like `01-01-noop`. Each embedded example gets a heading anchor (e.g. `/reference/language/fairness/#strong-fair-action`) so it can be linked directly.
 
 ### Why patterns get their own pages
 
-Patterns are searched by problem name ("saga pattern formal specification"), not by language construct, so each needs its own page with the name in the title. They go in the **existing** `/design/examples/` catalog rather than a second examples area.
+Patterns are searched by problem name ("saga pattern formal specification"), not by language construct, so each needs its own page with the name in the title, in the pattern library at `/design/patterns/`.
 
-**Avoid duplicates with existing pages:** `13-02-01-two-phase-commit` overlaps the three existing two-phase-commit pages, and `13-03-01-consensus` overlaps the Raft pages. For these, the pattern-library entry links to the existing page instead of generating a new one (or the spec is added to the existing page as a variant).
+**Avoid duplicates with existing pages:** `13-02-01-two-phase-commit` overlaps the three existing two-phase-commit pages, and `13-03-01-consensus` overlaps the Raft pages. For these, the pattern-library index links to the existing `/design/examples/` page instead of generating a new one (or the spec is added to the existing page as a variant).
 
 ### What each embedded or pattern example shows
 
@@ -187,6 +197,7 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 
 **1.3 Meta descriptions** (`website`)
 - [x] **Done (Oct 11, 2026)** in PR #84. A build check shows every page has a non-empty meta description.
+- **Description principle (applies everywhere, including generated pages):** lead with the topic and what the page shows (failure traces, step-by-step build-up, concrete results), so a searcher who has never heard of FizzBee feels this is the best explanation of the topic. Don't write "X in FizzBee" or "X modeled in FizzBee" unless the page is about FizzBee itself (docs indexes, configuration, limitations). Use questions sparingly. Length 120–160 characters is a guideline, not a rule.
 - Add `description:` front matter to the 15 pages in Appendix A. Start with the homepage and the three high-impression pages from Section 2.5 (Knuth-Yao, EWD426 token ring, linked list cycle). 120–160 characters, written to match what people search for.
 - Optionally add a fallback in the head partial that uses `.Summary` when `description` is empty, so future pages are never blank.
 - **Accept when:** a build-time check (simple script or `hugo` + grep over `public/`) shows every page has a non-empty meta description.
@@ -210,26 +221,27 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 
 **2.1 Generator script**
 - **Prototype first.** Before generating everything, run the generator on a representative sample and review the output: one reference chapter with its embedded examples, one tiny example, one pattern page, one example with missing headers, and one duplicate pattern (two-phase commit). Only then generate the full corpus.
-- Script in the website repo (e.g. `tools/gen_reference.py`) that takes a path to a fizzbee checkout (pinned commit or `main`) and writes Hugo content under `content/design/reference/`.
+- Script in the website repo (e.g. `tools/gen_reference.py`) that takes a path to a fizzbee checkout (pinned commit or `main`) and writes Hugo content under `content/reference/` (language chapters and guides) and `content/design/patterns/` (patterns).
 - Parses each example's header comments (title, description, "Demonstrates"), reads the `.fizz` source, and cleans `baseline.txt` into a short "expected result" block. Reuse the normalization rules in the fizzbee repo's `test_references.py` (it already keeps `Valid Nodes`, `IsLive`, `Checking …`, `PASSED`/`FAILED` and drops paths and timestamps).
 - **Playground time limit.** The online playground has a ~20-second limit and fewer resources than a laptop. Use the timing and node counts already recorded in each `baseline.txt` to flag examples likely to exceed it. For those, hide the "Run in playground" button or replace it with a note like "Large state space; run locally with `fizz`." Start with a conservative threshold and tune it after trying a few flagged examples in the playground. The override file can force `playground: false` or `true`.
 - **Per-example overrides.** Default placement comes from the section→chapter mapping, but an optional sidecar file (e.g. `page.yaml` next to the `.fizz`) can override title, description, placement (`embed` / `standalone` / `exclude` with a reason) and related links. Expected to be needed rarely; header comments remain the default.
 - Splits `LANGUAGE_REFERENCE.md` by H2 into chapter pages; rewrites internal `#anchor` links to the new URLs. Copies the three guides.
 - Appends an **Examples** section to each chapter page, embedding the reference examples for that chapter using the section→chapter mapping in Appendix C (kept as a small editable table in the script).
-- Writes one page per Section 13 pattern under `content/design/examples/`, skipping the ones that duplicate existing pages (two-phase commit, consensus) and recording a link to the existing page instead.
+- Writes one page per Section 13 pattern under `content/design/patterns/`, plus the pattern library index, skipping the ones that duplicate existing pages (two-phase commit, consensus) and recording a link to the existing page instead.
+- Pattern-page descriptions follow the description principle in 1.3: the header comment's second line is a seed, not the final text, so "Saga pattern in FizzBee" becomes something like "The saga pattern explained: compensating transactions, rollback, and the failure cases that break naive implementations." Review generated descriptions in the prototype step.
 - Generates front matter: `title`, `description`, `lastmod` (from fizzbee repo git log), `weight` (ordering), source GitHub URL.
-- Generated output is committed, with a drift check (Decision D4).
+- Generated output is **not** committed: `content/reference/` and `content/design/patterns/` are gitignored, and `deploy.sh` runs the generator from a fizzbee checkout before building (Decision D4, revised Oct 12, 2026). Descriptions and overrides live in the script, never in generated files.
 - **Accept when:** running the script produces a clean `hugo` build with all pages, no broken internal links or chapter anchors (check with `htmltest` or `lychee`), and the 12 examples lacking headers are reported as warnings.
 
 **2.2 Validation checks** (expanded after ChatGPT review)
 - **Manifest:** every example directory is accounted for as *embedded* (with its chapter URL + anchor), *standalone* (with its URL), *linked to an existing page* (duplicates like two-phase commit), or *excluded with a reason*. Anything unaccounted for fails the build.
 - **Uniqueness:** every generated page has a unique title, description and canonical URL.
 - **Severity:** missing metadata is a warning; an unaccounted example, broken link or duplicate canonical is a failure.
-- **Drift:** a CI check regenerates the content and fails if it differs from what's committed (keeps the committed output honest; see D4).
+- ~~**Drift:** a CI check regenerates the content and fails if it differs from what's committed.~~ Not needed since D4 was revised: nothing generated is committed, so there is nothing to drift.
 - **Not here:** checking that `baseline.txt` matches current model-checker output belongs in the fizzbee repo, not the website build (see 2.7).
 
 **2.3 Navigation and cross-links**
-- Add Reference to the geekdoc menu.
+- Add Reference (top level) and Patterns (under Design) to the geekdoc menu. Add one link from `/design/examples/` to the pattern library.
 - Link each existing tutorial to the relevant reference chapter and examples (e.g. `fault-injection` tutorial → Fault Injection chapter + Section 14 examples). Link reference chapters back to tutorials.
 - **Accept when:** every new page is reachable by normal links from the homepage within ~3 clicks.
 
@@ -327,9 +339,9 @@ Approach: **three tiers.**
 | # | Decision | Recommendation |
 |---|---|---|
 | D1 | Allow AI training crawlers (GPTBot, ClaudeBot, Google-Extended) or only search crawlers? | **Decided: allow all** (wider distribution is the goal). fizzbee.io already allows them by default and fizzbee.ai explicitly allows them, so this keeps the two sites consistent. The docs are Apache-licensed and the goal is adoption, so there's little downside. Training is a complement to retrieval, not a substitute: an agent that fetches the current reference and runs `fizz` (Phase 3 + the existing skills) is more reliable than recall. |
-| D2 | URL scheme for new content. | `/design/reference/...` as in Section 4; keep all existing URLs. |
-| D3 | Where examples live: separate examples section vs embedded in the reference. | One primary page per search intent. By default, embed construct examples (Sections 01–12, 14–16, 99) in their reference chapters, and give Section 13 patterns their own pages in the existing `/design/examples/` catalog. Use the per-example override (2.1) for any exception. See Section 4. |
-| D4 | Generated content committed to the website repo or generated at build time (gitignored)? | Commit it, with a CI drift check that regenerates and fails on differences. It's the same generator either way; only whether the output is committed differs. Committed output gives reviewable diffs and works with today's manual deploy. **Migration criterion:** once Phase 5 has an automated CI deploy, gitignore the generated folder and generate at build time. |
+| D2 | URL scheme for new content. | **Decided:** language reference at top-level `/reference/` (shared by design, testing and requirements); patterns at `/design/patterns/`; keep all existing URLs. See Section 4. |
+| D3 | Where examples live: separate examples section vs embedded in the reference. | One primary page per search intent. By default, embed construct examples (Sections 01–12, 14–16, 99) in their reference chapters, and give Section 13 patterns their own pages in a separate pattern library at `/design/patterns/`, keeping `/design/examples/` as a curated set of walkthroughs. Use the per-example override (2.1) for any exception. See Section 4. |
+| D4 | Generated content committed to the website repo or generated at build time (gitignored)? | **Decided (Oct 12, 2026): generated at deploy time, gitignored.** The original recommendation was to commit it with a CI drift check, and to switch to build-time generation once Phase 5 automated the deploy. That migration was pulled forward deliberately in the 2.1 PR (#88). `deploy.sh` now runs the generator, so committed output would only add generated diffs and a drift check without adding review value. Review happens on the generator and its hand-written descriptions instead. `deploy.sh` refuses a fizzbee checkout with uncommitted changes in `examples/references/` (override: `--allow-dirty`) and warns when it is not on an up-to-date `main` or a release tag. |
 | D5 | Which blog is canonical: fizzbee.io/posts or blog.fizzbee.ai? | Pick one for new posts. If blog.fizzbee.ai, leave the two old fizzbee.io posts in place (they have links) but link to the new blog from fizzbee.io's nav. |
 | D6 | Keep static docs inside the frontend Cloud Run image, or host them separately (Firebase Hosting static, Cloudflare Pages) with `/play` routed to Cloud Run? | Decide after reviewing the frontend repo. Separate static hosting makes Phase 5 automation much simpler and is what the website README already hints at ("soon … cloudflare pages"). |
 | D7 | Scope of repo content to publish. | **Decided:** `examples/references/` only. `docs/`, `examples/tutorials/` and `examples/comparisons/` are outdated and out of scope; `examples/requirements/` is optional, later. |
@@ -395,7 +407,7 @@ Draft mapping; confirm when building the generator.
 | 10 Fairness | Fairness |
 | 11 Roles | Roles |
 | 12 Advanced | Best Practices / Configuration (split by example) |
-| 13 Patterns | **Own pages** in `/design/examples/` |
+| 13 Patterns | **Own pages** in `/design/patterns/` |
 | 14 Fault Injection | Fault Injection |
 | 15 Action Configuration | Configuration |
 | 16 Symmetry | Symmetry Reduction |
