@@ -17,8 +17,9 @@ Usage:
 --sample embeds only the prototype sample set (SAMPLE below) so the output can
 be reviewed before generating the full corpus.
 
-content/reference/ and content/design/patterns/ are owned by this script and
-are rewritten on every run. Pages are generated into a temporary directory and
+content/reference/ and content/design/patterns/ are owned by this script,
+rewritten on every run, and gitignored: deploy.sh runs this script before
+building. Edit descriptions and overrides here, never in the generated files. Pages are generated into a temporary directory and
 only replace the existing output once every page has been written; any input
 error (an example with no .fizz file, an unknown chapter, a bad override)
 stops the run before anything is touched.
