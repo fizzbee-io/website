@@ -122,5 +122,26 @@ class ReadmeIntroTest(unittest.TestCase):
         g.WARNINGS.clear()
 
 
+class PageLastmodTest(unittest.TestCase):
+    def test_older_sources_floor_at_launch_date(self):
+        self.assertEqual(g.page_lastmod("2026-03-08T01:12:12-08:00"),
+                         g.REFERENCE_LAUNCH_DATE)
+
+    def test_newer_source_wins(self):
+        newer = "2027-01-05T10:00:00-08:00"
+        self.assertEqual(g.page_lastmod("2026-05-01T00:00:00-07:00", newer), newer)
+
+    def test_compares_as_datetimes_not_strings(self):
+        # a is the later instant (12:00Z vs 11:00Z) but the smaller string;
+        # a string max() would wrongly pick b.
+        a = "2027-06-01T05:00:00-07:00"
+        b = "2027-06-01T11:00:00+00:00"
+        self.assertEqual(g.page_lastmod(a, b), a)
+
+    def test_none_and_empty_filtered(self):
+        self.assertEqual(g.page_lastmod(None), g.REFERENCE_LAUNCH_DATE)
+        self.assertEqual(g.page_lastmod(), g.REFERENCE_LAUNCH_DATE)
+
+
 if __name__ == "__main__":
     unittest.main()
