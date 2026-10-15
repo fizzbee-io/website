@@ -918,7 +918,7 @@ When you run this, it will pass all the invariants, and you can see that the com
 {{% expand "Complete Working FizzBee Spec for the Raft Protocol" %}}
 This is the complete fizzbee spec for the Raft protocol with all the fixes and assertions.
 This covers all the scenario covered in [Diego Ongaro's TLA+ specification](https://github.com/ongardie/raft.tla/blob/master/raft.tla).
-The TLA+ spec is written focused on implementation, equivalent to [this fizzbee spec](/design/examples/raft-consensus-algorithm.md)
+The TLA+ spec is written focused on implementation, equivalent to [this fizzbee spec](/design/examples/raft-consensus-algorithm/)
 
 {{< fizzbee >}}
 ---

@@ -7,7 +7,7 @@ geekdocHidden: true
 
 Model-based testing with FizzBee is simple and intuitive — if you can describe how your system should behave, FizzBee can generate the tests automatically.
 
-A basic familiarity with the FizzBee specification language is helpful. If you haven’t seen it yet, we recommend a quick look at the [Getting Started with FizzBee](../getting-started/) guide. The syntax is mostly Python-like, and even a brief skim will make the examples here easier to follow.
+A basic familiarity with the FizzBee specification language is helpful. If you haven’t seen it yet, we recommend a quick look at the [Getting Started with FizzBee](/design/tutorials/getting-started/) guide. The syntax is mostly Python-like, and even a brief skim will make the examples here easier to follow.
 
 This guide currently shows examples in **Go**. Guides for **Java** and **Rust** are coming soon.
 
@@ -43,7 +43,7 @@ Make sure to add both the un-tarred (`tar -xzf filename.tar.gz`) directories to 
 ## Basic Concepts
 
 Before we dive into testing, let’s get familiar with a few core ideas that model-based testing with FizzBee relies on.
-I'd recommend skimming the [Getting Started with FizzBee](../getting-started/) guide if you haven't already.
+I'd recommend skimming the [Getting Started with FizzBee](/design/tutorials/getting-started/) guide if you haven't already.
 
 ### Model
 A **model** is a high-level description of how your system behaves — essentially a **state machine** that captures possible states and transitions. In FizzBee, you define this model using the FizzBee specification language.
