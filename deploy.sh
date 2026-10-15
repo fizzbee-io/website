@@ -69,6 +69,8 @@ trap 'rm -rf "$BUILD_ROOT"' EXIT
 
 hugo --source "$REPO_ROOT" --destination "$BUILD_ROOT/public"
 
+python3 "$REPO_ROOT/tools/check_site.py" "$BUILD_ROOT/public"
+
 "$FRONTEND/build-hosting.sh" "$BUILD_ROOT/public"
 
 echo
