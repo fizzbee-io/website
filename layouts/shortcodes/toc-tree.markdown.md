@@ -1,0 +1,2 @@
+{{ range .Page.Pages }}- [{{ .Title }}]({{ .RelPermalink }})
+{{ end }}
