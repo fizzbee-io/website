@@ -34,6 +34,20 @@ enableGitInfo = true
   # Default og:image / twitter:image for pages without their own featured image.
   images = ["social-card.png"]
 
+# Serve each page's markdown at <url>/index.md for AI agents (linked via
+# <link rel="alternate"> in the head). Shortcodes render through their
+# layouts/shortcodes/*.markdown.md variants.
+[outputFormats]
+  [outputFormats.markdown]
+    mediaType = "text/markdown"
+    baseName = "index"
+    isPlainText = true
+    rel = "alternate"
+
+[outputs]
+  page = ["HTML", "markdown"]
+  section = ["HTML", "RSS", "markdown"]
+
 # Needed for mermaid shortcodes
 [markup]
   [markup.goldmark.renderer]

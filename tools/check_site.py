@@ -6,6 +6,9 @@ Usage:
 
 Failures (exit 1):
   - a page without exactly one canonical tag pointing to itself
+  - a markdown alternate (<url>/index.md) with leaked HTML or unprocessed
+    shortcode syntax (a shortcode missing its *.markdown.md variant), or a
+    rel=alternate link whose index.md is missing from the build
   - duplicate titles, descriptions or canonical URLs (minus the allowlists)
   - an internal link to a missing page, or to a missing anchor on a page
   - a sitemap URL with no page in the build or no <lastmod>, or /tags/ in
@@ -47,6 +50,38 @@ DUP_TITLE_ALLOW = {
 }
 
 SKIP_FILES = {"404.html", "privacy.html"}
+
+def md_prose(text):
+    """Markdown text with fenced blocks and inline code removed.
+
+    Code legitimately contains < and {{ (fair<weak>, template syntax), so
+    leak detection and link extraction only look at prose.
+    """
+    text = re.sub(r"^```.*?^```", "", text, flags=re.S | re.M)
+    return re.sub(r"`[^`\n]*`", "", text)
+
+
+# Tags that only shortcode HTML fallbacks and theme markup emit (every
+# layouts/shortcodes/*.html and theme shortcode emits at least one of
+# these). Author-written inline HTML in markdown sources (<table>, <p>,
+# <sub>, <br>) is a markdown feature and flows to both outputs on purpose;
+# FizzBee's own fairness syntax (fair<weak>) also appears in prose.
+MD_LEAK_TAGS = ("div", "script", "iframe", "svg", "blockquote", "figure",
+                "input", "label", "section", "style", "pre")
+
+
+def md_leaks(text):
+    """Shortcode syntax or fallback-HTML tags in markdown prose."""
+    prose = md_prose(text)
+    leaks = [t for t in ("{{<", "{{%") if t in prose]
+    tag_re = r"</?(?:" + "|".join(MD_LEAK_TAGS) + r")[ >/]"
+    leaks += sorted(set(re.findall(tag_re, prose)))
+    return leaks
+
+
+def md_links(text):
+    """[link targets] in markdown prose."""
+    return [m.group(2) for m in re.finditer(r"(?<!!)\[([^\]]*)\]\(([^)\s]+)\)", md_prose(text))]
 
 
 def allowed_duplicate(allow, value, first_url, url):
@@ -179,6 +214,43 @@ def main():
             elif frag and base in pages and frag not in pages[base]["anchors"]:
                 link_failures.add(f"{url}: link to missing anchor {href}")
     failures.extend(sorted(link_failures))
+
+    # Markdown alternates. Every scanned page except the homepage must
+    # advertise exactly one markdown alternate whose file exists; every
+    # index.md must be clean (no leaked HTML/shortcodes), sit next to its
+    # page, and contain only resolvable internal links.
+    md_files = list(root.rglob("index.md"))
+    for f in md_files:
+        text = f.read_text(encoding="utf-8", errors="replace")
+        rel = f.relative_to(root)
+        leaks = md_leaks(text)
+        if leaks:
+            failures.append(f"{rel}: leaked {leaks} (shortcode missing a .markdown.md variant?)")
+        if not (f.parent / "index.html").exists():
+            failures.append(f"{rel}: markdown output with no sibling index.html")
+        page = page_url(str(rel).replace("index.md", "index.html"))
+        for href in md_links(text):
+            internal = resolve(page, href)
+            if internal is None:
+                continue
+            base, _, frag = internal.partition("#")
+            base = normalize(base) if base else page
+            if base.startswith(APP_PATHS):
+                continue
+            if not target_file(root, base).exists():
+                failures.append(f"{rel}: markdown link to missing page {href}")
+            elif frag and base in pages and frag not in pages[base]["anchors"]:
+                failures.append(f"{rel}: markdown link to missing anchor {href}")
+    for url, p in pages.items():
+        alts = re.findall(r'rel="alternate" type="text/markdown" href="([^"]+)"',
+                          (root / p["rel"]).read_text(encoding="utf-8", errors="replace"))
+        if url == "/":
+            continue  # homepage has no markdown output (llms.txt lives there)
+        if len(alts) != 1:
+            failures.append(f"{url}: expected one markdown alternate link, found {len(alts)}")
+        elif not target_file(root, alts[0].replace(BASE_URL, "")).exists():
+            failures.append(f"{url}: alternate link to missing {alts[0]}")
+    print(f"markdown alternates: {len(md_files)}")
 
     # Sitemap.
     sitemap = root / "sitemap.xml"
