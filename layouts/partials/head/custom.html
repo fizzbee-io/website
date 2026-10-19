@@ -1,3 +1,7 @@
+{{- /* Markdown alternate for AI agents (output format in hugo.toml). */}}
+{{- range .AlternativeOutputFormats }}{{ if eq .Name "markdown" }}
+<link rel="alternate" type="text/markdown" href="{{ .Permalink }}" title="{{ $.Title }}">
+{{- end }}{{ end }}
 {{- /* The theme omits og:title on the homepage; every other page gets one from the theme. */}}
 {{- if .IsHome }}
 <meta property="og:title" content="{{ .Title }}">

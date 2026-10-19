@@ -58,5 +58,40 @@ class AllowedDuplicateTest(unittest.TestCase):
         self.assertFalse(c.allowed_duplicate(self.ALLOW, "X", "/a/", "/b/"))
 
 
+
+
+class MdLeakTest(unittest.TestCase):
+    def test_clean_markdown_passes(self):
+        self.assertEqual(c.md_leaks("# Title\n\n```fizz\naction Init:\n    pass\n```\n"), [])
+
+    def test_unprocessed_shortcode_detected(self):
+        self.assertIn("{{<", c.md_leaks("text {{< figure src=x >}}"))
+        self.assertIn("{{%", c.md_leaks("text {{% fizzbee %}}"))
+
+    def test_html_fallback_detected(self):
+        self.assertTrue(c.md_leaks('<div class="gdoc-hint">'))
+        self.assertTrue(c.md_leaks("<blockquote class=x>"))
+
+    def test_author_inline_html_allowed(self):
+        self.assertEqual(c.md_leaks("<table><tr><td>a</td></tr></table> and <sub>i</sub> and <p>x</p>"), [])
+
+    def test_fizzbee_fairness_syntax_in_prose_allowed(self):
+        self.assertEqual(c.md_leaks("## Weak Fairness (fair or fair<weak>)"), [])
+
+    def test_code_in_fences_ignored(self):
+        self.assertEqual(c.md_leaks("```html\n<div class=x>{{< sc >}}\n```\ntext `<div>` more"), [])
+
+    def test_tilde_fences_ignored(self):
+        self.assertEqual(c.md_leaks("~~~\n<div class=x>{{< sc >}}\n~~~\nprose"), [])
+
+
+class MdLinksTest(unittest.TestCase):
+    def test_links_extracted_from_prose(self):
+        self.assertEqual(c.md_links("See [a](/x/) and [b](/y/#frag)."), ["/x/", "/y/#frag"])
+
+    def test_images_and_fenced_links_skipped(self):
+        self.assertEqual(c.md_links("![alt](/img.png)\n```\n[not](/a-link/)\n```"), [])
+
+
 if __name__ == "__main__":
     unittest.main()
