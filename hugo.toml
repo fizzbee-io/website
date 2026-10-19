@@ -43,8 +43,15 @@ enableGitInfo = true
     baseName = "index"
     isPlainText = true
     rel = "alternate"
+  # /llms.txt: index of every doc page with its description, llmstxt.org
+  # format, generated from front matter. Template: layouts/index.llms.txt
+  [outputFormats.llms]
+    mediaType = "text/plain"
+    baseName = "llms"
+    isPlainText = true
 
 [outputs]
+  home = ["HTML", "RSS", "llms"]
   page = ["HTML", "markdown"]
   section = ["HTML", "RSS", "markdown"]
 

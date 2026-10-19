@@ -13,6 +13,8 @@ Failures (exit 1):
   - an internal link to a missing page, or to a missing anchor on a page
   - a sitemap URL with no page in the build or no <lastmod>, or /tags/ in
     the sitemap
+  - llms.txt missing, listing a URL with no markdown file in the build, or
+    omitting a page that has a markdown alternate
 
 Warnings (reported, exit 0):
   - a page with an empty meta description
@@ -251,6 +253,43 @@ def main():
         elif not target_file(root, alts[0].replace(BASE_URL, "")).exists():
             failures.append(f"{url}: alternate link to missing {alts[0]}")
     print(f"markdown alternates: {len(md_files)}")
+
+    # llms.txt: well-formed, complete, nothing dangling, no duplicates,
+    # every link on our own host. Completeness plus the duplicate check
+    # also force the section grouping to be a partition: a page in no
+    # section fails completeness, a page in two sections is a duplicate.
+    llms = root / "llms.txt"
+    if llms.exists():
+        text = llms.read_text(encoding="utf-8", errors="replace")
+        h1s = [l for l in text.splitlines() if l.startswith("# ")]
+        if len(h1s) != 1:
+            failures.append(f"llms.txt: expected exactly one H1, found {len(h1s)}")
+        hrefs = md_links(text)
+        if len(hrefs) != len(set(hrefs)):
+            dupes = sorted({h for h in hrefs if hrefs.count(h) > 1})
+            failures.append(f"llms.txt: duplicate entries: {dupes[:3]}")
+        listed = set()
+        for href in hrefs:
+            if not href.startswith(BASE_URL + "/"):
+                failures.append(f"llms.txt: link not on {BASE_URL}: {href}")
+                continue
+            path = href[len(BASE_URL):]
+            listed.add(path)
+            if not (root / path.lstrip("/")).exists():
+                failures.append(f"llms.txt: lists missing {href}")
+        have_md = {page_url(str(f.relative_to(root)).replace("index.md", "index.html")) + "index.md"
+                   for f in md_files}
+        missing = {u for u in have_md if u not in listed}
+        if missing:
+            failures.append(f"llms.txt: {len(missing)} markdown pages not listed, e.g. {sorted(missing)[:3]}")
+        sections = re.findall(r"^## (.+)$", text, re.M)
+        counts = {sec: 0 for sec in sections}
+        for sec, body in zip(sections, re.split(r"^## .+$", text, flags=re.M)[1:]):
+            counts[sec] = len(md_links(body))
+        print(f"llms.txt: {len(hrefs)} entries | " +
+              ", ".join(f"{s}: {n}" for s, n in counts.items()))
+    else:
+        failures.append("llms.txt missing from build")
 
     # Sitemap.
     sitemap = root / "sitemap.xml"

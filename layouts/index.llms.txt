@@ -1,0 +1,30 @@
+{{- /* llms.txt (llmstxt.org): H1, blockquote summary, H2 sections of
+       "- [Title](markdown-url): description" lines. Links point at each
+       page's markdown alternate. check_site.py verifies every page with a
+       markdown output is listed here and every listed URL exists. */ -}}
+{{- $all := where .Site.Pages "Kind" "in" (slice "page" "section") -}}
+{{- define "entries" }}
+{{- range . }}
+- [{{ .Title }}]({{ .Permalink }}index.md){{ with .Description }}: {{ replace . "\n" " " }}{{ end }}
+{{- end }}
+{{ end -}}
+# FizzBee
+
+> The easiest formal specification language and model checker for the full development cycle: requirements analysis, design verification, and model-based testing.
+
+FizzBee specs look like Python: you model a system as actions on state, then the model checker explores every interleaving to verify safety and liveness properties, and the model-based testing runner checks a real implementation against the model. Each page below is available as clean markdown at the listed URL; the HTML version is the same URL without `index.md`.
+
+## Language Reference
+{{ template "entries" (where $all "RelPermalink" "like" `^/reference/language/`) }}
+## Model Checker Guides
+{{ template "entries" (complement (where $all "RelPermalink" "like" `^/reference/language/`) (where $all "RelPermalink" "like" `^/reference/`)) }}
+## Distributed Systems Patterns
+{{ template "entries" (where $all "RelPermalink" "like" `^/design/patterns/`) }}
+## Design Tutorials
+{{ template "entries" (union (where $all "RelPermalink" "like" `^/design/tutorials/`) (where $all "RelPermalink" "eq" "/design/")) }}
+## Examples
+{{ template "entries" (where $all "RelPermalink" "like" `^/design/examples/`) }}
+## Model-Based Testing
+{{ template "entries" (where $all "RelPermalink" "like" `^/testing/`) }}
+## Optional
+{{ template "entries" (where $all "RelPermalink" "like" `^/posts/`) }}
