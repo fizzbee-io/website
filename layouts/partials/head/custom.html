@@ -1,3 +1,5 @@
+{{- /* llms.txt discovery (llmstxt.org recommended link relation). */}}
+<link rel="describedby" type="text/plain" href="{{ "llms.txt" | absURL }}">
 {{- /* Markdown alternate for AI agents (output format in hugo.toml). */}}
 {{- range .AlternativeOutputFormats }}{{ if eq .Name "markdown" }}
 <link rel="alternate" type="text/markdown" href="{{ .Permalink }}" title="{{ $.Title }}">
