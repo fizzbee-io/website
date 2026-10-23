@@ -143,5 +143,22 @@ class PageLastmodTest(unittest.TestCase):
         self.assertEqual(g.page_lastmod(), g.REFERENCE_LAUNCH_DATE)
 
 
+class StripRepoPointer(unittest.TestCase):
+    def test_pointer_blockquote_is_dropped(self):
+        text = "> Rendered at [fizzbee.io/x](https://fizzbee.io/x/).\n\nBody stays.\n"
+        self.assertEqual(g.strip_repo_pointer(text), "Body stays.\n")
+
+    def test_text_without_pointer_is_unchanged(self):
+        self.assertEqual(g.strip_repo_pointer("Body only.\n"), "Body only.\n")
+
+    def test_only_leading_pointer_is_dropped(self):
+        text = "Intro.\n\n> Rendered at [fizzbee.io/x](https://fizzbee.io/x/).\n"
+        self.assertEqual(g.strip_repo_pointer(text), text)
+
+    def test_ordinary_rendered_blockquote_is_kept(self):
+        text = "> Rendered output can differ between runs.\n\nBody.\n"
+        self.assertEqual(g.strip_repo_pointer(text), text)
+
+
 if __name__ == "__main__":
     unittest.main()

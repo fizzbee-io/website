@@ -612,6 +612,14 @@ def render_example(ex, level, link_chapter):
 
 # --- language reference ---
 
+def strip_repo_pointer(text):
+    """Drop the leading '> Rendered at fizzbee.io/...' blockquote that the repo
+    files carry for GitHub and agent readers; on the rendered site itself the
+    line would be self-referential. Requires the fizzbee.io URL so an ordinary
+    guide blockquote that happens to start with 'Rendered' is left alone."""
+    return re.sub(r"\A\s*>\s*Rendered[^\n]*fizzbee\.io[^\n]*\n*", "", text)
+
+
 def split_chapters(text):
     """[(title, body_lines)] for each H2 section, headings in fences ignored."""
     chapters, cur = [], None
@@ -934,6 +942,7 @@ def main():
     for weight, (src, url, title) in enumerate(GUIDES, start=100):
         text = (refs / src).read_text()
         text = re.sub(r"\A#\s[^\n]*\n", "", text).strip()
+        text = strip_repo_pointer(text).strip()
         text = rewrite_links(text, anchor_map, examples, url)
         if src == "GOTCHAS.md":
             text += (f"\n\n## See also\n\n- [Known Issues and Limitations]({LANG_URL}known-issues-and-limitations/)\n"
