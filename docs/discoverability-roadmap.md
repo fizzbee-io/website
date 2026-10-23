@@ -4,7 +4,7 @@
 
 **Scope:** fizzbee.io (docs + playground), the `fizzbee-io/fizzbee` repo (examples, reference), fizzbee.ai (SaaS), blog.fizzbee.ai.
 
-**Status:** In progress. Phase 0 and Phase 1 complete (Oct 11, 2026); next: Phase 2. Originally drafted Oct 10, 2026. Based on an audit of the `fizzbee-io/website` and `fizzbee-io/fizzbee` repos and the live sites, plus two rounds of review by ChatGPT (accepted changes: stricter live-site acceptance tests, prototype-first generator, expanded validation, per-example overrides, D4 migration criterion, per-page Markdown). The `fizzbee-io/frontend` repo (private) was **not** reviewed, so anything about deployment is inferred from the website README.
+**Status:** Technical half complete. Phases 0, 1, 3 and 4 done; Phase 2 done except 2.3 in-body links and 2.6; first Phase 7 reading taken Oct 23, 2026. Section 8 has the Oct 23 status review, what has reached diminishing returns, and the current priorities (model-based testing content first). Originally drafted Oct 10, 2026. Based on an audit of the `fizzbee-io/website` and `fizzbee-io/fizzbee` repos and the live sites, plus two rounds of review by ChatGPT (accepted changes: stricter live-site acceptance tests, prototype-first generator, expanded validation, per-example overrides, D4 migration criterion, per-page Markdown). The `fizzbee-io/frontend` repo (private) was **not** reviewed, so anything about deployment is inferred from the website README.
 
 ### How to use this document
 
@@ -275,9 +275,9 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 
 ### Phase 4: Search engine submission and change notification (you + 1 short session)
 
-- Submit `https://fizzbee.io/sitemap.xml` in Search Console and Bing Webmaster Tools.
-- **Removals → New request** for `https://fizzbee.io/_index_bak1/` (it appears in search results; see 2.5). Not needed for `/_index_bak/`, which Google has never seen.
-- URL Inspection → Request indexing for the homepage, reference landing, language reference index, examples index, and the top ~10 pattern pages.
+- [x] Submit `https://fizzbee.io/sitemap.xml` in Search Console and Bing Webmaster Tools. (Oct 11 and Oct 12, 2026.)
+- [x] **Removals → New request** for `https://fizzbee.io/_index_bak1/` (it appears in search results; see 2.5). Not needed for `/_index_bak/`, which Google has never seen. (Oct 11, 2026; zero impressions since.)
+- URL Inspection → Request indexing for the homepage, reference landing, language reference index, examples index, and the top ~10 pattern pages. **In progress (Oct 23, 2026):** the three landing pages were indexed on launch day; all 41 generated chapter and pattern pages are still "Discovered, currently not indexed" and are being requested at the ~10/day quota, highest search value first.
 - **IndexNow**: add the key file to `static/`, and a post-deploy script that POSTs changed URLs (diff of sitemap before/after deploy) to `api.indexnow.org`.
   - [x] **Done (Oct 22, 2026):** `static/<key>.txt` + `./notify-indexnow.sh` (diffs the live sitemap against the last-notified state; `--dry-run` supported). Sitemaps were resubmitted and all 80 URLs hand-submitted to Bing earlier (Oct 12).
 - **Accept when:** Search Console shows the sitemap processed with the new URL count; IndexNow returns 200/202 on deploy.
@@ -310,6 +310,7 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 - **AI crawler visits:** query Cloud Run request logs for user agents (`GPTBot`, `OAI-SearchBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `bingbot`). Claude Code can write the `gcloud logging read` query.
 - **Backlinks:** submit to awesome-tla+ and awesome-formal-methods lists; post the Raft and pattern examples to the TLA+ Google group, Hacker News, lobste.rs; write blog posts on blog.fizzbee.ai that link into the reference.
 - **Content priorities:** feed Search Console impressions into Phase 8 to choose which patterns get deeper treatment.
+- [x] **First reading taken Oct 23, 2026.** See Section 8. Two corrections to how to read the data from now on: the Sept impression peak was machine-generated queries and has ended, so count clicks and mobile impressions, not total impressions; and the site is too small for weekly signal, so read monthly.
 
 ### Phase 8: Content depth — walkthroughs vs automated patterns (ongoing, after Phase 2)
 
@@ -328,7 +329,7 @@ Approach: **three tiers.**
 - **Distributed lock with leases and fencing tokens.** Heavily searched (the Redlock debate); a model checker finding the lease-expiry bug is an ideal demonstration.
 - **Saga pattern.** What microservice developers actually build — fizzbee.io's core audience.
 - **Idempotency / exactly-once delivery.** Connects to the existing message-delivery-guarantees tutorial.
-- **Model-based testing.** "model based testing" gets ~930 impressions per quarter, with more from variants, but fizzbee.io ranks around position 19–41. FizzBee has a model-based testing product (`/testing/`), so a strong explainer ("What is model-based testing?" with a concrete FizzBee + Go walkthrough) targets a real, non-brand audience. This came from the Search Console baseline, not the original audit.
+- **Model-based testing.** "model based testing" gets ~930 impressions per quarter, with more from variants, but fizzbee.io ranks around position 19–41. FizzBee has a model-based testing product (`/testing/`), so a strong explainer ("What is model-based testing?" with a concrete FizzBee + Go walkthrough) targets a real, non-brand audience. This came from the Search Console baseline, not the original audit. **Promoted to the top priority on Oct 23, 2026; the concrete sequence is in Section 8.**
 - **"FizzBee for TLA+ users."** Write fresh (the old `docs/` version is outdated). "TLA+ alternative" is among the highest-value searches for FizzBee; showing the same spec in both languages side by side would also attract links from the TLA+ community.
 
 **Test the walkthrough code.** Code blocks in markdown silently go stale when the language changes. For each walkthrough (existing and new), put the complete spec and the key intermediate steps (e.g. two-phase-commit timeout attempts 1–5) into the repo as `.fizz` files with `baseline.txt`, the same mechanism `examples/references/` already uses. A language change then shows up as a failing test rather than a broken page. Ideally the page pulls the code from those files (Hugo `readFile` or a shortcode) so there is one copy.
@@ -370,6 +371,62 @@ Approach: **three tiers.**
 10. **[CC] fizzbee.ai repo**: Phase 6. **[You]** pick sample projects for the gallery.
 11. **[CC] + [You]** Phase 8: first walkthrough (draft + test by Claude Code, review by you); tests for the existing walkthrough code.
 12. **[You]** Phase 7 ongoing: weekly Search Console review, backlinks and community posts.
+
+---
+
+## 8. Status review (Oct 23, 2026)
+
+### 8.1 Where things stand
+
+| Phase | State | Evidence |
+|---|---|---|
+| 0 Baseline | Done | Oct 11 export |
+| 1 Technical fixes | Done, live | 80 sitemap URLs return 200; one canonical and one description per page; OG; robots |
+| 2.1, 2.2, 2.4, 2.5, 2.7 Reference corpus | Done, live | 43 generated pages; `check_site.py` runs in `deploy.sh`; fizzbee CI runs the baselines |
+| 2.3 Cross-links | Menu done; in-body tutorial-to-chapter links not | |
+| 2.6 Thin example intros | Not started | |
+| 3 AI discoverability | Done, reshaped | per-page `.md`, `/llms.txt`, `context7.json`; Context7 refresh on hold |
+| 4 Submission | Done | sitemaps, Bing hand-submit, IndexNow first run accepted Oct 23 |
+| 5 CI automation | Not started | |
+| 6 fizzbee.ai | Not started | |
+| 7 Measurement | First reading Oct 23 | |
+| 8 Walkthroughs | Not started | |
+
+**What the first reading says.** Indexing: 39 of 80 sitemap URLs indexed. All 41 generated chapter and pattern pages are "Discovered, currently not indexed" with no crawl date, meaning Google has the URLs but has never fetched them; the three landing pages were indexed on launch day because they are in the menu. Most Phase 1 description rewrites have not been recrawled yet (the `/testing/` pages were last crawled in September), so CTR effects cannot have shown up.
+
+Traffic: the human baseline is about 90 clicks a fortnight, roughly 60 percent on the brand name, so about 15 non-brand clicks a fortnight. The homepage moved from position 4.5 to 3.2. The September impression peak (up to 4,200 a day) was machine-generated: queries of seven or more words, US desktop only, zero clicks, fell from 5,799 to 142 impressions a fortnight when whatever issued them stopped around Sep 20. Section 2.5's "treat as a strong hint" is now confirmed; it also confirms that AI systems retrieve fizzbee.io through Google rather than through `llms.txt`. Mid-October is the true baseline from here on, not the Phase 0 export.
+
+The one unbranded query family with real demand is model-based testing: about 400 impressions a fortnight across "model based testing", "what is model based testing" and "model based testing tools", at positions 18 to 40, served today by a 400-word marketing page.
+
+### 8.2 Diminishing returns
+
+Everything shipped so far is plumbing. It was necessary and it is finished; nothing left in this column produces traffic.
+
+- **Medium description batch (13 tutorials).** Those pages get 25 to 100 impressions a fortnight each. A better snippet on 50 impressions cannot produce a measurable click. Skip unless a page later shows real impressions with poor CTR.
+- **2.6 thin-page intros.** Same arithmetic. Low priority.
+- **Phase 5 CI deploy automation.** Saves time per deploy; zero traffic effect. Do it when deploy frequency becomes a nuisance.
+- **Context7 claim and refresh.** Ten minutes when convenient; no traffic expectation.
+- **Further `llms.txt`, robots, sitemap or OG work.** Done. Stop.
+- **Impression counts on Knuth-Yao, EWD426 and liveness.** Bot driven. Ignore in future readings.
+- **2.3 in-body cross-links.** Worth exactly one cheap PR, because it gives the 41 unfetched pages internal links from pages Google crawls monthly. Not worth more than that.
+
+### 8.3 Priorities
+
+**1. Model-based testing content (highest).** Two defects found while reviewing: `/testing/tutorials/getting-started/` is live, indexed and ranking (position 2.9, 167 impressions a fortnight) while containing unfinished placeholder headings with author notes as body text, and it opens with "FizzBee can generate the tests automatically", which is inaccurate (the model explores traces, the user writes the adapter, the runner checks the implementation). And the site says Java and Rust quick starts are "coming soon" while the `fizzbee-mbt-examples` repo already holds Java, Rust and TypeScript ports plus two Playwright UI-testing examples (todo-app, TodoMVC). Each language is its own search market; Playwright matters most because UI test authors are a large audience and nobody serves "model-based testing with Playwright" well. Sequence, one session each:
+
+   1. Rewrite getting-started into "What is Model-Based Testing?": definition; how it differs from example-based, property-based and AI-written tests; the generic MBT loop; FizzBee's version stated correctly; one short Go excerpt; links to the quick start. Unhide it and link it from `/testing/` and the homepage.
+   2. TypeScript plus Playwright walkthrough from the TodoMVC example, titled for the query ("Model-based testing a web UI with Playwright").
+   3. Java and Rust quick starts from the existing ports (or one quick start with language tabs); remove "coming soon". Needs JP to confirm which ports are released and supported.
+   4. "Model-based testing tools compared": honest comparison against GraphWalker, Hypothesis stateful testing, QuickCheck state machines and Jepsen-style testing. The query is there and nobody owns it with a good page.
+   5. Later: `/reference/mbt/` for the adapter API, as D2 anticipated.
+
+**2. The TLA+ comparison.** "tla+ alternatives" sits at position 1 with small volume; the TLA+ community is where early adopters and backlinks come from. A draft `TLA+-vs-FizzBee.md` already exists in the working tree. Finishing it is a review session, not new writing.
+
+**3. Off-site (JP).** Nothing in Phase 7's backlinks list has happened yet. For a site at 90 clicks a fortnight, one well-received Hacker News or lobste.rs post about the Raft walkthrough or the pattern library outweighs a quarter of SEO. Concretely: awesome-tla and awesome-formal-methods entries; an awesome-playwright entry once the Playwright walkthrough exists; the TLA+ Google group when the comparison ships; r/golang or r/softwaretesting for the MBT explainer. Claude Code drafts the posts; posting is JP's.
+
+**4. Keep doing, low effort.** Request indexing for the 41 pages at 10 a day until done. Monthly Search Console reading, clicks and mobile only. Deploy whenever fizzbee `main` changes the reference, then run `./notify-indexnow.sh`.
+
+**5. Defer.** Phase 6 fizzbee.ai (hygiene for a different product; do when fizzbee.ai is the focus). D5 blog decision (two posts in each blog; decide when there is a third post). Pattern walkthroughs such as distributed lock and saga (wait until the 41 pattern pages are indexed and show which get impressions; the data decides, probably December).
 
 ---
 
