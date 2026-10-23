@@ -75,3 +75,4 @@ python3 "$REPO_ROOT/tools/check_site.py" "$BUILD_ROOT/public"
 
 echo
 echo "To deploy: cd $FRONTEND && firebase deploy --only hosting"
+echo "Then notify search engines: $REPO_ROOT/notify-indexnow.sh"

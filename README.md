@@ -51,6 +51,18 @@ Then deploy from that checkout:
 firebase deploy --only hosting
 ```
 
+Once the deploy is live, notify search engines (IndexNow: Bing, Yandex and
+others; Google is covered by the sitemap's lastmod dates) of the changed URLs:
+
+```
+./notify-indexnow.sh
+```
+
+It diffs the live sitemap against the last-notified one (`.indexnow-state.xml`,
+local only) and submits new, updated and removed URLs; `--dry-run` shows the
+list without submitting. A fresh checkout has no state file and submits every
+sitemap URL once, which is harmless.
+
 `deploy.sh` first regenerates the reference pages from the fizzbee checkout
 (use an up-to-date `main` with full history), then builds into a fresh temp directory on every run (never `./public/`,
 which Hugo does not clean) and hands the output to the frontend repo's
