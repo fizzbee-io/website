@@ -245,10 +245,12 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 - Link each existing tutorial to the relevant reference chapter and examples (e.g. `fault-injection` tutorial → Fault Injection chapter + Section 14 examples). Link reference chapters back to tutorials.
 - **Accept when:** every new page is reachable by normal links from the homepage within ~3 clicks.
 
-**2.4 Fix the 12 unheadered examples** (`fizzbee` repo)
-- Add header comments to the 12 examples in Appendix B, in the same format as the others. Small PR to the fizzbee repo.
+**2.4 Fix the unheadered examples** (`fizzbee` repo)
+- [x] **Done (Oct 14, 2026)** in fizzbee #393 (+ #396). The real count was 23, not Appendix B's 12 (several listed there have headers inside YAML front matter; the generator found 11 more without any). All 23 now have numbered headers; the generator reports zero header warnings.
+- Add header comments to the examples in Appendix B, in the same format as the others. Small PR to the fizzbee repo.
 
 **2.5 Repo README docs links** (`fizzbee` repo)
+- [x] **Done (Oct 2026)** in fizzbee #397: README Documentation section linking fizzbee.io Tutorials, Language Reference, Examples + pattern library and the guides; old `docs/` files marked outdated with pointers.
 - Replace the README's only docs link (the outdated `docs/fizzbee-quick-start-for-tlaplus-users.md`) with a Documentation section linking to fizzbee.io Tutorials, Language Reference and Examples.
 - Add a note at the top of the old `docs/` files that they are outdated, pointing to fizzbee.io (or delete them).
 
@@ -256,11 +258,13 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 - Add descriptions and a short "what this demonstrates" intro to the 8 existing `/design/examples/` pages that lack them.
 
 **2.7 Run the baseline tests in CI** (`fizzbee` repo)
+- [x] **Done (Oct 2026)** in fizzbee #398/#399: the build workflow runs `test_references.py --skip-lovable` with per-spec timeouts, so a model-checker change that invalidates a published expected result fails CI.
 - `test_references.py` compares every reference example against its `baseline.txt`, but the fizzbee repo's CI (`build.yaml`) doesn't run it; it only smoke-tests one old tutorial spec. Add `python3 test_references.py` to CI. Once the website publishes these examples with their expected results, a failing baseline means a wrong page.
 - **Accept when:** a PR that changes model-checker output for any reference example fails CI until its baseline is updated.
 
 ### Phase 3: AI-assistant discoverability (1 Claude Code session in `website`)
 
+- [x] **Done (Oct 2026), reshaped by consumption evidence** (Ahrefs: 97% of llms.txt files get zero AI requests; the exception is coding assistants, FizzBee's audience; Context7 is heavily used). Shipped: per-page Markdown at `<url>/index.md` with `fizz`-labeled fences + `rel=alternate` (#91); `/llms.txt` listing all pages' markdown URLs + `rel=describedby` (#92); `llms-full.txt` deliberately skipped (per-page markdown serves the same consumers better); repo pointer lines (fizzbee #407, stripped site-side by #93); `context7.json` merged in the fizzbee repo (scoped to `examples/references/` + README; Context7 indexes only doc extensions, not `.fizz`) — ownership claim + refresh on hold.
 - **`/llms.txt`**: Hugo custom output format on the home page listing every doc page with title, URL and one-line description, grouped by section (Tutorials, Reference, Examples).
 - **`/llms-full.txt`**: concatenated raw markdown of tutorials + language reference + guides (not every example, to keep size reasonable).
 - **Per-page Markdown output** (`/path/index.md`, Hugo output format) for reference and example pages, so agents can fetch one clean chapter instead of a giant file. Likely more useful to coding agents than `llms-full.txt`.
@@ -275,6 +279,7 @@ Each phase is sized to be one or a few Claude Code sessions. Each has acceptance
 - **Removals → New request** for `https://fizzbee.io/_index_bak1/` (it appears in search results; see 2.5). Not needed for `/_index_bak/`, which Google has never seen.
 - URL Inspection → Request indexing for the homepage, reference landing, language reference index, examples index, and the top ~10 pattern pages.
 - **IndexNow**: add the key file to `static/`, and a post-deploy script that POSTs changed URLs (diff of sitemap before/after deploy) to `api.indexnow.org`.
+  - [x] **Done (Oct 22, 2026):** `static/<key>.txt` + `./notify-indexnow.sh` (diffs the live sitemap against the last-notified state; `--dry-run` supported). Sitemaps were resubmitted and all 80 URLs hand-submitted to Bing earlier (Oct 12).
 - **Accept when:** Search Console shows the sitemap processed with the new URL count; IndexNow returns 200/202 on deploy.
 
 ### Phase 5: Automate (1–2 sessions, `website` + possibly `fizzbee`)
