@@ -169,7 +169,7 @@ func no_requests():
 assertion NoRequestsBeforeStart:
     return no_requests() until started
 
-# Every request from every client is answered.
+# A client has at most one pending request, and it is eventually answered.
 assertion Answered for c in range(NUM_CLIENTS):
     return pending[c] leadsto not pending[c]
 

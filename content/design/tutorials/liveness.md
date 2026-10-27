@@ -165,7 +165,8 @@ assertion FailedCanRecover:
 The `exists` keyword asserts there is at least one reachable state
 where this property holds. It is `exists eventually P`, which is `possibly P`, checked once from the
 initial state. The one difference: `exists` also counts states reached through a crash, and `possibly`
-doesn't. 
+doesn't. This matters only when a crash changes state, as when it resets a role's
+[ephemeral state](/design/tutorials/fault-injection/). 
 
 This is useful to assure that the state space covered some specific state.
 Typically when modelling, we tend to temporarily add a safety assertion that will obviously fail.
