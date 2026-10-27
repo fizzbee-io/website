@@ -42,8 +42,10 @@ and derivatives of these like
 - CTL* - a superset of CTL and LTL
 - PCTL - Probabilistic Computation Tree Logic
 
-FizzBee supports LTL without the next operator, plus one CTL operator, `possibly`. It also has
-support for probabilistic model checking. We will learn more about these.
+FizzBee supports full LTL except the next operator (X), which it leaves out so that properties are
+stuttering-invariant. It also supports the CTL operator `possibly`, which covers most of the "can this
+happen" questions that come up when modeling real systems, and it can be mixed freely with the LTL
+operators. FizzBee also supports probabilistic model checking. We will learn more about these.
 
 ### Linear Temporal Logic (LTL)
 
@@ -149,6 +151,14 @@ It says that from every reachable state, the system can still get back to idle. 
 get back. (`SafelyShutdown` then fails too and is reported first. Remove it to see the `possibly`
 failure, with a note saying after which step idle became unreachable.) For more, see
 [Can versus will: possibly](/design/tutorials/temporal-formulas/#can-versus-will-possibly).
+
+`possibly` combines with the LTL operators like any other condition. For example, this checks
+recovery only from failed states:
+
+{{< highlight python >}}
+assertion FailedCanRecover:
+  return always (status == "failed" implies possibly status == "idle")
+{{< /highlight >}}
 
 #### exists
 
