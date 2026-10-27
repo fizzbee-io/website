@@ -42,7 +42,7 @@ and derivatives of these like
 - CTL* - a superset of CTL and LTL
 - PCTL - Probabilistic Computation Tree Logic
 
-FizzBee supports full LTL except the next operator (X), which it leaves out so that properties are
+FizzBee supports future-time LTL without the next operator (X), which it leaves out so that properties are
 stuttering-invariant. It also supports the CTL operator `possibly`, which covers most of the "can this
 happen" questions that come up when modeling real systems, and it can be mixed freely with the LTL
 operators. FizzBee also supports probabilistic model checking. We will learn more about these.
@@ -163,7 +163,9 @@ assertion FailedCanRecover:
 #### exists
 
 The `exists` keyword asserts there is at least one reachable state
-where this property holds. 
+where this property holds. It is `exists eventually P`, which is `possibly P`, checked once from the
+initial state. The one difference: `exists` also counts states reached through a crash, and `possibly`
+doesn't. 
 
 This is useful to assure that the state space covered some specific state.
 Typically when modelling, we tend to temporarily add a safety assertion that will obviously fail.

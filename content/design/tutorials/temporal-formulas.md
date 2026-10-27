@@ -181,6 +181,14 @@ assertion StaysStarted:
 Like every liveness property, `leadsto` depends on [fairness](/design/tutorials/liveness/#fairness).
 Remove `fair` from `Respond` and `Answered[0]` fails: a run can leave a request pending forever.
 
+`Respond` picks a client with a plain `oneof`, so it could keep answering the same client. That can't
+starve the other one here, because each client sends at most two requests: once one client is done,
+`Respond` has only the other left to pick. Without that bound you'd need a `fair oneof` as well, as
+described in [choice fairness](/design/tutorials/liveness/#choice-oneof-fairness).
+
+`leadsto` is satisfied at once when Q already holds in the same state as P. Q doesn't have to become
+true later.
+
 ## Ordering: until and unless
 
 `P until Q` says P holds in every state up to the one where Q holds, **and Q does happen**. That is the
