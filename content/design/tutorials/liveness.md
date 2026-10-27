@@ -42,13 +42,25 @@ and derivatives of these like
 - CTL* - a superset of CTL and LTL
 - PCTL - Probabilistic Computation Tree Logic
 
-FizzBee uses a subset of LTL to specify liveness properties. It also has
-some limited support for CTL and probabilistic model checking. We will learn more about
-these.
+FizzBee supports LTL without the next operator, plus one CTL operator, `possibly`. It also has
+support for probabilistic model checking. We will learn more about these.
 
 ### Linear Temporal Logic (LTL)
 
-TODO: Add some basic concepts
+A run of the system is a sequence of states, one after another. Usually it is infinite: when nothing
+more happens, the last state repeats forever. LTL properties are statements about each run:
+- `always P`: P holds in every state of the run.
+- `eventually P`: P holds in some state of the run, now or later.
+
+These combine. `always eventually P` says that from any point, P holds again later, so P holds
+infinitely often. `eventually always P` says that from some point on, P holds forever.
+
+A property holds for the system when it holds on every run the system can take, ignoring runs that
+fairness rules out. We'll come to fairness shortly.
+
+This page uses `always eventually` and `eventually always` as assertion prefixes. For properties that
+need more, like `until`, `leadsto`, or a condition such as "once a ticket is basic, it is never refunded",
+see [Temporal Formulas](/design/tutorials/temporal-formulas/).
 
 ## Liveness Properties
 
@@ -98,8 +110,14 @@ Specifying liveness properties is easy. Just define the predicate as above, and
 use the `always eventually` or `eventually always` keywords.
 
 ### CTL property: exists
-At present, FizzBee does not support CTL properties. But it is in the roadmap.
-But you can use the `exists` keyword to assert there is at least one state in one timeline
+LTL properties are about every run. CTL properties are about the *branches* from a state: what can
+happen, not what must. FizzBee has two of them.
+
+`possibly P` holds when some path from the current state reaches P. It is written in a temporal formula,
+for example `always possibly status == "idle"` says the system can always get back to idle. See
+[Can versus will: possibly](/design/tutorials/temporal-formulas/#can-versus-will-possibly).
+
+The `exists` keyword asserts there is at least one reachable state
 where this property holds. 
 
 This is useful to assure that the state space covered some specific state.
@@ -121,6 +139,25 @@ exists assertion HasFailedState:
 {{< /highlight >}}
 
 You can test it by removing the Fail action. The assertion will fail.
+
+## Faster liveness failures
+
+Liveness properties are checked after the model checker has explored every state. On a large model, a
+failing liveness check can take as long as a passing one.
+
+The experimental flag `--experimental_incremental_liveness` also checks the part of the graph
+explored so far, each time the number of explored nodes doubles, and stops at the first violation:
+
+{{< highlight shell >}}
+fizz --experimental_incremental_liveness path/to/spec.fizz
+{{< /highlight >}}
+
+It never changes a verdict. A violation found early is a real violation, and a run without one still
+ends with the usual full check. Only *when* a failure is reported changes. It helps most when the bad
+run is close to the initial state.
+
+It needs the default BFS exploration and the default (strict) liveness checker, and isn't available
+in the online playground. Formulas that use `possibly` are checked only at the end.
 
 
 
