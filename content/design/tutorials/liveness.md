@@ -109,13 +109,48 @@ atomic fair action Restart:
 Specifying liveness properties is easy. Just define the predicate as above, and
 use the `always eventually` or `eventually always` keywords.
 
-### CTL property: exists
-LTL properties are about every run. CTL properties are about the *branches* from a state: what can
-happen, not what must. FizzBee has two of them.
+The prefix is a shorthand for a [temporal formula](/design/tutorials/temporal-formulas/): an
+`assertion` with no prefix that returns the formula. These two assertions are the same check, and so are
+the next two:
 
-`possibly P` holds when some path from the current state reaches P. It is written in a temporal formula,
-for example `always possibly status == "idle"` says the system can always get back to idle. See
+{{< highlight python >}}
+always eventually assertion Working:
+  return status == "working"
+
+assertion Working:
+  return always eventually status == "working"
+
+eventually always assertion StaysShutdown:
+  return status == "shutdown"
+
+assertion StaysShutdown:
+  return eventually always status == "shutdown"
+{{< /highlight >}}
+
+The prefixed form is enough for most properties. Use the formula form when a property needs more than
+one temporal operator, like `always (status == "failed" implies eventually status == "idle")`.
+
+### CTL properties: possibly and exists
+LTL properties are about every run. CTL properties are about the *branches* from a state: what can
+happen, not what must. FizzBee has two of them: `possibly` and `exists`.
+
+#### possibly
+
+`possibly P` holds in a state when some path from it reaches a state where P holds. The path may take
+any action, fair or not. Add this to the previous example:
+
+{{< highlight python >}}
+assertion CanGetBackToIdle:
+  return always possibly status == "idle"
+{{< /highlight >}}
+
+It says that from every reachable state, the system can still get back to idle. It passes: `Finish`,
+`Fix` and `Restart` each lead back. Remove `Fix` and it fails, because a failed system can no longer
+get back. (`SafelyShutdown` then fails too and is reported first. Remove it to see the `possibly`
+failure, with a note saying after which step idle became unreachable.) For more, see
 [Can versus will: possibly](/design/tutorials/temporal-formulas/#can-versus-will-possibly).
+
+#### exists
 
 The `exists` keyword asserts there is at least one reachable state
 where this property holds. 
@@ -140,7 +175,7 @@ exists assertion HasFailedState:
 
 You can test it by removing the Fail action. The assertion will fail.
 
-## Faster liveness failures
+## Incremental liveness
 
 Liveness properties are checked after the model checker has explored every state. On a large model, a
 failing liveness check can take as long as a passing one.
