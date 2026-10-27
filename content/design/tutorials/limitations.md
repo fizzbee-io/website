@@ -69,6 +69,11 @@ r.fizz_function_name(arg1, arg2)
 That said, standard python functions like max, len etc will work as expected.
 This limit applies only to the fizz functions.
 
+Assertions are the exception. Inside an assertion, fizz functions can be called anywhere in an
+expression, for example `return all([c.done() for c in consumers])`. Each call runs on its own copy of
+the state and must be deterministic. See
+[Calling functions in assertions](/design/tutorials/temporal-formulas/#calling-functions-in-assertions).
+
 ## Extracting local variables in a separate statement might alter the behavior
 
 This will be the most confusing part of the language design. Being an abstract model

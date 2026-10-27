@@ -42,13 +42,27 @@ and derivatives of these like
 - CTL* - a superset of CTL and LTL
 - PCTL - Probabilistic Computation Tree Logic
 
-FizzBee uses a subset of LTL to specify liveness properties. It also has
-some limited support for CTL and probabilistic model checking. We will learn more about
-these.
+FizzBee supports future-time LTL without the next operator (X), which it leaves out so that properties are
+stuttering-invariant. It also supports the CTL operator `possibly`, which covers most of the "can this
+happen" questions that come up when modeling real systems, and it can be mixed freely with the LTL
+operators. FizzBee also supports probabilistic model checking. We will learn more about these.
 
 ### Linear Temporal Logic (LTL)
 
-TODO: Add some basic concepts
+A run of the system is a sequence of states, one after another. Usually it is infinite: when nothing
+more happens, the last state repeats forever. LTL properties are statements about each run:
+- `always P`: P holds in every state of the run.
+- `eventually P`: P holds in some state of the run, now or later.
+
+These combine. `always eventually P` says that from any point, P holds again later, so P holds
+infinitely often. `eventually always P` says that from some point on, P holds forever.
+
+A property holds for the system when it holds on every run the system can take, ignoring runs that
+fairness rules out. We'll come to fairness shortly.
+
+This page uses `always eventually` and `eventually always` as assertion prefixes. For properties that
+need more, like `until`, `leadsto`, or a condition such as "once a ticket is basic, it is never refunded",
+see [Temporal Formulas](/design/tutorials/temporal-formulas/).
 
 ## Liveness Properties
 
@@ -97,10 +111,62 @@ atomic fair action Restart:
 Specifying liveness properties is easy. Just define the predicate as above, and
 use the `always eventually` or `eventually always` keywords.
 
-### CTL property: exists
-At present, FizzBee does not support CTL properties. But it is in the roadmap.
-But you can use the `exists` keyword to assert there is at least one state in one timeline
-where this property holds. 
+The prefix is a shorthand for a [temporal formula](/design/tutorials/temporal-formulas/): an
+`assertion` with no prefix that returns the formula. These two assertions are the same check, and so are
+the next two:
+
+{{< highlight python >}}
+always eventually assertion Working:
+  return status == "working"
+
+assertion Working:
+  return always eventually status == "working"
+
+eventually always assertion StaysShutdown:
+  return status == "shutdown"
+
+assertion StaysShutdown:
+  return eventually always status == "shutdown"
+{{< /highlight >}}
+
+The prefixed form is enough for most properties. Use the formula form when a property needs more than
+one temporal operator, like `always (status == "failed" implies eventually status == "idle")`.
+
+### CTL properties: possibly and exists
+LTL properties are about every run. CTL properties are about the *branches* from a state: what can
+happen, not what must. FizzBee has two of them: `possibly` and `exists`.
+
+#### possibly
+
+`possibly P` holds in a state when some path from it reaches a state where P holds. The path may take
+any action, fair or not. Add this to the previous example:
+
+{{< highlight python >}}
+assertion CanGetBackToIdle:
+  return always possibly status == "idle"
+{{< /highlight >}}
+
+It says that from every reachable state, the system can still get back to idle. It passes: `Finish`,
+`Fix` and `Restart` each lead back. Remove `Fix` and it fails, because a failed system can no longer
+get back. (`SafelyShutdown` then fails too and is reported first. Remove it to see the `possibly`
+failure, with a note saying after which step idle became unreachable.) For more, see
+[Can versus will: possibly](/design/tutorials/temporal-formulas/#can-versus-will-possibly).
+
+`possibly` combines with the LTL operators like any other condition. For example, this checks
+recovery only from failed states:
+
+{{< highlight python >}}
+assertion FailedCanRecover:
+  return always (status == "failed" implies possibly status == "idle")
+{{< /highlight >}}
+
+#### exists
+
+The `exists` keyword asserts there is at least one reachable state
+where this property holds. It is `exists eventually P`, which is `possibly P`, checked once from the
+initial state. The one difference: `exists` also counts states reached through a crash, and `possibly`
+doesn't. This matters only when a crash changes state, as when it resets a role's
+[ephemeral state](/design/tutorials/fault-injection/). 
 
 This is useful to assure that the state space covered some specific state.
 Typically when modelling, we tend to temporarily add a safety assertion that will obviously fail.
@@ -121,6 +187,25 @@ exists assertion HasFailedState:
 {{< /highlight >}}
 
 You can test it by removing the Fail action. The assertion will fail.
+
+## Incremental liveness
+
+Liveness properties are checked after the model checker has explored every state. On a large model, a
+failing liveness check can take as long as a passing one.
+
+The experimental flag `--experimental_incremental_liveness` also checks the part of the graph
+explored so far, each time the number of explored nodes doubles, and stops at the first violation:
+
+{{< highlight shell >}}
+fizz --experimental_incremental_liveness path/to/spec.fizz
+{{< /highlight >}}
+
+It never changes a verdict. A violation found early is a real violation, and a run without one still
+ends with the usual full check. Only *when* a failure is reported changes. It helps most when the bad
+run is close to the initial state.
+
+It needs the default BFS exploration and the default (strict) liveness checker, and isn't available
+in the online playground. Formulas that use `possibly` are checked only at the end.
 
 
 
