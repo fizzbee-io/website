@@ -706,6 +706,10 @@ def rewrite_links(text, anchor_map, examples, page_url):
 
     def repl(m):
         label, target = m.group(1), m.group(2)
+        # "LANGUAGE_REFERENCE.md#anchor" from a guide resolves like a
+        # same-file "#anchor" from inside the reference.
+        if target.startswith("LANGUAGE_REFERENCE.md#"):
+            target = target[len("LANGUAGE_REFERENCE.md"):]
         if target.startswith("#"):
             if target[1:] not in anchor_map:
                 WARNINGS.append(f"{page_url}: unresolved anchor {target}")
@@ -715,8 +719,10 @@ def rewrite_links(text, anchor_map, examples, page_url):
             if local is None:
                 return f"[{label}]({url})"
             return f"[{label}]({'#' + local if url == page_url else url + '#' + local})"
-        if target in guide_urls:
-            return f"[{label}]({guide_urls[target]})"
+        file, _, fragment = target.partition("#")
+        if file in guide_urls:
+            # Guides are copied whole, so their heading ids survive as-is.
+            return f"[{label}]({guide_urls[file]}{'#' + fragment if fragment else ''})"
         name = target.rstrip("/")
         if name in examples:
             ex = examples[name]
