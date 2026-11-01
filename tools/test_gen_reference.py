@@ -62,6 +62,18 @@ class RewriteLinksTest(unittest.TestCase):
         self.assertIn("# [not a link](#fairness)", self.out)
         self.assertIn("`[code](#actions)`", self.out)
 
+    def test_cross_file_links_from_guides(self):
+        # A guide linking into the reference by filename resolves through
+        # the anchor map, including the per-document duplicate numbering.
+        guide = ("See [syntax](LANGUAGE_REFERENCE.md#syntax-1), "
+                 "[the chapter](LANGUAGE_REFERENCE.md#fairness), "
+                 "[gotchas](GOTCHAS.md#tuples) and [perf](PERFORMANCE_GUIDE.md).")
+        out = g.rewrite_links(guide, self.amap, {}, "/reference/performance/")
+        self.assertIn("[syntax](/reference/language/fairness/#syntax)", out)
+        self.assertIn("[the chapter](/reference/language/fairness/)", out)
+        self.assertIn("[gotchas](/reference/language/gotchas/#tuples)", out)
+        self.assertIn("[perf](/reference/performance/)", out)
+
 
 class MetaDescriptionTest(unittest.TestCase):
     def test_never_cut_mid_sentence(self):
