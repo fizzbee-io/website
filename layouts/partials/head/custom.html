@@ -12,37 +12,101 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
 
 
-<!-- Google tag (gtag.js) -->
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJLJ97K6Q9"></script>
+<!-- Google tag (gtag.js) and Tag Manager with Consent Mode v2 regional defaults.
+     Consent defaults are pushed to dataLayer before either script is injected,
+     so no tag can fire in a granted state ahead of them.
+     Keep in sync with views/partials/gtag.ejs in the frontend repo. -->
 <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
 
-    if(localStorage.getItem('consentMode') === null){
-        gtag('consent', 'default', {
-            'ad_storage': 'denied',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied',
-            'analytics_storage': 'denied',
-            'functionality_storage': 'denied',
-            'personalization_storage': 'denied',
-            'security_storage': 'denied',
-        });
-    } else {
-        gtag('consent', 'default', JSON.parse(localStorage.getItem('consentMode')));
-    }
+    (function () {
+        // Keep local dev and previews out of prod analytics. The exclusion is
+        // keyed on hostname and a persisted device flag, never on IP:
+        // ?analytics=off opts this device out for good, ?analytics=on re-enables.
+        var qs = location.search;
+        var forceOff = /[?&]analytics=off(?:&|$)/.test(qs);
+        var forceOn = /[?&]analytics=on(?:&|$)/.test(qs);
+        try {
+            if (forceOff) localStorage.setItem('fb_no_analytics', '1');
+            else if (forceOn) localStorage.removeItem('fb_no_analytics');
+        } catch (e) { /* private mode — fall through */ }
 
-    gtag('js', new Date());
+        var optedOut = false;
+        try { optedOut = localStorage.getItem('fb_no_analytics') === '1'; } catch (e) { /* ignore */ }
+        var isProdHost = location.hostname === 'fizzbee.io' || location.hostname === 'www.fizzbee.io';
+        if (forceOff || optedOut || (!isProdHost && !forceOn)) {
+            window.fbAnalyticsOff = true; // consent banner checks this
+            return;
+        }
 
-    // gtag('config', 'G-NJLJ97K6Q9');
-    gtag('config', 'GTM-5MZ732X7');
+        // A stored value that isn't a consent object is not a choice: clear it so
+        // the visitor gets the regional defaults and the banner (consent.html runs later).
+        var stored = null;
+        try {
+            var raw = localStorage.getItem('consentMode');
+            if (raw !== null) {
+                var parsed = null;
+                try { parsed = JSON.parse(raw); } catch (e) { /* corrupt */ }
+                var valid = parsed && ['ad_storage', 'ad_user_data', 'ad_personalization', 'analytics_storage',
+                    'functionality_storage', 'personalization_storage', 'security_storage'].every(function (k) {
+                    return parsed[k] === 'granted' || parsed[k] === 'denied';
+                });
+                if (valid) stored = parsed;
+                else localStorage.removeItem('consentMode');
+            }
+        } catch (e) { /* ignore */ }
+
+        if (stored === null) {
+            // Opt-in regions: EEA (EU-27 + Iceland, Liechtenstein, Norway) + UK +
+            // Switzerland stay denied until the user answers the banner. Google
+            // matches the visitor's location to these codes itself (by IP), so no
+            // geo lookup is needed here.
+            gtag('consent', 'default', {
+                'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT',
+                           'LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO',
+                           'GB','CH'],
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied',
+                'personalization_storage': 'denied',
+                'functionality_storage': 'granted',
+                'security_storage': 'granted',
+                'wait_for_update': 500
+            });
+            // Rest of the world: analytics and preferences on by default. Ad signals
+            // stay denied until fizzbee.io runs campaigns and the privacy policy covers them.
+            gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'granted',
+                'personalization_storage': 'granted',
+                'functionality_storage': 'granted',
+                'security_storage': 'granted'
+            });
+        } else {
+            gtag('consent', 'default', stored);
+        }
+
+        gtag('js', new Date());
+
+        // The GA4 config lives in the GTM container, alongside PostHog and Beam.
+        // Configuring G-NJLJ97K6Q9 here as well would double-count page views.
+        gtag('config', 'GTM-5MZ732X7');
+
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-NJLJ97K6Q9';
+        document.head.appendChild(s);
+
+        // Google Tag Manager
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-5MZ732X7');
+    })();
 </script>
-
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5MZ732X7');</script>
-<!-- End Google Tag Manager -->
+<!-- End Google tag and Tag Manager -->

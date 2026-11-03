@@ -34,19 +34,20 @@
 <div id="cookie-consent-banner" class="cookie-consent-banner">
     <h3>Cookie settings</h3>
     <p>
-        We use cookies to enhance your experience and improve our website. Some cookies are necessary and cannot be turned off. You can choose to allow or disallow additional cookies for analytics, preferences, and marketing.
+        We use cookies to enhance your experience and improve our website. Some cookies are necessary and cannot be turned off. You can choose to allow or disallow additional cookies for analytics, preferences, and marketing. Depending on your region, analytics cookies may be on until you choose.
         <a href="/privacy.html" class="gdoc-footer__link">Learn more in our privacy policy</a>.
     </p>
 
     <button id="btn-accept-all">Accept All Cookies</button>
+    <button id="btn-reject-all">Reject Non-Essential</button>
 
     <input id="btn-customize" name="how" type="checkbox">
     <label for="btn-customize" class="customize-link">Customize</label>
 
     <div id="consent-options">
         <label><input id="consent-necessary" type="checkbox" value="Necessary" checked disabled>Necessary</label>
-        <label><input id="consent-analytics" type="checkbox" value="Analytics" checked>Analytics</label>
-        <label><input id="consent-preferences" type="checkbox" value="Preferences" checked>Preferences</label>
+        <label><input id="consent-analytics" type="checkbox" value="Analytics">Analytics</label>
+        <label><input id="consent-preferences" type="checkbox" value="Preferences">Preferences</label>
         <label><input id="consent-marketing" type="checkbox" value="Marketing">Marketing</label>
         <button id="btn-save-selection">Save Selection</button>
     </div>
@@ -59,7 +60,10 @@
         document.getElementById('cookie-consent-banner').style.display = 'none';
     }
 
-    if(localStorage.getItem('consentMode') === null) {
+    var consentAnswered = false;
+    try { consentAnswered = localStorage.getItem('consentMode') !== null; } catch (e) { /* storage blocked — still ask */ }
+
+    if(!window.fbAnalyticsOff && !consentAnswered) {
 
         document.getElementById('btn-accept-all').addEventListener('click', function() {
             setConsent({
@@ -67,6 +71,15 @@
                 analytics: true,
                 preferences: true,
                 marketing: true
+            });
+            hideBanner();
+        });
+        document.getElementById('btn-reject-all').addEventListener('click', function() {
+            setConsent({
+                necessary: true,
+                analytics: false,
+                preferences: false,
+                marketing: false
             });
             hideBanner();
         });
@@ -94,7 +107,19 @@
             'personalization_storage': consent.preferences ? 'granted' : 'denied',
         };
         gtag('consent', 'update', consentMode);
-        localStorage.setItem('consentMode', JSON.stringify(consentMode));
+        try { localStorage.setItem('consentMode', JSON.stringify(consentMode)); } catch (e) { /* storage blocked — applies to this page only */ }
+
+        // Consent Mode doesn't reach PostHog: once GTM has loaded it, it keeps running
+        // on this page until told otherwise. Replay is only for visitors who said yes.
+        if (window.posthog && typeof window.posthog.opt_out_capturing === 'function') {
+            if (consent.analytics) {
+                window.posthog.opt_in_capturing();
+                window.posthog.startSessionRecording();
+            } else {
+                window.posthog.stopSessionRecording();
+                window.posthog.opt_out_capturing();
+            }
+        }
     }
 
 </script>
